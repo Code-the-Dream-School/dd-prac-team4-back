@@ -4,11 +4,12 @@
   "description": "Back-End Repo for Team 1 of Baboon/Bald Eagle Practicum",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/app.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "argon2": "^0.30.3",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
@@ -20,12 +21,14 @@
     "express-rate-limit": "^6.8.1",
     "express-session": "^1.17.3",
     "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.1",
     "mongo-sanitize": "^1.1.0",
     "mongoose": "^7.4.1",
     "morgan": "^1.10.0",
     "passport": "^0.6.0",
     "validator": "^13.9.0",
-    "xss": "^1.0.14"
+    "xss": "^1.0.14",
+    "xss-clean": "^0.1.4"
   },
   "devDependencies": {
     "nodemon": "^2.0.21"
