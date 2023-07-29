@@ -7,7 +7,7 @@ const {
   updateUser,
 } = require('../controllers/userController');
 
-router.route('/updateUser').patch(updateUser);
+router.route('/:id').patch(updateUser);
 router.route('/:id').get(getSingleUser);
 
 module.exports = router;
