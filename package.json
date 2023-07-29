@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -23,6 +24,7 @@
     "mongoose": "^7.4.1",
     "morgan": "^1.10.0",
     "passport": "^0.6.0",
+    "validator": "^13.9.0",
     "xss": "^1.0.14"
   },
   "devDependencies": {
