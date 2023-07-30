@@ -27,6 +27,7 @@
     "morgan": "^1.10.0",
     "passport": "^0.6.0",
     "validator": "^13.9.0",
+    "winston": "^3.10.0",
     "xss": "^1.0.14",
     "xss-clean": "^0.1.4"
   },
