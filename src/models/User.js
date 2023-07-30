@@ -7,7 +7,6 @@ const profileImageSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
- 
 });
 
 // Mongoose schema for hashed credit card info
@@ -56,6 +55,5 @@ const UserSchema = new mongoose.Schema({
   profileImage: profileImageSchema,
   creditCardInfo: creditCardSchema,
 });
-
 
 module.exports = mongoose.model('User', UserSchema);
