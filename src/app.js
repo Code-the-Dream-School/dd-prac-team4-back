@@ -21,6 +21,7 @@ const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 60, // limit each IP to 100 requests per windowMs
 });
+const logger = require('./logger');
 
 // middleware setup
 // Configure express-session middleware
@@ -33,13 +34,21 @@ app.use(
   })
 );
 
-app.use(cors());
-app.use(xss())
+app.use(xss());
 
 app.use(express.json());
+//Security middleware
 app.use(helmet());
+app.use(cors());
+
 app.use(express.urlencoded({ extended: false }));
-app.use(morgan('dev'));
+
+//Logging middleware (using morgan)
+app.use(
+  morgan('dev', {
+    stream: { write: (message) => logger.info(message.trim()) },
+  })
+);
 app.use(express.static('public'));
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(bodyParser.json());
@@ -49,14 +58,9 @@ app.use(cookieParser());
 
 // Database setup (using Mongoose)
 
-
-
 const connectDB = (url) => {
   return mongoose.connect(url);
 };
-
-
-
 
 //routers
 const authRouter = require('./routes/authRoutes');
@@ -72,7 +76,9 @@ const port = process.env.PORT || 8000;
 const start = async () => {
   try {
     await connectDB(process.env.MONGO_URL);
-    app.listen(port, console.log(`Server is listening on port ${port}`));
+    app.listen(port, () => {
+      logger.info(`Server running on http://localhost:${port}`);
+    });
   } catch (error) {
     console.log(error);
   }

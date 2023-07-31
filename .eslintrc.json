@@ -1,0 +1,12 @@
+{
+  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "rules": {
+    // Add any additional rules or override default rules here
+    "arrow-parens": "error",
+    "arrow-spacing": "error"
+  },
+  "env": {
+    "node": true,
+    "es2023": true
+  }
+}

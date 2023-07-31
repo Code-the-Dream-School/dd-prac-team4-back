@@ -8,7 +8,6 @@ const profileImageSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
- 
 });
 
 // Mongoose schema for hashed credit card info
@@ -23,7 +22,7 @@ const creditCardSchema = new mongoose.Schema({
   },
   preferredPaymentOption: {
     type: String,
-    enum: ['credit card', 'paypal', 'google pay'],
+    enum: ["credit card", "paypal", "google pay"],
     required: false,
   },
 });
@@ -31,28 +30,28 @@ const creditCardSchema = new mongoose.Schema({
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Please provide name'],
+    required: [true, "Please provide name"],
     minlength: 2,
     maxlength: 50,
   },
   email: {
     type: String,
     unique: true, //checks index; if !index throws mongoose errors
-    required: [true, 'Please provide email'],
+    required: [true, "Please provide email"],
     validate: {
       validator: validator.isEmail,
-      message: 'Please provide valid email',
+      message: "Please provide valid email",
     },
   },
   password: {
     type: String,
-    required: [true, 'Please provide password'],
+    required: [true, "Please provide password"],
     minlength: 6,
   },
   role: {
     type: String,
-    enum: ['admin', 'user'], // acceptable values for the role property
-    default: 'user',
+    enum: ["admin", "user"], // acceptable values for the role property
+    default: "user",
   },
   profileImage: profileImageSchema,
   creditCardInfo: creditCardSchema,
