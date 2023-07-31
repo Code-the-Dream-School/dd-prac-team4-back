@@ -1,64 +1,80 @@
-require('dotenv').config()
-const express = require('express')
-const app = express()
-const morgan = require('morgan')
-const bodyParser = require('body-parser')
-const cors = require('cors')
-const favicon = require('express-favicon')
-const mainRouter = require('./routes/mainRouter.js')
-const helmet = require('helmet')
-const session = require('express-session')
-const passport = require('passport')
-const mongoose = require('mongoose')
-const asyncErrors = require('express-async-errors')
-const cookieParser = require('cookie-parser')
-const rateLimit = require('express-rate-limit')
-const xss = require('xss')
-const mongoSanitize = require('mongo-sanitize')
+require('dotenv').config();
+
+const express = require('express');
+const session = require('express-session');
+const app = express();
+
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const favicon = require('express-favicon');
+const xss = require('xss-clean');
+const helmet = require('helmet');
+
+const passport = require('passport');
+const mongoose = require('mongoose');
+mongoose.set('strictQuery', true);
+const asyncErrors = require('express-async-errors');
+const cookieParser = require('cookie-parser');
+const rateLimit = require('express-rate-limit');
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 60 // limit each IP to 100 requests per windowMs
-})
+  max: 60, // limit each IP to 100 requests per windowMs
+});
 
 // middleware setup
-app.use(cors())
-app.use(xss())
-app.use(limiter)
-app.use(mongoSanitize())
-app.use(express.json())
-app.use(helmet())
-app.use(express.urlencoded({ extended: false }))
-app.use(morgan('dev'))
-app.use(express.static('public'))
-app.use(favicon(__dirname + '/public/favicon.ico'))
-app.use(bodyParser.json())
-app.use(passport.initialize())
-app.use(passport.session())
-app.use(cookieParser())
+// Configure express-session middleware
 app.use(
-  session({ secret: 'your-secret-key', resave: false, saveUninitialized: true })
-)
+  session({
+    secret: 'your-secret-key', // Replace with a secret key for session data encryption
+    resave: false,
+    saveUninitialized: false,
+    // Other configuration options can be added as needed
+  })
+);
 
-// Enable async/await error handling
-asyncErrors(app)
+app.use(cors());
+app.use(xss())
+
+app.use(express.json());
+app.use(helmet());
+app.use(express.urlencoded({ extended: false }));
+app.use(morgan('dev'));
+app.use(express.static('public'));
+app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(bodyParser.json());
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(cookieParser());
 
 // Database setup (using Mongoose)
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
 
-// Express routes
-app.use('/api/v1', mainRouter)
+
+
+const connectDB = (url) => {
+  return mongoose.connect(url);
+};
+
+
+
+
+//routers
+const authRouter = require('./routes/authRoutes.js');
+
+app.use('/api/v1/auth', authRouter);
 
 // Error handling middleware (must be defined after all other routes and middleware)
-app.use((err, req, res, next) => {
-  console.error(err.stack)
-  res.status(500).send('Something broke!')
-})
+//add later
 
 // Start the server
-const port = process.env.PORT || 3000
-app.listen(port, () => {
-  console.log(`Server is listening on port ${port}...`)
-})
+const port = process.env.PORT || 8000;
+const start = async () => {
+  try {
+    await connectDB(process.env.MONGO_URL);
+    app.listen(port, console.log(`Server is listening on port ${port}`));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+start();
