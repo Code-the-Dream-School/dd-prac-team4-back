@@ -21,7 +21,7 @@ const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 60, // limit each IP to 100 requests per windowMs
 });
-const logger = require('./logger');
+//const logger = require('./logger');
 
 // middleware setup
 // Configure express-session middleware
@@ -44,17 +44,18 @@ app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 
 //Logging middleware (using morgan)
-app.use(
-  morgan('dev', {
-    stream: { write: (message) => logger.info(message.trim()) },
-  })
-);
+//app.use(
+  //morgan('dev', {
+    //stream: { write: (message) => logger.info(message.trim()) },
+  //})
+//);
 app.use(express.static('public'));
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cookieParser());
+
 
 // Database setup (using Mongoose)
 
@@ -77,7 +78,7 @@ const start = async () => {
   try {
     await connectDB(process.env.MONGO_URL);
     app.listen(port, () => {
-      logger.info(`Server running on http://localhost:${port}`);
+      console.log(`Server running on http://localhost:${port}`);
     });
   } catch (error) {
     console.log(error);
