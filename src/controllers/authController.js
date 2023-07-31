@@ -5,7 +5,12 @@ const argon2 = require('argon2');
 //SET up CUSTOM ERRORs later
 
 // create token
-const createJWT = ({ payload }) => {
+const createJWT = (user) => {
+  const payload = {
+    name: user.name,
+    userId: user._id,
+    role: user.role,
+  };
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_LIFETIME,
   });
@@ -45,6 +50,30 @@ const register = async (req, res) => {
   res.status(200).json({ user: tokenUser }); //sends as response 'tokenUser' with 3 properties { name: user.name, userId: user._id, role: user.role }; and calls it 'user' object
 };
 
+// Function to handle user login
+const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  // Find the user by email
+  const user = await User.findOne({ email });
+
+  // Check if a user with the specified email exists
+  if (!user) {
+    return res.status(404).json({ msg: 'User not found' });
+  }
+
+  // Verify the entered password
+  const isPasswordValid = await argon2.verify(user.password, password);
+  if (!isPasswordValid) {
+    return res.status(401).json({ msg: 'Invalid password' });
+  }
+
+  // Create and send a JWT token
+  const tokenUser = createJWT(user);
+  res.status(200).json({ user: tokenUser });
+};
+
 module.exports = {
   register,
+  login,
 };
