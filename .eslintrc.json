@@ -7,6 +7,6 @@
   },
   "env": {
     "node": true,
-    "es6": true
+    "es2023": true
   }
 }
