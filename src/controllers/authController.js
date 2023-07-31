@@ -50,27 +50,39 @@ const register = async (req, res) => {
   res.status(200).json({ user: tokenUser }); //sends as response 'tokenUser' with 3 properties { name: user.name, userId: user._id, role: user.role }; and calls it 'user' object
 };
 
-// Function to handle user login
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  // Find the user by email
-  const user = await User.findOne({ email });
+  try {
+    // Find the user by email
+    const user = await User.findOne({ email });
 
-  // Check if a user with the specified email exists
-  if (!user) {
-    return res.status(404).json({ msg: 'User not found' });
+    // Check if a user with the specified email exists
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Verify the entered password
+    const isPasswordValid = await argon2.verify(user.password, password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Invalid password' });
+    }
+
+    // If validation passes, return the user object without the hashed password
+    const userWithoutPassword = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role
+    };
+
+    return res.status(200).json({ user: userWithoutPassword });
+  } catch (error) {
+    // Handle errors
+    console.error(error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
-
-  // Verify the entered password
-  const isPasswordValid = await argon2.verify(user.password, password);
-  if (!isPasswordValid) {
-    return res.status(401).json({ msg: 'Invalid password' });
-  }
-
-  // Create and send a JWT token
-  const tokenUser = createJWT(user);
-  res.status(200).json({ user: tokenUser });
+  
 };
 
 module.exports = {
