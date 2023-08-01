@@ -21,8 +21,10 @@ const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 60, // limit each IP to 100 requests per windowMs
 });
+
 const logger = require("./logger");
 
+app.use(limiter);
 // middleware setup
 
 app.use(xss());
