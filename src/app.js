@@ -39,9 +39,8 @@ app.use(xss());
 app.use(express.json());
 //Security middleware
 app.use(helmet());
-app.use(cors());
 
-app.use(express.urlencoded({ extended: false }));
+app.use(cors({ origin: [/localhost:8000$/], credentials: true }));
 
 //Logging middleware (using morgan)
 app.use(
