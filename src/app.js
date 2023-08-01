@@ -80,7 +80,7 @@ const start = async () => {
       logger.info(`Server running on http://localhost:${port}`);
     });
   } catch (error) {
-    console.log(error);
+    logger.error(error);
   }
 };
 
