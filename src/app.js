@@ -8,7 +8,7 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const favicon = require("express-favicon");
-const xss = require("xss-clean");
+const { xss } = require("express-xss-sanitizer");
 const helmet = require("helmet");
 
 const passport = require("passport");
