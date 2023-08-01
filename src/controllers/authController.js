@@ -68,21 +68,26 @@ const login = async (req, res) => {
       return res.status(401).json({ error: 'Invalid password' });
     }
 
-    // If validation passes, return the user object without the hashed password
-    const userWithoutPassword = {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role
-    };
+    // If validation passes, create the JWT token
+    const token = createJWT(user);
 
-    return res.status(200).json({ user: userWithoutPassword });
+    // Set the cookie with the token
+    const oneYearInSeconds = 31536000; // 1 year in seconds
+    res.cookie('token', token, {
+      httpOnly: true,
+      maxAge: oneYearInSeconds * 1000, // Convert seconds to milliseconds
+    });
+
+    // Remove the hashed password from the user object before sending it in the response
+    user.password = undefined;
+
+    // Send the response with user data and the cookie
+    return res.status(200).json({ user });
   } catch (error) {
     // Handle errors
     console.error(error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
-  
 };
 
 module.exports = {
