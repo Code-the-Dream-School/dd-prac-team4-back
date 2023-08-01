@@ -24,15 +24,6 @@ const limiter = rateLimit({
 const logger = require("./logger");
 
 // middleware setup
-// Configure express-session middleware
-app.use(
-  session({
-    secret: "your-secret-key", // Replace with a secret key for session data encryption
-    resave: false,
-    saveUninitialized: false,
-    // Other configuration options can be added as needed
-  }),
-);
 
 app.use(xss());
 
@@ -51,9 +42,20 @@ app.use(
 app.use(express.static("public"));
 app.use(favicon(__dirname + "/public/favicon.ico"));
 app.use(bodyParser.json());
+
+app.use(cookieParser());
+// Configure express-session middleware
+app.use(
+  session({
+    secret: "your-secret-key", // Replace with a secret key for session data encryption
+    resave: false,
+    saveUninitialized: false,
+    // Other configuration options can be added as needed
+  }),
+);
+
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cookieParser());
 
 // Database setup (using Mongoose)
 
