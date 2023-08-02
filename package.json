@@ -24,6 +24,7 @@
     "express-favicon": "^2.0.4",
     "express-rate-limit": "^6.8.1",
     "express-session": "^1.17.3",
+    "express-xss-sanitizer": "^1.1.6",
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.1",
     "logger": "^0.0.1",
@@ -32,14 +33,11 @@
     "morgan": "^1.10.0",
     "passport": "^0.6.0",
     "validator": "^13.9.0",
-    "winston": "^3.10.0",
-    "xss": "^1.0.14",
-    "xss-clean": "^0.1.4"
+    "winston": "^3.10.0"
   },
   "devDependencies": {
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^8.9.0",
-    "eslint-plugin-prettier": "^5.0.0",
     "nodemon": "^2.0.21",
     "prettier": "^3.0.0"
   }
