@@ -60,10 +60,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Database setup (using Mongoose)
+mongoose.set("strictQuery", true);
 
 const connectDB = (url) => {
   return mongoose.connect(url);
 };
+
+module.exports = connectDB;
 
 //routers
 const authRouter = require("./routes/authRoutes.js");
