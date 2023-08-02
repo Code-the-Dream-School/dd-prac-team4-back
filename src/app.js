@@ -1,20 +1,17 @@
 require("dotenv").config();
-
+require("express-async-errors");
 const express = require("express");
 const session = require("express-session");
 const app = express();
-
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const favicon = require("express-favicon");
 const { xss } = require("express-xss-sanitizer");
 const helmet = require("helmet");
-
 const passport = require("passport");
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", true);
-const asyncErrors = require("express-async-errors");
 const cookieParser = require("cookie-parser");
 const rateLimit = require("express-rate-limit");
 const limiter = rateLimit({
