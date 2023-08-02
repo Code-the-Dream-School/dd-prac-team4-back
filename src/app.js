@@ -19,7 +19,7 @@ const limiter = rateLimit({
     max: 60, // limit each IP to 100 requests per windowMs
 })
 
-const logger = require('./logs/logger')
+const logger = require('../logs/logger')
 
 app.use(limiter)
 // middleware setup
