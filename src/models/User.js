@@ -1,5 +1,6 @@
-const mongoose = require("mongoose");
-const validator = require("validator");
+const mongoose = require('mongoose');
+const validator = require('validator');
+const argon2 = require('argon2');
 
 // Mongoose schema for profileImage
 const profileImageSchema = new mongoose.Schema({
@@ -56,4 +57,13 @@ const UserSchema = new mongoose.Schema({
   creditCardInfo: creditCardSchema,
 });
 
-module.exports = mongoose.model("User", UserSchema);
+//before we save the document we hash password; this points to the user (this= user)
+UserSchema.pre('save', async function () {
+  console.log(this.modifiedPaths()); //to see which properties were modified
+   console.log(this.isModified('name')); // in console we get false if we are not modifying name, and true if we do
+  
+  if (!this.isModified('password')) return; //if the password is not modified then stop
+  });
+
+
+module.exports = mongoose.model('User', UserSchema);

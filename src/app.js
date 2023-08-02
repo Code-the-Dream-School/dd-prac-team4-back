@@ -33,6 +33,19 @@ app.use(helmet())
 app.use(cors({ origin: [/localhost:8000$/], credentials: true }))
 
 //Logging middleware (using morgan)
+
+app.use(
+  morgan('dev', {
+    stream: { write: (message) => logger.info(message.trim()) },
+  })
+);
+app.use(express.static('public'));
+app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(bodyParser.json());
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(cookieParser());
+
 app.use(
     morgan('dev', {
         stream: { write: (message) => logger.info(message.trim()) },
@@ -63,9 +76,11 @@ const connectDB = (url) => {
 }
 
 //routers
-const authRouter = require('./routes/authRoutes.js')
+const authRouter = require('./routes/authRoutes');
+const userRouter = require('./routes/userRoutes');
 
-app.use('/api/v1/auth', authRouter)
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/users', userRouter);
 
 // Error handling middleware (must be defined after all other routes and middleware)
 //add later
