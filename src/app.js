@@ -73,7 +73,7 @@ app.use('/api/v1/auth', authRouter)
 //add later
 
 // Start the server
-const port = process.env.PORT || 8000
+const port = process.env.PORT || 3000
 const start = async () => {
     try {
         await connectDB(process.env.MONGO_URL)
