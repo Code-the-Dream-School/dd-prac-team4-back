@@ -62,8 +62,6 @@ const connectDB = (url) => {
     return mongoose.connect(url)
 }
 
-module.exports = connectDB
-
 //routers
 const authRouter = require('./routes/authRoutes.js')
 
