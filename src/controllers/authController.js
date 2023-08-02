@@ -72,10 +72,10 @@ const login = async (req, res) => {
     const token = createJWT(user);
 
     // Set the cookie with the token
-    const oneYearInSeconds = 31536000; // 1 year in seconds
+    const oneDay = 1000 * 60 *60 *24;
     res.cookie('token', token, {
       httpOnly: true,
-      maxAge: oneYearInSeconds * 1000, // Convert seconds to milliseconds
+      expires: new Date(Date.now() + oneDay)
     });
 
     // Remove the hashed password from the user object before sending it in the response
