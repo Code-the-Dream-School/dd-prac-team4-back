@@ -1,79 +1,65 @@
-require('dotenv').config()
-require('express-async-errors')
-const express = require('express')
-const session = require('express-session')
-const app = express()
-const morgan = require('morgan')
-const bodyParser = require('body-parser')
-const cors = require('cors')
-const favicon = require('express-favicon')
-const { xss } = require('express-xss-sanitizer')
-const helmet = require('helmet')
-const passport = require('passport')
-const mongoose = require('mongoose')
-mongoose.set('strictQuery', true)
-const cookieParser = require('cookie-parser')
-const rateLimit = require('express-rate-limit')
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 60, // limit each IP to 100 requests per windowMs
-})
+require('dotenv').config();
 
-const logger = require('../logs/logger')
+const express = require('express');
+const session = require('express-session');
+const morgan = require('morgan');
+const cors = require('cors');
+const favicon = require('express-favicon');
+const { xss } = require('express-xss-sanitizer');
+const helmet = require('helmet');
+const passport = require('passport');
+const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
+const rateLimit = require('express-rate-limit');
 
-app.use(limiter)
-// middleware setup
+const logger = require('../logs/logger');
 
-app.use(xss())
+const app = express();
+require('express-async-errors');
 
-app.use(express.json())
+// ====== Middleware setup ======
+
 //Security middleware
-app.use(helmet())
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 60, // limit each IP to 100 requests per windowMs
+});
+app.use(helmet());
+app.use(limiter);
+app.use(xss());
+app.use(cors({ origin: [/localhost:3000$/], credentials: true }));
 
-app.use(cors({ origin: [/localhost:8000$/], credentials: true }))
-
-//Logging middleware (using morgan)
-
+//Logging middleware (using morgan to log each HTTP request)
 app.use(
   morgan('dev', {
     stream: { write: (message) => logger.info(message.trim()) },
   })
 );
+
+// Express request middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(bodyParser.json());
-app.use(passport.initialize());
-app.use(passport.session());
 app.use(cookieParser());
 
-app.use(
-    morgan('dev', {
-        stream: { write: (message) => logger.info(message.trim()) },
-    })
-)
-app.use(express.static('public'))
-app.use(favicon(__dirname + '/public/favicon.ico'))
-app.use(bodyParser.json())
-
-app.use(cookieParser())
 // Configure express-session middleware
 app.use(
-    session({
-        secret: process.env.SESSION_SECRET,
-        resave: false,
-        saveUninitialized: false,
-    })
-)
-
-app.use(passport.initialize())
-app.use(passport.session())
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+// Configure passport for request authz
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Database setup (using Mongoose)
-mongoose.set('strictQuery', true)
-
+mongoose.set('strictQuery', true);
 const connectDB = (url) => {
-    return mongoose.connect(url)
-}
+  return mongoose.connect(url);
+};
 
 //routers
 const authRouter = require('./routes/authRoutes');
@@ -86,16 +72,16 @@ app.use('/api/v1/users', userRouter);
 //add later
 
 // Start the server
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 8000;
 const start = async () => {
-    try {
-        await connectDB(process.env.MONGO_URL)
-        app.listen(port, () => {
-            logger.info(`Server running on http://localhost:${port}`)
-        })
-    } catch (error) {
-        logger.error(error)
-    }
-}
+  try {
+    await connectDB(process.env.MONGO_URL);
+    app.listen(port, () => {
+      logger.info(`Server running on http://localhost:${port}`);
+    });
+  } catch (error) {
+    logger.error(error);
+  }
+};
 
-start()
+start();

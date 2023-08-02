@@ -1,9 +1,11 @@
 {
-  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "extends": ["eslint:recommended", "prettier"],
   "rules": {
     // Add any additional rules or override default rules here
     "arrow-parens": "error",
-    "arrow-spacing": "error"
+    "arrow-spacing": "error",
+    "no-unused-vars": "warn",
+    "no-unused-expressions": "warn"
   },
   "env": {
     "node": true,

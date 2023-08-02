@@ -5,11 +5,8 @@ const capitalizeLevel = winston.format((info) => {
     return info
 })
 
-winston.addColors(logLevels)
-
 const logger = winston.createLogger({
     // level: "debug",
-    levels: logLevels,
     format: winston.format.combine(
         capitalizeLevel(),
         winston.format.colorize(),

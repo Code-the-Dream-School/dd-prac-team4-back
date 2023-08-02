@@ -2,7 +2,7 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const argon2 = require('argon2');
 
-//SET up CUSTOM ERRORs later
+// TODO: SET up CUSTOM ERRORs later
 
 // create token
 const createJWT = (user) => {
@@ -23,11 +23,14 @@ const register = async (req, res) => {
   const emailAlreadyExists = await User.findOne({ email });
 
   if (emailAlreadyExists) {
-    res.status(400).json({ msg: 'This email already exists in a database' });
+    res.status(400).json({
+      msg: 'This email already exists in a database',
+    });
   }
 
   //first registered user is an admin
-  const isFirstAccount = (await User.countDocuments({})) === 0; //get all users, and if there are no users assign role to admin
+  //get all users, and if there are no users assign role to admin
+  const isFirstAccount = (await User.countDocuments({})) === 0;
   const role = isFirstAccount ? 'admin' : 'user';
 
   const hashedPassword = await argon2.hash(password);
@@ -47,7 +50,8 @@ const register = async (req, res) => {
 
   const tokenUser = createJWT(user);
 
-  res.status(200).json({ user: tokenUser }); //sends as response 'tokenUser' with 3 properties { name: user.name, userId: user._id, role: user.role }; and calls it 'user' object
+  //sends as response 'tokenUser' with 3 properties { name: user.name, userId: user._id, role: user.role }; and calls it 'user' object
+  res.status(200).json({ user: tokenUser });
 };
 
 const login = async (req, res) => {
@@ -73,7 +77,7 @@ const login = async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      role: user.role
+      role: user.role,
     };
 
     return res.status(200).json({ user: userWithoutPassword });
@@ -82,7 +86,6 @@ const login = async (req, res) => {
     console.error(error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
-  
 };
 
 module.exports = {
