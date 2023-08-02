@@ -46,10 +46,9 @@ app.use(cookieParser())
 // Configure express-session middleware
 app.use(
     session({
-        secret: 'your-secret-key', // Replace with a secret key for session data encryption
+        secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
-        // Other configuration options can be added as needed
     })
 )
 
