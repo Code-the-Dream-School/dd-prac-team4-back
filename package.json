@@ -4,14 +4,17 @@
   "description": "Back-End Repo for Team 1 of Baboon/Bald Eagle Practicum",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon src/app.js",
+    "start": "node app.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write ."
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "argon2": "^0.30.3",
     "bcryptjs": "^2.4.3",
-    "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -20,17 +23,21 @@
     "express-favicon": "^2.0.4",
     "express-rate-limit": "^6.8.1",
     "express-session": "^1.17.3",
+    "express-xss-sanitizer": "^1.1.6",
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.1",
+    "logger": "^0.0.1",
     "mongo-sanitize": "^1.1.0",
     "mongoose": "^7.4.1",
     "morgan": "^1.10.0",
     "passport": "^0.6.0",
     "validator": "^13.9.0",
-    "xss": "^1.0.14",
-    "xss-clean": "^0.1.4"
+    "winston": "^3.10.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.21"
+    "eslint": "^8.46.0",
+    "eslint-config-prettier": "^8.9.0",
+    "nodemon": "^2.0.21",
+    "prettier": "^3.0.0"
   }
 }

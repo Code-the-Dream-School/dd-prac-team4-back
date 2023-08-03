@@ -8,7 +8,6 @@ const profileImageSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
- 
 });
 
 // Mongoose schema for hashed credit card info
@@ -51,7 +50,8 @@ const UserSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['admin', 'user'], // acceptable values for the role property
+    // acceptable values for the role property
+    enum: ['admin', 'user'],
     default: 'user',
   },
   profileImage: profileImageSchema,
@@ -60,11 +60,12 @@ const UserSchema = new mongoose.Schema({
 
 //before we save the document we hash password; this points to the user (this= user)
 UserSchema.pre('save', async function () {
-  console.log(this.modifiedPaths()); //to see which properties were modified
-   console.log(this.isModified('name')); // in console we get false if we are not modifying name, and true if we do
-  
-  if (!this.isModified('password')) return; //if the password is not modified then stop
-  });
+  //to see which properties were modified
+  console.log(this.modifiedPaths());
+  // in console we get false if we are not modifying name, and true if we do
+  console.log(this.isModified('name'));
 
+  if (!this.isModified('password')) return; //if the password is not modified then stop
+});
 
 module.exports = mongoose.model('User', UserSchema);
