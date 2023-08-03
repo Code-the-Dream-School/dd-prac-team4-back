@@ -25,7 +25,7 @@ const register = async (req, res) => {
   const isFirstAccount = (await User.countDocuments({})) === 0; //get all users, and if there are no users assign role to admin
   const role = isFirstAccount ? 'admin' : 'user';
 
-  const hashedPassword = await argon2.hash("password");
+  const hashedPassword = await argon2.hash(password);
 
   //create user
   const user = await User.create({
