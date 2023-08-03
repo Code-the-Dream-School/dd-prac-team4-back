@@ -33,15 +33,6 @@ const updateUser = async (req, res) => {
   }
 
 
-
-  let user = await User.findOne({ _id: req.params.id }); //get user
-  
-  // Update email if request included a non-null value, otherwise keep the email as-is
-  user.email = email || user.email
-
-  // Update name if request included a non-null value, otherwise keep the name as-is
-  user.name = name || user.name
-
   const user = await User.findOne({ _id: req.params.id }); //get user
   // Update email if request included a non-null value, otherwise keep the email as-is
   user.email = email || user.email;
