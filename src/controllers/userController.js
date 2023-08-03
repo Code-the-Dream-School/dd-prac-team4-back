@@ -33,20 +33,25 @@ const updateUser = async (req, res) => {
   }
 
 
-  let user = await User.findOne({ _id: req.params.id }); //get user
-  
+  const user = await User.findOne({ _id: req.params.id }); //get user
   // Update email if request included a non-null value, otherwise keep the email as-is
-  user.email = email || user.email
+  user.email = email || user.email;
 
   // Update name if request included a non-null value, otherwise keep the name as-is
-  user.name = name || user.name
+  user.name = name || user.name;
+
+  await user.save(); // using pre save hook (see user model) to save updated user
+  //create tokenUser with data updated
+  const createJWT = (user) => {
+    return { name: user.name, userId: user._id, role: user.role };
+  };
+
 
   user = await user.save();
   //After updating the user, it calls the formatUserForFrontend function to format the updated user data before sending it in the response
   const tokenUser = formatUserForFrontend(user);
   res.status(200).json({ user: tokenUser });
 };
-
 
 module.exports = {
   getSingleUser,
