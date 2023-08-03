@@ -34,12 +34,12 @@ const updateUser = async (req, res) => {
 
   user = await user.save();
   
-  //create tokenUser with data updated
-  const createJWT = (user) => {
+  //returning a regular javascript object that is a subset of the fields of the User model.
+  const formatUserForFrontend = (user) => {
     return { name: user.name, userId: user._id, role: user.role };
   };
 
-  const tokenUser = createJWT(user);
+  const tokenUser = formatUserForFrontend(user);
   res.status(200).json({ user: tokenUser });
 };
 
