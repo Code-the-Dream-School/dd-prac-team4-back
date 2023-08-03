@@ -24,14 +24,16 @@ const updateUser = async (req, res) => {
   }
 
 
-  const user = await User.findOne({ _id: req.params.id }); //get user
-// Update email if request included a non-null value, otherwise keep the email as-is
-user.email = email || user.email
+  let user = await User.findOne({ _id: req.params.id }); //get user
+  
+  // Update email if request included a non-null value, otherwise keep the email as-is
+  user.email = email || user.email
 
-// Update name if request included a non-null value, otherwise keep the name as-is
-user.name = name || user.name
+  // Update name if request included a non-null value, otherwise keep the name as-is
+  user.name = name || user.name
 
-await user.save(); // using pre save hook (see user model) to save updated user
+  user = await user.save();
+  
   //create tokenUser with data updated
   const createJWT = (user) => {
     return { name: user.name, userId: user._id, role: user.role };
