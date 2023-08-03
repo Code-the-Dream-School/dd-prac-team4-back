@@ -9,12 +9,21 @@ const createJWT = ({ payload }) => {
   return token;
 };
 
+//returning a regular javascript object that is a subset of the fields of the User model.
+const formatUserForFrontend = (user) => {
+  return { name: user.name, userId: user._id, role: user.role };
+};
+
+
 const getSingleUser = async (req, res) => {
-  const user = await User.findOne({ _id: req.params.id }).select('-password');
+  const user = await User.findOne({ _id: req.params.id });
   if (!user) {
     res.status(400).json({ msg: `No user with id : ${req.params.id}` });
   }
-  res.status(200).json({ user });
+  // If the user is found, it calls the formatUserForFrontend function to format the user data before sending it in the response
+  const tokenUser = formatUserForFrontend(user);
+
+  res.status(200).json({ user : tokenUser });
 };
 
 const updateUser = async (req, res) => {
@@ -33,12 +42,7 @@ const updateUser = async (req, res) => {
   user.name = name || user.name
 
   user = await user.save();
-  
-  //returning a regular javascript object that is a subset of the fields of the User model.
-  const formatUserForFrontend = (user) => {
-    return { name: user.name, userId: user._id, role: user.role };
-  };
-
+  //After updating the user, it calls the formatUserForFrontend function to format the updated user data before sending it in the response
   const tokenUser = formatUserForFrontend(user);
   res.status(200).json({ user: tokenUser });
 };
