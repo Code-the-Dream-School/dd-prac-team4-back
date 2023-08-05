@@ -9,12 +9,21 @@ const createJWT = ({ payload }) => {
   return token;
 };
 
+//returning a regular javascript object that is a subset of the fields of the User model.
+const formatUserForFrontend = (user) => {
+  return { name: user.name, userId: user._id, role: user.role };
+};
+
+
 const getSingleUser = async (req, res) => {
-  const user = await User.findOne({ _id: req.params.id }).select('-password');
+  const user = await User.findOne({ _id: req.params.id });
   if (!user) {
     res.status(400).json({ msg: `No user with id : ${req.params.id}` });
   }
-  res.status(200).json({ user });
+  // If the user is found, it calls the formatUserForFrontend function to format the user data before sending it in the response
+  const tokenUser = formatUserForFrontend(user);
+
+  res.status(200).json({ user : tokenUser });
 };
 
 const updateUser = async (req, res) => {
@@ -25,22 +34,24 @@ const updateUser = async (req, res) => {
 
 
   const user = await User.findOne({ _id: req.params.id }); //get user
-// Update email if request included a non-null value, otherwise keep the email as-is
-user.email = email || user.email
+  // Update email if request included a non-null value, otherwise keep the email as-is
+  user.email = email || user.email;
 
-// Update name if request included a non-null value, otherwise keep the name as-is
-user.name = name || user.name
+  // Update name if request included a non-null value, otherwise keep the name as-is
+  user.name = name || user.name;
 
-await user.save(); // using pre save hook (see user model) to save updated user
+  await user.save(); // using pre save hook (see user model) to save updated user
   //create tokenUser with data updated
   const createJWT = (user) => {
     return { name: user.name, userId: user._id, role: user.role };
   };
 
-  const tokenUser = createJWT(user);
+
+  user = await user.save();
+  //After updating the user, it calls the formatUserForFrontend function to format the updated user data before sending it in the response
+  const tokenUser = formatUserForFrontend(user);
   res.status(200).json({ user: tokenUser });
 };
-
 
 module.exports = {
   getSingleUser,

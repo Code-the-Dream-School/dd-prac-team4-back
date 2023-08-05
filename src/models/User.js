@@ -22,7 +22,7 @@ const creditCardSchema = new mongoose.Schema({
   },
   preferredPaymentOption: {
     type: String,
-    enum: ["credit card", "paypal", "google pay"],
+    enum: ['credit card', 'paypal', 'google pay'],
     required: false,
   },
 });
@@ -30,28 +30,29 @@ const creditCardSchema = new mongoose.Schema({
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "Please provide name"],
+    required: [true, 'Please provide name'],
     minlength: 2,
     maxlength: 50,
   },
   email: {
     type: String,
     unique: true, //checks index; if !index throws mongoose errors
-    required: [true, "Please provide email"],
+    required: [true, 'Please provide email'],
     validate: {
       validator: validator.isEmail,
-      message: "Please provide valid email",
+      message: 'Please provide valid email',
     },
   },
   password: {
     type: String,
-    required: [true, "Please provide password"],
+    required: [true, 'Please provide password'],
     minlength: 6,
   },
   role: {
     type: String,
-    enum: ["admin", "user"], // acceptable values for the role property
-    default: "user",
+    // acceptable values for the role property
+    enum: ['admin', 'user'],
+    default: 'user',
   },
   profileImage: profileImageSchema,
   creditCardInfo: creditCardSchema,
@@ -59,11 +60,12 @@ const UserSchema = new mongoose.Schema({
 
 //before we save the document we hash password; this points to the user (this= user)
 UserSchema.pre('save', async function () {
-  console.log(this.modifiedPaths()); //to see which properties were modified
-   console.log(this.isModified('name')); // in console we get false if we are not modifying name, and true if we do
-  
-  if (!this.isModified('password')) return; //if the password is not modified then stop
-  });
+  //to see which properties were modified
+  console.log(this.modifiedPaths());
+  // in console we get false if we are not modifying name, and true if we do
+  console.log(this.isModified('name'));
 
+  if (!this.isModified('password')) return; //if the password is not modified then stop
+});
 
 module.exports = mongoose.model('User', UserSchema);
