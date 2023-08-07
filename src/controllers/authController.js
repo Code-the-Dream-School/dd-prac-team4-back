@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const argon2 = require('argon2');
+const { StatusCodes } = require('http-status-codes');
 
 // TODO: SET up CUSTOM ERRORs later
 
@@ -88,7 +89,22 @@ const login = async (req, res) => {
   }
 };
 
+//logout endpoint
+
+const logout = async (req, res) => {
+  if (req.cookies.token) {
+    res.cookie('token', '', {
+      httpOnly: true,
+      expires: new Date(0),
+    });
+    res.status(StatusCodes.OK).json({ msg: 'User logged out!' });
+  } else {
+    res.status(StatusCodes.UNAUTHORIZED).json({ error: 'Not logged in' });
+  }
+};
+
 module.exports = {
   register,
   login,
+  logout,
 };
