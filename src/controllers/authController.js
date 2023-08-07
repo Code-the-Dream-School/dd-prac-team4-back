@@ -92,15 +92,11 @@ const login = async (req, res) => {
 //logout endpoint
 
 const logout = async (req, res) => {
-  if (req.cookies.token) {
-    res.cookie('token', '', {
-      httpOnly: true,
-      expires: new Date(0),
-    });
-    res.status(StatusCodes.OK).json({ msg: 'User logged out!' });
-  } else {
-    res.status(StatusCodes.UNAUTHORIZED).json({ error: 'Not logged in' });
-  }
+  res.cookie('token', 'logout', {
+    httpOnly: true,
+    expires: new Date(Date.now() + 1000),
+  });
+  res.status(StatusCodes.OK).json({ msg: 'user logged out!' });
 };
 
 module.exports = {
