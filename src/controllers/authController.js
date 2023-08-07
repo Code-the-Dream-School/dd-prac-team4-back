@@ -1,106 +1,54 @@
 const User = require('../models/User');
-const jwt = require('jsonwebtoken');
 const argon2 = require('argon2');
-
-// TODO: SET up CUSTOM ERRORs later
-
-// create token
-const createJWT = (user) => {
-  const payload = {
-    name: user.name,
-    userId: user._id,
-    role: user.role,
-  };
-  const token = jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_LIFETIME,
-  });
-  return token;
-};
+const { StatusCodes } = require('http-status-codes');
+const CustomError = require('../errors');
+const { attachCookiesToResponse, createTokenUser } = require('../utils');
 
 const register = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { email, name, password } = req.body; // Extract data from the request
 
-  const emailAlreadyExists = await User.findOne({ email });
-
+  const emailAlreadyExists = await User.findOne({ email }); // Check if a user with the email already exists
   if (emailAlreadyExists) {
-    res.status(400).json({
-      msg: 'This email already exists in a database',
-    });
+    throw new CustomError.BadRequestError('Email already exists'); // If user exists, throw an error
   }
 
-  //first registered user is an admin
-  //get all users, and if there are no users assign role to admin
-  const isFirstAccount = (await User.countDocuments({})) === 0;
-  const role = isFirstAccount ? 'admin' : 'user';
+  const isFirstAccount = (await User.countDocuments({})) === 0; // Check if it's the first account
+  const role = isFirstAccount ? 'admin' : 'user'; // Assign a role based on first account or not
 
-  const hashedPassword = await argon2.hash(password);
+  const hashedPassword = await argon2.hash(password); // Hash the password
 
-  //create user
   const user = await User.create({
     name,
     email,
     password: hashedPassword,
     role,
-  });
+  }); // Create a new user in the database
+  const tokenUser = createTokenUser(user); // Create a token based on user data
+  attachCookiesToResponse({ res, user: tokenUser }); // Attach the token to cookies and send in the response
 
-  //create token for the user
-  const createJWT = (user) => {
-    return { name: user.name, userId: user._id, role: user.role };
-  };
-
-  const tokenUser = createJWT(user);
-
-  //sends as response 'tokenUser' with 3 properties { name: user.name, userId: user._id, role: user.role }; and calls it 'user' object
-  res.status(200).json({ user: tokenUser });
+  res.status(StatusCodes.CREATED).json({ user: tokenUser }); // Send a successful response with user data
 };
 
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  try {
-    // Find the user by email
-    const user = await User.findOne({ email });
-
-    // Check if a user with the specified email exists
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    // Verify the entered password
-    const isPasswordValid = await argon2.verify(user.password, password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ error: 'Invalid password' });
-    }
-
-
-    // If validation passes, create the JWT token
-    const token = createJWT(user);
-    
-    // If validation passes, return the user object without the hashed password
-    const userWithoutPassword = {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    };
-
-    // Set the cookie with the token
-    const oneDay = 1000 * 60 *60 *24;
-    res.cookie('token', token, {
-      httpOnly: true,
-      expires: new Date(Date.now() + oneDay)
-    });
-
-    // Remove the hashed password from the user object before sending it in the response
-    user.password = undefined;
-
-    // Send the response with user data and the cookie
-    return res.status(200).json({ user });
-  } catch (error) {
-    // Handle errors
-    console.error(error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+  if (!email || !password) {
+    throw new CustomError.BadRequestError('Please provide email and password'); // If both fields are not provided, throw an error
   }
+  const user = await User.findOne({ email }); // Find a user by email
+
+  if (!user) {
+    throw new CustomError.UnauthenticatedError('Invalid Credentials');
+  }
+
+  const isPasswordValid = await argon2.verify(user.password, password); // Check password validity
+  if (!isPasswordValid) {
+    throw new CustomError.UnauthenticatedError('Invalid Credentials'); // If password is incorrect, throw an error
+  }
+  const tokenUser = createTokenUser(user);
+  attachCookiesToResponse({ res, user: tokenUser });
+
+  res.status(StatusCodes.CREATED).json({ user: tokenUser });
 };
 
 module.exports = {

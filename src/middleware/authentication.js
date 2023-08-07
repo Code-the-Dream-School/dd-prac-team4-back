@@ -1,22 +1,34 @@
+const CustomError = require('../errors');
+const { isTokenValid } = require('../utils');
 
+const authenticateUser = async (req, res, next) => { // Middleware to authenticate the user
+    const token = req.signedCookies.token;
 
-//check for the user in general- if he exists in db
-const authenticateUser = async (req, res, next) => {
-  //since we signed cookie with JWT secret it is stored in req.signedCookies and .token is the name we gave to our cookie in jwt.js on line 22. if cookies are not signed- they are in req.cookies
-  const token = req.signedCookies.token;
-  //if we 've logged out  or user isn't registered/logged in, the error will be thrown
-  if (!token) {
-    throw new CustomError.UnauthenticatedError('Authentication invalid');
-  }
-  try {
-    const { name, userId, role } = isTokenValid({ token }); // we destructure token- and take name, userId, role to attach it to req.user- we can log it in userController.js
-    req.user = { name, userId, role }; //we add  name, userId and role to the req object under the "user" field/property, to be used in any following middleware or controllers
-    next();
-  } catch (error) {
-    throw new CustomError.UnauthenticatedError('Authentication invalid');
-  }
+    if (!token) { // Check if a token exists
+        throw new CustomError.UnauthenticatedError('Authentication Invalid');
+    } 
+
+    try { // Verify and decode the token
+        const { name, userId, role } = isTokenValid({ token });
+        req.user = { name, userId, role };  // Attach user information to the request object
+        next();
+    } catch (error) {
+        throw new CustomError.UnauthenticatedError('Authentication Invalid');
+    }
+};
+
+const authorizePermissions = (...roles) => { // Middleware to authorize user permissions
+    return(req, res, next) => {
+        if (!roles.includes(req.user.role)) { // Check if the user's role is included in the permitted roles
+            throw new CustomError.UnauthorizedError(
+                'Unautorized to access this route'
+            );
+        };
+        next();
+    };
 };
 
 module.exports = {
-  authenticateUser,
-};
+    authenticateUser,
+    authorizePermissions,
+}

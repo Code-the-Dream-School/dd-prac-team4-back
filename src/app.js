@@ -41,7 +41,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(cookieParser());
+app.use(cookieParser(process.env.JWT_SECRET)); // Cookie parser middleware with JWT secret
 
 // Configure express-session middleware
 app.use(
@@ -51,6 +51,11 @@ app.use(
     saveUninitialized: false,
   })
 );
+// SESSION_SECRET=generate a key for env
+//const crypto = require('crypto');
+//const secretKey = crypto.randomBytes(32).toString('hex');
+//console.log('Secret Key:', secretKey);
+
 // Configure passport for request authz
 app.use(passport.initialize());
 app.use(passport.session());
@@ -64,12 +69,16 @@ const connectDB = (url) => {
 //routers
 const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
+// middleware
+const notFoundMiddleware = require('./middleware/not-found');
+const errorHandlerMiddleware = require('./middleware/error-handler');
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
 
 // Error handling middleware (must be defined after all other routes and middleware)
-//add later
+app.use(notFoundMiddleware); // Not found middleware to handle invalid routes
+app.use(errorHandlerMiddleware) // Error handler middleware
 
 // Start the server
 const port = process.env.PORT || 8000;
