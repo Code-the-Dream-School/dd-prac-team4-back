@@ -1,8 +1,26 @@
 const User = require('../models/User');
 const argon2 = require('argon2');
 const { StatusCodes } = require('http-status-codes');
+<<<<<<< HEAD
 const CustomError = require('../errors');
 const { attachCookiesToResponse, createTokenUser } = require('../utils');
+=======
+
+// TODO: SET up CUSTOM ERRORs later
+
+// create token
+const createJWT = (user) => {
+  const payload = {
+    name: user.name,
+    userId: user._id,
+    role: user.role,
+  };
+  const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_LIFETIME,
+  });
+  return token;
+};
+>>>>>>> cc6efc9fc083c8429772ce8480c34bb39906f5c0
 
 const register = async (req, res) => {
   const { email, name, password } = req.body; // Extract data from the request
@@ -51,7 +69,23 @@ const login = async (req, res) => {
   res.status(StatusCodes.CREATED).json({ user: tokenUser });
 };
 
+//logout endpoint
+
+const logout = async (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  });
+
+  res.status(StatusCodes.OK).json({ msg: 'user logged out!' });
+};
+
 module.exports = {
   register,
   login,
+<<<<<<< HEAD
 };
+=======
+  logout,
+};
+>>>>>>> cc6efc9fc083c8429772ce8480c34bb39906f5c0

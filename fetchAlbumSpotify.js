@@ -3,7 +3,7 @@ const SpotifyWebApi = require('spotify-web-api-node');
 const Album = require('./src/models/Album');
 require('dotenv').config();
 
-// Set up the Spotify API client with your client ID and secret
+// Set up the Spotify API client with our client ID and secret
 const spotifyApi = new SpotifyWebApi({
   clientId: process.env.SPOTIFY_CLIENT_ID,
   clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
@@ -23,14 +23,18 @@ async function fetchAndSaveAlbums() {
     spotifyApi.setAccessToken(data.body['access_token']);
 
     // Fetch recent albums
-    const response = await spotifyApi.searchAlbums('year:2023 tag:new', { limit: 50 });
-    console.log(response)
+    const response = await spotifyApi.searchAlbums('year:2023 tag:new', {
+      limit: 50,
+    });
+    console.log(response.body.albums);
     // Save albums to the database
-    const albumsToSave = response.body.albums.items.map(item => ({
-      artistName: item.artists.map(artist => artist.name).join(', '),
+    const albumsToSave = response.body.albums.items.map((item) => ({
+      artistName: item.artists.map((artist) => artist.name).join(', '),
       albumName: item.name,
-    
-      // Add later more fields 
+      image: item.images?.[0].url,
+      releaseDate: item.release_date,
+      category: item.genres?.[0], // see Album model- enum - should we leave it as is?
+      spotifyUrl: item.href,
     }));
 
     await Album.insertMany(albumsToSave);
@@ -44,3 +48,18 @@ async function fetchAndSaveAlbums() {
 }
 
 fetchAndSaveAlbums();
+
+//in case we need to delete the whole collection in mongoose:
+
+// async function deleteCollection() {
+//     try {
+//       await Album.deleteMany({});
+//       console.log('Collection deleted successfully.');
+//     } catch (error) {
+//       console.error('Error deleting collection:', error);
+//     } finally {
+//       mongoose.connection.close();
+//     }
+//   }
+
+//   deleteCollection();
