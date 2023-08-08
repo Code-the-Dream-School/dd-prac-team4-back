@@ -92,10 +92,11 @@ const login = async (req, res) => {
 //logout endpoint
 
 const logout = async (req, res) => {
-  res.cookie('token', 'logout', {
+  res.clearCookie('token', {
     httpOnly: true,
     expires: new Date(Date.now() + 1000),
   });
+
   res.status(StatusCodes.OK).json({ msg: 'user logged out!' });
 };
 
