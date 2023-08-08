@@ -8,22 +8,25 @@ const profileImageSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  altText: {
+    type: String,
+  },
 });
 
 // Mongoose schema for hashed credit card info
 const creditCardSchema = new mongoose.Schema({
   hashedNumber: {
     type: String,
-    required: false,
+    required: true,
   },
   expiry: {
     type: String,
-    required: false,
+    required: true,
   },
   preferredPaymentOption: {
     type: String,
     enum: ['credit card', 'paypal', 'google pay'],
-    required: false,
+    required: true,
   },
 });
 

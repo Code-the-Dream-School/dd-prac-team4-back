@@ -4,18 +4,18 @@ const AlbumSchema = new mongoose.Schema({
   artistName: {
     type: String,
     required:  [true, 'Please provide artist name'],
-    maxlength: [100, 'Artist name can not be more than 100 characters'],
+    maxlength: [300, 'Artist name can not be more than 100 characters'],
     trim: true,
   },
   albumName: {
     type: String,
     required:  [true, 'Please provide album name'],
-    maxlength: [100, 'Album name can not be more than 100 characters'],
+    maxlength: [300, 'Album name can not be more than 100 characters'],
     trim: true,
   },
   price: {
     type: Number,
-    required: [true, 'Please provide album price'],
+    required: [false, 'Please provide album price'],
     min: 0,
   },
   image: {
