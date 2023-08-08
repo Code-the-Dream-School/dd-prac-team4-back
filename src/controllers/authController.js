@@ -94,7 +94,7 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
   res.clearCookie('token', {
     httpOnly: true,
-    expires: new Date(Date.now() + 1000),
+    expires: new Date(Date.now()),
   });
 
   res.status(StatusCodes.OK).json({ msg: 'user logged out!' });
