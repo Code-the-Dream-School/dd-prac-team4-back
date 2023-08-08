@@ -51,6 +51,7 @@ app.use(
     saveUninitialized: false,
   })
 );
+
 // Configure passport for request authz
 app.use(passport.initialize());
 app.use(passport.session());

@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const argon2 = require('argon2');
+const { StatusCodes } = require('http-status-codes');
 
 // TODO: SET up CUSTOM ERRORs later
 
@@ -88,7 +89,19 @@ const login = async (req, res) => {
   }
 };
 
+//logout endpoint
+
+const logout = async (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  });
+
+  res.status(StatusCodes.OK).json({ msg: 'user logged out!' });
+};
+
 module.exports = {
   register,
   login,
+  logout,
 };
