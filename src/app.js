@@ -17,6 +17,9 @@ const logger = require('../logs/logger');
 const app = express();
 require('express-async-errors');
 
+// app.get('/', (req, res) => {
+//   res.send('Hello, World!');
+// });
 // ====== Middleware setup ======
 
 //Security middleware
