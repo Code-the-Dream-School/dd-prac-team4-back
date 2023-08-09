@@ -17,9 +17,10 @@ const logger = require('../logs/logger');
 const app = express();
 require('express-async-errors');
 
-// app.get('/', (req, res) => {
-//   res.send('Hello, World!');
-// });
+// Serve the Swagger JSON file
+app.get('/swagger.json', (req, res) => {
+  res.sendFile('swagger-output.json');
+});
 // ====== Middleware setup ======
 
 //Security middleware
