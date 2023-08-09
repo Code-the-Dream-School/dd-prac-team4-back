@@ -18,8 +18,19 @@ const app = express();
 require('express-async-errors');
 
 // Serve the Swagger JSON file
-app.get('/swagger.json', (req, res) => {
-  res.sendFile('swagger-output.json');
+// app.get('/swagger.json', (req, res) => {
+//   res.sendFile('swagger-output.json');
+// });
+
+// Serve Swagger UI static files
+app.use(
+  '/swagger-ui',
+  express.static(path.join(__dirname, 'node_modules/swagger-ui-dist'))
+);
+
+// Serve your generated Swagger specification
+app.get('/swagger', (req, res) => {
+  res.sendFile(path.join(__dirname, 'swagger-output.json'));
 });
 // ====== Middleware setup ======
 
