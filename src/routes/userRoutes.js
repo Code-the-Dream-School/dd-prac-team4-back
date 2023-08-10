@@ -1,12 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { 
-    authenticateUser
-} = require('../middleware/authentication')
-const { 
-    getSingleUser,
-    updateUser,
-} = require('../controllers/userController');
+const { authenticateUser } = require('../middleware/authentication');
+const { getSingleUser, updateUser } = require('../controllers/userController');
 
 router.route('/updateUser').patch(authenticateUser, updateUser);
 // - PATCH /updateUser: Update the currently authenticated user's information
