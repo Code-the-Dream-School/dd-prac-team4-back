@@ -19,7 +19,7 @@ const createJWT = (user) => {
 };
 
 const register = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, username } = req.body;
 
   const emailAlreadyExists = await User.findOne({ email });
 
@@ -39,6 +39,7 @@ const register = async (req, res) => {
   //create user
   const user = await User.create({
     name,
+    username,
     email,
     password: hashedPassword,
     role,
