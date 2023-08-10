@@ -19,12 +19,10 @@ const register = async (req, res) => {
   const isFirstAccount = (await User.countDocuments({})) === 0; // Check if it's the first account
   const role = isFirstAccount ? 'admin' : 'user'; // Assign a role based on first account or not
 
-  const hashedPassword = await argon2.hash(password); // Hash the password
-
   const user = await User.create({
     name,
     email,
-    password: hashedPassword,
+    password,
     role,
   }); // Create a new user in the database
   const tokenUser = createTokenUser(user); // Create a token based on user data
