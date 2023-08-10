@@ -11,10 +11,9 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
-
 const logger = require('../logs/logger');
-
 const app = express();
+const wishlistRoutes = require('./wishlistRoutes');
 require('express-async-errors');
 
 // ====== Middleware setup ======
@@ -24,6 +23,7 @@ const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 60, // limit each IP to 100 requests per windowMs
 });
+
 app.use(helmet());
 app.use(limiter);
 app.use(xss());
@@ -68,6 +68,7 @@ const userRouter = require('./routes/userRoutes');
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/wishlist', wishlistRoutes);
 
 // Error handling middleware (must be defined after all other routes and middleware)
 //add later
