@@ -51,10 +51,6 @@ app.use(
     saveUninitialized: false,
   })
 );
-// SESSION_SECRET=generate a key for env
-//const crypto = require('crypto');
-//const secretKey = crypto.randomBytes(32).toString('hex');
-//console.log('Secret Key:', secretKey);
 
 // Configure passport for request authz
 app.use(passport.initialize());
