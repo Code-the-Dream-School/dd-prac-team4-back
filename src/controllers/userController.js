@@ -27,17 +27,13 @@ const getSingleUser = async (req, res) => {
 };
 
 const showCurrentUser = async (req, res) => {
-  try {
-    const user = await User.findOne({ _id: req.user.userId }).select(
-      '-password'
-    );
-    if (!user) {
-      throw new CustomError.NotFoundError('User not found');
-    }
-    res.status(StatusCodes.OK).json({ user });
-  } catch (error) {
-    next(error);
+  const user = await User.findOne({ _id: req.user.userId }).select('-password');
+
+  if (!user) {
+    throw new CustomError.NotFoundError('User not found');
   }
+
+  res.status(StatusCodes.OK).json({ user });
 };
 
 // Update the information of the current user
