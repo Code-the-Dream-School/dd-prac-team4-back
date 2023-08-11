@@ -11,17 +11,14 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
-
 const logger = require('../logs/logger');
+const pathToSwaggerUi = require('swagger-ui-dist').absolutePath();
 
 const app = express();
 require('express-async-errors');
 
 // Serve Swagger UI static files
-app.use(
-  '/swagger-ui',
-  express.static(path.join(__dirname, 'node_modules/swagger-ui-dist'))
-);
+app.use('/swagger', express.static(pathToSwaggerUi));
 
 // Serve your generated Swagger specification
 app.get('/api-docs.json', (req, res) => {
