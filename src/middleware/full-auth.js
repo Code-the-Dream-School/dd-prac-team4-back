@@ -1,7 +1,8 @@
 const CustomError = require('../errors');
 const { isTokenValid } = require('../utils/jwt');
 
-const authenticateUser = async (req, res, next) => { // Middleware function to authenticate the user
+const authenticateUser = async (req, res, next) => {
+  // Middleware function to authenticate the user
   let token;
   // check header
   const authHeader = req.headers.authorization; // Check if the token is present in the request header
@@ -9,11 +10,13 @@ const authenticateUser = async (req, res, next) => { // Middleware function to a
     token = authHeader.split(' ')[1];
   }
   // check cookies
-  else if (req.cookies.token) { // If not present in the header, check if the token is present in cookies
+  else if (req.cookies.token) {
+    // If not present in the header, check if the token is present in cookies
     token = req.cookies.token;
   }
 
-  if (!token) { // If no token is found, throw an UnauthenticatedError
+  if (!token) {
+    // If no token is found, throw an UnauthenticatedError
     throw new CustomError.UnauthenticatedError('Authentication invalid');
   }
   try {
@@ -32,9 +35,11 @@ const authenticateUser = async (req, res, next) => { // Middleware function to a
   }
 };
 
-const authorizeRoles = (...roles) => { // Middleware function to authorize user roles
+const authorizeRoles = (...roles) => {
+  // Middleware function to authorize user roles
   return (req, res, next) => {
-    if (!roles.includes(req.user.role)) { // Check if the user's role is included in the authorized roles
+    if (!roles.includes(req.user.role)) {
+      // Check if the user's role is included in the authorized roles
       throw new CustomError.UnauthorizedError(
         'Unauthorized to access this route'
       );

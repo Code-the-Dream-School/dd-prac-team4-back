@@ -26,15 +26,16 @@ async function fetchAndSaveAlbums() {
     const response = await spotifyApi.searchAlbums('year:2023 tag:new', {
       limit: 50,
     });
-    console.log(response.body.albums);
+    //console.log(response.body.albums);
+    console.log(response.body.albums.items[0]); // another option:do JSON.stringify which will convert to a JSON string and print out every single field.  console.log("RESPONSE: ", JSON.stringify(response.body.albums.items[0], null, 4))
     // Save albums to the database
     const albumsToSave = response.body.albums.items.map((item) => ({
       artistName: item.artists.map((artist) => artist.name).join(', '),
       albumName: item.name,
       image: item.images?.[0].url,
       releaseDate: item.release_date,
-      category: item.genres?.[0], // see Album model- enum - should we leave it as is?
-      spotifyUrl: item.href,
+      category: item.genres?.[0],
+      spotifyUrl: item.external_urls.spotify,
     }));
 
     await Album.insertMany(albumsToSave);
