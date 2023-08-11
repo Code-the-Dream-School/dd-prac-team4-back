@@ -79,6 +79,20 @@ const deleteSingleUser = async (req, res) => {
   res.status(StatusCodes.OK).json({ message: 'User deleted successfully' });
 };
 
+
+// add later: await PurchasedAlbum.create({ albumId: <id>, userId: <id> });
+
+const getUsersPurchasedAlbums = async (req, res) => {
+  // Show user by id with all the albums they've purhcased
+  let usersAlbums = await User.findOne("id").populate({
+      path: 'purchasedAlbums',
+      populate: { path: 'albumId' }
+    });
+    res.status(StatusCodes.OK).json({ usersAlbums, count: usersAlbums.length });
+  }
+
+  
+
 module.exports = {
   getAllUsers,
   getSingleUser,
@@ -86,4 +100,5 @@ module.exports = {
   updateUser,
   updateUserPassword,
   deleteSingleUser,
+  getUsersPurchasedAlbums,
 };

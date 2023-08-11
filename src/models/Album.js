@@ -43,15 +43,17 @@ const AlbumSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    user: {
-      type: mongoose.Types.ObjectId,
-      ref: 'User', // we are referencing the user model . if we don´t provide user- in postman we'll get  "msg": "Path `user` is required."
-      required: false, //CHANGE TO TRUE LATER!!!!!!
-    },
   },
   { timestamps: true } //timestamps provides fields of createdAt , updatedAt... and exact time,
 );
 
+AlbumSchema.virtual('purchasedAlbums', {
+  ref: 'PurchasedAlbum', //specifies that the virtual field purchasedAlbums is referencing the PurchasedAlbum model.
+  localField: '_id', //_id field (from the db= id of the product) of the Album model is used as the local field to establish the relationship.
+  foreignField: 'albumId' // albumId field in the PurchasedAlbum model is used as the foreign field to establish the relationship.
+});
+
 const Album = mongoose.model('Album', AlbumSchema);
+
 
 module.exports = Album;
