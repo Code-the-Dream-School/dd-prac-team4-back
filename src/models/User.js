@@ -59,10 +59,14 @@ const UserSchema = new mongoose.Schema({
 });
 
 UserSchema.methods.comparePassword = async function (password) {
-  try {
-    return await argon2.verify(this.password, password);
-  } catch (error) {
-    throw error;
-  }
+  return await argon2.verify(this.password, password);
 };
+
+UserSchema.pre('save', async function () {
+  if (this.isModified('password')) {
+    const hashedPassword = await argon2.hash(this.password);
+    this.password = hashedPassword;
+  }
+});
+
 module.exports = mongoose.model('User', UserSchema);
