@@ -20,10 +20,6 @@ require('express-async-errors');
 // Serve Swagger UI static files
 app.use('/api-docs', express.static(pathToSwaggerUi));
 
-// Serve your generated Swagger specification
-app.get('/api-docs.json', (req, res) => {
-  res.sendFile(path.join('./src', 'swagger-output.json'));
-});
 // ====== Middleware setup ======
 
 //Security middleware
