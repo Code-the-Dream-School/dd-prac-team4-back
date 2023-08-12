@@ -1,5 +1,5 @@
 require('dotenv').config();
-const path = require('path');
+
 const express = require('express');
 const session = require('express-session');
 const morgan = require('morgan');
@@ -12,13 +12,19 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const logger = require('../logs/logger');
+const swaggerOutputFile = require('../swagger-output.json');
 const pathToSwaggerUi = require('swagger-ui-dist').absolutePath();
-
+console.log(pathToSwaggerUi);
 const app = express();
 require('express-async-errors');
 
 // Serve Swagger UI static files
 app.use('/api-docs', express.static(pathToSwaggerUi));
+
+// Serve the Swagger JSON document
+app.get('/swagger.json', (req, res) => {
+  res.json(swaggerOutputFile);
+});
 
 // ====== Middleware setup ======
 
