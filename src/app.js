@@ -18,7 +18,7 @@ const app = express();
 require('express-async-errors');
 
 // Serve Swagger UI static files
-app.use('/swagger', express.static(pathToSwaggerUi));
+app.use('/api-docs', express.static(pathToSwaggerUi));
 
 // Serve your generated Swagger specification
 app.get('/api-docs.json', (req, res) => {
