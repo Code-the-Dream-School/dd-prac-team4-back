@@ -2,15 +2,6 @@ const { app, connectDB } = require('../src/expressServer.js');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const request = require("supertest");
 const User = require('../src/models/User');
-const { creatJWT } = require('../src/utils/jwt');
-const createTokenUser = require('../src/utils/createTokenUser'); 
-
-// Define the generateAuthToken function
-const generateAuthToken = (user) => {
-  // Replace this with your actual logic to generate an auth token
-  const token = "your_generated_token_here";
-  return token;
-};
 
 let server;
 let mongooseConnection;
@@ -31,19 +22,37 @@ afterAll(async () => {
 });
 
 describe('/api/v1/users/:user_id endpoint', () => {
-    it('returns a valid user without the password field if found', async () => {
-      // Create a fake user for testing
-      const fakeUser = {
-        _id: 'fakeUserId',
-        name: 'John Doe',
-        role: 'user',
-      };
-  
-      // Create payload object using createTokenUser
-      const payload = createTokenUser(fakeUser);
-  
-      // Call creatJWT with payload
-      const token = creatJWT({ payload });
+  it('returns a valid user without the password field if found', async () => {
+    // Arrange
+    const user = await User.create({
+      name: "Akosua",
+      email: "akos@example.com",
+      password: "hashed"
+    });
 
+    // Act
+    const response = await request(app).get(`/api/v1/users/${user.id}`);
+
+    // Assert
+    expect(response.status).toBe(200);
+    expect(response.body).toMatchObject({
+      user: {
+        name: "Akosua",
+        email: "akos@example.com",
+        role: "user"
+      }
+    });
+    expect(response.body.user).not.toHaveProperty("password");
+  });
+
+  it('returns a 404 status if user id is not found', async () => {
+    // Act
+    const response = await request(app).get('/api/v1/users/nonexistentUserId');
+
+    // Assert
+    expect(response.status).toBe(404);
+    expect(response.body).toMatchObject({
+      msg: 'No user with id: nonexistentUserId'
     });
   });
+});
