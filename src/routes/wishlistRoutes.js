@@ -1,15 +1,13 @@
 const express = require('express');
-const Wishlist = require('./wishlistModel'); // Import your Wishlist model
-const Album = require('./albumModel'); // Import your Album model
+const Wishlist = require('./Wishlist');
+const Album = require('./Album');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-// PATCH /wishlist/:wishlist_id/add_album/:album_id
 router.patch('/wishlist/:wishlist_id/add_album/:album_id', async (req, res) => {
   const { wishlist_id, album_id } = req.params;
 
   try {
-    // Validate wishlist_id and album_id
     if (
       !mongoose.Types.ObjectId.isValid(wishlist_id) ||
       !mongoose.Types.ObjectId.isValid(album_id)
@@ -41,14 +39,12 @@ router.patch('/wishlist/:wishlist_id/add_album/:album_id', async (req, res) => {
   }
 });
 
-// PATCH /wishlist/:wishlist_id/remove_album/:album_id
 router.patch(
   '/wishlist/:wishlist_id/remove_album/:album_id',
   async (req, res) => {
     const { wishlist_id, album_id } = req.params;
 
     try {
-      // Validate wishlist_id and album_id
       if (
         !mongoose.Types.ObjectId.isValid(wishlist_id) ||
         !mongoose.Types.ObjectId.isValid(album_id)
