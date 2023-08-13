@@ -71,6 +71,12 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/albums', albumRouter);
 
+// Create a health endpoint
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
+
 // Error handling middleware (must be defined after all other routes and middleware)
 app.use(notFoundMiddleware); // Not found middleware to handle invalid routes
 app.use(errorHandlerMiddleware); // Error handler middleware
