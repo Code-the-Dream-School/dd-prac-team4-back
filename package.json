@@ -9,8 +9,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "swagger": "node ./swagger.js",
-    "start-gendoc": "node ./src/app.js"
+    "swagger": "node ./swagger.js"
   },
   "author": "",
   "license": "ISC",
