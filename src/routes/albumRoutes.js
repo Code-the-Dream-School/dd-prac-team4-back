@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const albumController = require('./albumController');
+
 const {
   authenticateUser,
   authorizePermissions,
@@ -21,5 +23,8 @@ router
   .route('/:id')
   .get(getSingleAlbum) //everyone can access all products- no middleware
   .patch(authenticateUser, authorizePermissions('admin'), updateAlbum); //only admin can update product
+
+// Endpoint to retrieve an album by id
+router.get('/:id', albumController.getAlbumById);
 
 module.exports = router;
