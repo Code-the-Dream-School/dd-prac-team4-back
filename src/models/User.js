@@ -37,6 +37,12 @@ const UserSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 50,
   },
+  username: {
+    type: String,
+    required: [true, 'Please provide name'],
+    minlength: 2,
+    maxlength: 50,
+  },
   email: {
     type: String,
     unique: true, //checks index; if !index throws mongoose errors
@@ -69,10 +75,14 @@ UserSchema.virtual('purchasedByUsers', {
 
 
 UserSchema.methods.comparePassword = async function (password) {
-  try {
-    return await argon2.verify(this.password, password);
-  } catch (error) {
-    throw error;
-  }
+  return await argon2.verify(this.password, password);
 };
+
+UserSchema.pre('save', async function () {
+  if (this.isModified('password')) {
+    const hashedPassword = await argon2.hash(this.password);
+    this.password = hashedPassword;
+  }
+});
+
 module.exports = mongoose.model('User', UserSchema);

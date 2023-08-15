@@ -22,10 +22,6 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     customError.msg = `No item found with id : ${err.value}`;
     customError.statusCode = 404;
   }
-  if (err instanceof UnauthenticatedError) {
-    customError.statusCode = err.statusCode;
-    customError.msg = err.message;
-  }
 
   return res.status(customError.statusCode).json({ msg: customError.msg });
 };

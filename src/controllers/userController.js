@@ -35,12 +35,23 @@ const showCurrentUser = async (req, res) => {
 
 // update user with user.save()
 const updateUser = async (req, res) => {
+  const user = await User.findOne({ _id: req.user.userId }).select('-password');
+
+  if (!user) {
+    throw new CustomError.NotFoundError('User not found');
+  }
+
+  res.status(StatusCodes.OK).json({ user });
+};
+
+// Update the information of the current user
+const updateCurrentUser = async (req, res) => {
   const { email, name } = req.body;
   if (!email || !name) {
     // Check if email and name are provided
     throw new CustomError.BadRequestError('Please provide all values');
   }
-  const user = await User.findOne({ _id: req.user.userId }); // Find the user in the database based on the current user's ID
+  const user = await User.findOne({ _id: req.user.userId }).select('-password'); // Find the user in the database based on the current user's ID
   // Update the user's email and name
   user.email = email;
   user.name = name;
@@ -48,7 +59,7 @@ const updateUser = async (req, res) => {
   const tokenUser = createTokenUser(user); // Create a token user and attach the user's cookies to the response
   attachCookiesToResponse({ res, user: tokenUser });
   // Send a JSON response with the status code 200 OK and the updated user
-  res.status(StatusCodes.OK).json({ user: tokenUser });
+  res.status(StatusCodes.OK).json({ user });
 };
 
 const updateUserPassword = async (req, res) => {
@@ -97,7 +108,7 @@ module.exports = {
   getAllUsers,
   getSingleUser,
   showCurrentUser,
-  updateUser,
+  updateCurrentUser,
   updateUserPassword,
   deleteSingleUser,
   getUsersPurchasedAlbums,

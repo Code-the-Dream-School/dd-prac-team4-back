@@ -9,7 +9,7 @@ const {
   getAllUsers,
   getSingleUser,
   showCurrentUser,
-  updateUser,
+  updateCurrentUser,
   updateUserPassword,
   deleteSingleUser,
   getUsersPurchasedAlbums,
@@ -25,7 +25,7 @@ router
 router.route('/showMe').get(authenticateUser, showCurrentUser);
 // - GET /showMe: Retrieve the currently authenticated user's information
 
-router.route('/updateUser').patch(authenticateUser, updateUser);
+router.route('/updateCurrentUser').patch(authenticateUser, updateCurrentUser);
 // - PATCH /updateUser: Update the currently authenticated user's information
 
 router

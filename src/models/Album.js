@@ -35,6 +35,16 @@ const AlbumSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    spotifyUrl: {
+      type: String,
+      required: true, 
+      validate: {
+        validator: function (v) {
+          return /^https:\/\/open\.spotify\.com\/album\/[a-zA-Z0-9]+$/.test(v); //ensures that the URL starts with https://open.spotify.com/album/ followed by alphanumeric characters.
+        },
+        message: 'Invalid Spotify URL',
+      },
+    },
     averageRating: {
       type: Number,
       default: 0,

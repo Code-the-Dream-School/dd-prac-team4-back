@@ -1,7 +1,6 @@
 const Album = require('../models/Album');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
-const path = require('path');
 
 const createAlbum = async (req, res) => {
   req.body.user = req.user.userId; // req.body.user - user is required to be provided (see Album.js line 55) and is set to req.user.userId
