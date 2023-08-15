@@ -91,16 +91,15 @@ const deleteSingleUser = async (req, res) => {
 };
 
 
-// add later: await PurchasedAlbum.create({ albumId: <id>, userId: <id> });
-
-const getUsersPurchasedAlbums = async (req, res) => {
-  // Show user by id with all the albums they've purhcased
-  let usersAlbums = await User.findOne("id").populate({
-      path: 'purchasedAlbums',
-      populate: { path: 'albumId' }
-    });
-    res.status(StatusCodes.OK).json({ usersAlbums, count: usersAlbums.length });
-  }
+ const getCurrentUserWithPurchasedAlbums = async (req, res) => {
+  // Show current user by id with all the albums they've purchased
+  let usersWithAlbums = await User.findById(req.user.userId).populate({
+    path: 'purchasedAlbums', // name of the virtual to populate
+    populate: { path: 'album' } // nested populate, without this we would just get back a list of PurchasedAlbum models. 
+    // But we just want to further populate to get the Album model refferred to in  the PurchasedAlbum.album proprty.
+  });
+  res.status(StatusCodes.OK).json({ usersWithAlbums, count: usersWithAlbums.length });
+}
 
   
 
@@ -111,5 +110,5 @@ module.exports = {
   updateCurrentUser,
   updateUserPassword,
   deleteSingleUser,
-  getUsersPurchasedAlbums,
+  getCurrentUserWithPurchasedAlbums,
 };

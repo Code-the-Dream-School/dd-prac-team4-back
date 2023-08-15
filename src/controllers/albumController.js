@@ -39,25 +39,30 @@ const updateAlbum = async (req, res) => {
 //will be user to let admin update price of several albums on the frontend
 
 const updatePriceOfAlbums = async (req, res) => {
+  const bulkUpdateOps = req.body.map((update) => ({
+    updateOne: {
+      filter: { _id: update.id },
+      update: { price: update.price },
+    },
+  }));
 
-const bulkUpdateOps = req.body.map(update => ({
-  updateOne: {
-    filter: { _id: update.id },
-    update: { price: update.price }
+  try {
+    await Album.bulkWrite(bulkUpdateOps);
+    logger.info('Albums updated successfully');
+  } catch (err) {
+    logger.error(err);
   }
-}));
-
-try {
-  await Album.bulkWrite(bulkUpdateOps);
-  logger.info('Albums updated successfully');
-} catch (err) {
-  logger.error(err);
-}
-res.status(StatusCodes.OK).json({ albums: bulkUpdateOps});
+  res.status(StatusCodes.OK).json({ albums: bulkUpdateOps });
 };
 
-
-
+const getAlbumsPurchasedByUser = async (req, res) => {
+  // Show album by id with all the users that purchased it
+  let albumsOfUser = await Album.findOne({ _id: req.params.id }).populate({
+    path: 'purchasedByUsers',
+    populate: { path: 'user' },
+  });
+  res.status(StatusCodes.OK).json({ albumsOfUser, count: albumsOfUser.length });
+};
 
 module.exports = {
   updateAlbum,
@@ -65,4 +70,5 @@ module.exports = {
   getAllAlbums,
   getSingleAlbum,
   updatePriceOfAlbums,
+  getAlbumsPurchasedByUser,
 };
