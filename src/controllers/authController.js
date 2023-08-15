@@ -23,7 +23,7 @@ const register = async (req, res) => {
 
   const { name, email, password, username } = req.body;
 
-  if (!email || !name || !password) {
+  if (!email || !name || !password || !username) {
     throw new CustomError.BadRequestError('Please provide all required fields');
   }
 
