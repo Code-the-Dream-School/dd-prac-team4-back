@@ -10,12 +10,15 @@ const {
   updateAlbum,
   getAllAlbums,
   getSingleAlbum,
+  getFilteredAlbums,
 } = require('../controllers/albumController');
 
 router
   .route('/')
   .post(authenticateUser, authorizePermissions('admin'), createAlbum) //only admin can create product
   .get(getAllAlbums); //everyone can access all products- no middleware
+
+  router.get('/filter', getFilteredAlbums);
 
 router
   .route('/:id')
