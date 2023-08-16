@@ -57,13 +57,19 @@ const AlbumSchema = new mongoose.Schema(
   { timestamps: true } //timestamps provides fields of createdAt , updatedAt... and exact time,
 );
 
-AlbumSchema.virtual('purchasedAlbums', {
-  ref: 'PurchasedAlbum', //specifies that the virtual field purchasedAlbums is referencing the PurchasedAlbum model.
+//this is returning all of the users that have purchased this album
+// When we `populate()` the `purchasedByUsers` virtual, Mongoose will find the
+// first document in the PurchasedAlbum model whose `album`field matches this document's
+// `_id` property.
+//he populate() method in Mongoose is used to replace specified paths (here: _id) in a document with actual documents from other collections - PurchasedAlbum.
+AlbumSchema.virtual('purchasedByUsers', {
+  ref: 'PurchasedAlbum', //specifies that the virtual field purchasedByUsers is referencing the PurchasedAlbum model.
   localField: '_id', //_id field (from the db= id of the product) of the Album model is used as the local field to establish the relationship.
-  foreignField: 'albumId' // albumId field in the PurchasedAlbum model is used as the foreign field to establish the relationship.
+  foreignField: 'album' // album field in the PurchasedAlbum model is used as the foreign field to establish the relationship.
 });
+
 
 const Album = mongoose.model('Album', AlbumSchema);
 
-
+ 
 module.exports = Album;

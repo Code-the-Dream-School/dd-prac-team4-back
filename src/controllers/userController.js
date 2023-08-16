@@ -90,16 +90,16 @@ const deleteSingleUser = async (req, res) => {
   res.status(StatusCodes.OK).json({ message: 'User deleted successfully' });
 };
 
-
- const getCurrentUserWithPurchasedAlbums = async (req, res) => {
-  // Show current user by id with all the albums they've purchased
+//Fetching a user from the database, including all the albums they've purchased
+const getCurrentUserWithPurchasedAlbums = async (req, res) => {
+  // Show current user by id with all the albums they've purchased + see createTokenUser- userId comes from there
   let usersWithAlbums = await User.findById(req.user.userId).populate({
-    path: 'purchasedAlbums', // name of the virtual to populate
-    populate: { path: 'album' } // nested populate, without this we would just get back a list of PurchasedAlbum models. 
-    // But we just want to further populate to get the Album model refferred to in  the PurchasedAlbum.album proprty.
-  });
-  res.status(StatusCodes.OK).json({ usersWithAlbums, count: usersWithAlbums.length });
-}
+      path: 'purchasedAlbums', // name of the virtual to populate
+      populate: { path: 'album' } // nested populate, without this we would just get back a list of PurchasedAlbum models. 
+      // But we just want to further populate to get the Album model refferred to in  the PurchasedAlbum.album proprty.
+    });
+    res.status(StatusCodes.OK).json({ usersWithAlbums, count: usersWithAlbums.length });
+  }
 
   
 

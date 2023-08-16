@@ -37,30 +37,33 @@ const updateAlbum = async (req, res) => {
 //will be user to let admin update price of several albums on the frontend
 
 const updatePriceOfAlbums = async (req, res) => {
-  const bulkUpdateOps = req.body.map((update) => ({
-    updateOne: {
-      filter: { _id: update.id },
-      update: { price: update.price },
-    },
-  }));
 
-  try {
-    await Album.bulkWrite(bulkUpdateOps);
-    logger.info('Albums updated successfully');
-  } catch (err) {
-    logger.error(err);
+const bulkUpdateOps = req.body.map(update => ({
+  updateOne: {
+    filter: { _id: update.id },
+    update: { price: update.price },
+  },
+}));
+
+const ids = req.body.map(update => update.id)//Creates an array of _id values from the albums to be updated in the request body.
+
+const bulkWriteResponse = await Album.bulkWrite(bulkUpdateOps);//he response object of bulkWrite () contains information about the number of modified documents.
+logger.info(`${bulkWriteResponse.modifiedCount} Albums updated successfully`);
+const updatedAlbums = await Album.find({_id: { $in: ids}}) // Fetches the updated albums from the database using the _id values in the ids array. //see Implicit $in in mongoose docs
+res.status(StatusCodes.OK).json({ albums: updatedAlbums})
+}
+
+//Fetching an album from the database, including all the users that have purchased it
+const getAlbumWithAllUsersWhoPurchasedIt = async (req, res) => {
+  // Show current user by id with all the albums they've purchased
+  let usersThatPurchasedThisAlbum = await Album.findOne({ _id: req.params.id }).populate({
+      path: 'purchasedByUsers', // name of the virtual to populate
+      populate: { path: 'user' } // nested populate, without this we would just get back a list of PurchasedAlbum models. 
+      // But we just want to further populate to get the Album model refferred to in  the PurchasedAlbum.album proprty.
+    });
+    res.status(StatusCodes.OK).json({ usersThatPurchasedThisAlbum, count: usersThatPurchasedThisAlbum.length });
   }
-  res.status(StatusCodes.OK).json({ albums: bulkUpdateOps });
-};
 
-const getAlbumsPurchasedByUser = async (req, res) => {
-  // Show album by id with all the users that purchased it
-  let albumsOfUser = await Album.findOne({ _id: req.params.id }).populate({
-    path: 'purchasedByUsers',
-    populate: { path: 'user' },
-  });
-  res.status(StatusCodes.OK).json({ albumsOfUser, count: albumsOfUser.length });
-  
 const getFilteredAlbums = async (req, res) => {
   const { limit, order, offset, albumName, artistName } = req.query;
 // Create an empty query object to store filtering parameters
@@ -94,6 +97,6 @@ module.exports = {
   getAllAlbums,
   getSingleAlbum,
   updatePriceOfAlbums,
-  getAlbumsPurchasedByUser,
+  getAlbumWithAllUsersWhoPurchasedIt,
   getFilteredAlbums,
 };

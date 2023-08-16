@@ -67,12 +67,11 @@ const UserSchema = new mongoose.Schema({
   creditCardInfo: creditCardSchema,
 });
 
-UserSchema.virtual('purchasedByUsers', {
+UserSchema.virtual('purchasedAlbums', {
   ref: 'PurchasedAlbum',
   localField: '_id',
-  foreignField: 'userId'
+  foreignField: 'user'
 });
-
 
 UserSchema.methods.comparePassword = async function (password) {
   return await argon2.verify(this.password, password);
