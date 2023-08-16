@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This documentation provides a step-by-step guide to creating integration tests for the "Get User By Id" endpoint in backend application. This process covers environment setup, test writing, and the utilization of necessary libraries(these have already been installed in the repo):
+This documentation provides a step-by-step guide to creating integration tests for the "Get User By Id" endpoint in backend application.
 
 *Jest*  - a popular Javascript testing framework. This is the library that will look for all the files named **.test.js in the repo and run them. It also gives us a framework for defining test cases (describe, it blocks)
 
@@ -12,7 +12,23 @@ This documentation provides a step-by-step guide to creating integration tests f
 
 ## Steps to Create a Test
 
-### Step 1: Code Separation in the Application
+### Step 1: Setting Up package.json and Running Tests
+
+This process covers environment setup, test writing, and the utilization of necessary libraries(these have already been installed in the repo):
+
+>npm install jest supertest mongodb-memory-server
+
+Add a script to run tests in the "scripts" section of your package.json:
+
+```javascript
+// package.json
+"scripts": {
+  "test": "jest"
+},
+```
+Now you have a configured package.json with installed dependencies and a script to run tests using the command *npm test*.
+
+### Step 2: Code Separation in the Application
 
 Extract the code from `app.js` into a new file, such as `expressServer.js`.
 
@@ -24,7 +40,7 @@ const app = express();
 module.exports = { app, connectDB };
 ```
 
-### Step 2: Start the Server
+### Step 3: Start the Server
 
 Now, in your `app.js` file, retain only the code necessary for launching the server.
 
@@ -49,7 +65,7 @@ const start = async () => {
 start();
 ```
 
-### Step 3: Test Setup
+### Step 4: Test Setup
 
 Create a new file specifically for your tests, such as `userController.test.js`. This file will house the integration tests for the "Get User By Id" endpoint.
 
@@ -61,7 +77,7 @@ const request = require('supertest');
 const User = require('../src/models/User');
 ```
 
-### Step 4: Environment Setup for Tests
+### Step 5: Environment Setup for Tests
 
 Before running all your tests, you need to configure the testing environment. This step involves creating an in-memory MongoDB instance and starting the server to ensure a controlled environment for your integration tests.
 
@@ -69,64 +85,72 @@ In your `userController.test.js` file, set up the environment using the `beforeA
 
 ```javascript
 // userController.test.js
+// Declare variables for the server, database connection, and in-memory MongoDB instance
 let server;
 let mongooseConnection;
 let mongodb;
 
+// set up the mongodb and the express server before starting the tests
 beforeAll(async () => {
+  // This will create a new instance of "MongoMemoryServer" and automatically start it
   mongodb = await MongoMemoryServer.create();
   const url = mongodb.getUri();
+  // set the url so that our server's mongoose connects to the in-memory mongodb and not our real one
   process.env.MONGO_URL = url;
   mongooseConnection = await connectDB(url);
   server = await app.listen(8001);
 });
 
 afterAll(async () => {
+  // turn off the server and mongo connections once all the tests are done
   await server.close();
   await mongooseConnection.disconnect();
   await mongodb.stop();
 });
 ```
 
-### Step 5: Writing Tests
+### Step 6: Writing Tests
 
 Now that you've set up the environment, it's time to write the actual tests for the "Get User By Id" endpoint. In your `userController.test.js` file, create a test suite using the `describe()` function and add the test cases using the `it()` function:
 
 ```javascript
 // userController.test.js
-describe('/api/v1/users/:user_id endpoint', () => {
+describe('GET /api/v1/users/:user_id endpoint', () => {
   it('should return a valid user without the password field if found', async () => {
-    // ARRANGE: Create a test user
+    // Arrange: Create a test user
     const user = await User.create({
-      name: 'Akosua',
-      email: 'akos@example.com',
-      password: 'hashed',
+      name: 'ava',
+      email: 'ava@ava.com',
+      password: 'secret',
+      role: 'user',
     });
 
-    // ACT: Call the endpoint with a request to get the user
-    const response = await request(app).get(`/api/v1/users/${user.id}`);
-
-    // ASSERT: Check the response status and user data
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('user');
+    // Act: Log in and get a signed cookie
+    const signedCookie = await loginAndReturnCookie(testUserCredentials);
+    // Act: Get user information using the authenticated cookie
+    const response = await request(app)
+      .get(`/api/v1/users/${user.id}`)
+      .set('Cookie', [signedCookie]);
+    // Assert: Check the response status and user information
+    expect(response.status).toBe(200); // Assertion: Expecting the response status to be 200 (successful request)
+    expect(response.body).toHaveProperty('user'); // Assertion: Expecting the response body to have the property "user"
+    // Assertion: Expecting the user properties (name, email, role) to match the specified values
     expect(response.body.user).toMatchObject({
-      name: 'Akosua',
-      email: 'akos@example.com',
+      name: 'ava',
+      email: 'ava@ava.com',
       role: 'user',
     });
     expect(response.body.user).not.toHaveProperty('password');
   });
 
-  it('should return a 404 status if the user is not found', async () => {
-    // ARRANGE: Log in and get a cookie for authentication
+  it('should return a 404 status if user is not found', async () => {
+    // Arrange: Log in and get a signed cookie with valid test user credentials
     const signedCookie = await loginAndReturnCookie(testUserCredentials);
-
-    // ACT: Request a non-existent user with authentication
+    // Act: Attempt to get user information using the authenticated cookie
     const response = await request(app)
-      .get('/api/v1/users/nonexistentUserId')
-      .set('Cookie', [signedCookie]);
-
-    // ASSERT: Check the response status for a 404
+      .get('/api/v1/users/nonexistentUserId') // Requesting the route to get information about a non-existent user
+      .set('Cookie', [signedCookie]); // Setting the 'Cookie' HTTP header with a signed cookie for authentication
+    // Assert: Check the response status for 404
     expect(response.status).toBe(404);
   });
 });
@@ -154,7 +178,7 @@ describe('/api/v1/users/:user_id endpoint', () => {
   });
 }); 
 ```
-## The pattern for crafting effective tests - **ARRANGE-ACT-ASSERT:**
+### The pattern for crafting effective tests - **ARRANGE-ACT-ASSERT:**
 
 Effective tests typically adhere to the "ARRANGE-ACT-ASSERT" pattern, which entails:
 
