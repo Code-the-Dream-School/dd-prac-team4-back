@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const albumController = require('./albumController');
 
 const {
   authenticateUser,
@@ -12,6 +11,7 @@ const {
   updateAlbum,
   getAllAlbums,
   getSingleAlbum,
+  getAlbumById,
 } = require('../controllers/albumController');
 
 router
@@ -25,6 +25,6 @@ router
   .patch(authenticateUser, authorizePermissions('admin'), updateAlbum); //only admin can update product
 
 // Endpoint to retrieve an album by id
-router.get('/:id', albumController.getAlbumById);
+router.route('/:id').get(getAlbumById);
 
 module.exports = router;
