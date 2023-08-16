@@ -3,10 +3,9 @@ const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 
 const createAlbum = async (req, res) => {
-  req.body.user = req.user.userId; // req.body.user - user is required to be provided (see Album.js line 55) and is set to req.user.userId
-  const album = await Album.create(req.body); //in req.body come all the data from the frontend
+  req.body.user = req.user.userId;
+  const album = await Album.create(req.body);
   res.status(StatusCodes.CREATED).json({ album });
-  //we want to attach user from AlbumSchema to identify WHO is trying to create a products , and if it´s an admin- allow him to do it
 };
 
 const getAllAlbums = async (req, res) => {
@@ -15,9 +14,8 @@ const getAllAlbums = async (req, res) => {
 };
 
 const getSingleAlbum = async (req, res) => {
-  //id of the album is located in req.params
-  const { id: albumId } = req.params; //This extracts the id parameter from the request's URL parameters and assigns it to the productId variable.
-  const album = await Album.findOne({ _id: albumId }); // find an album in the database with the specified _id that matches albumId or id from req.params
+  const { id: albumId } = req.params;
+  const album = await Album.findOne({ _id: albumId });
   if (!album) {
     throw new CustomError.NotFoundError(`No album with id ${albumId}`);
   }
@@ -25,7 +23,7 @@ const getSingleAlbum = async (req, res) => {
 };
 
 const updateAlbum = async (req, res) => {
-  const { id: albumId } = req.params; //take id from req.params is assign to albumId
+  const { id: albumId } = req.params;
   const album = await Album.findOneAndUpdate({ _id: albumId }, req.body, {
     new: true,
     runValidators: true,
@@ -62,6 +60,32 @@ const getAlbumsPurchasedByUser = async (req, res) => {
     populate: { path: 'user' },
   });
   res.status(StatusCodes.OK).json({ albumsOfUser, count: albumsOfUser.length });
+  
+const getFilteredAlbums = async (req, res) => {
+  const { limit, order, offset, albumName, artistName } = req.query;
+// Create an empty query object to store filtering parameters
+  const query = {};
+  // Using $regex, we MongoDB search where the provided value is treated as a regular expression.
+  if (albumName) {
+    query.albumName = { $regex: albumName, $options: 'i' }; //If the albumName parameter is provided.
+  }
+  if (artistName) {
+    query.artistName = { $regex: artistName, $options: 'i' };// If the artistName. $options: 'i' - case-insensitive
+  }
+// Create an empty sortOptions object to store sorting parameters. Methods provided by the Mongoose library
+  const sortOptions = {};
+  if (order === 'asc') { // If the order is 'asc', set sorting to ascending based on creation date
+    sortOptions.createdAt = 1;
+  } else if (order === 'desc') { // If the order is 'desc', set sorting to descending based on creation date
+    sortOptions.createdAt = -1;
+  }
+// Use the Album model to find albums based on the specified filtering and sorting parameters
+  const albums = await Album.find(query)
+    .sort(sortOptions)
+    .skip(parseInt(offset) || 0) // Skip a specified number of albums (pagination implementation)
+    .limit(parseInt(limit) || 10); // Limit the number of returned albums (pagination implementation)
+
+  res.status(StatusCodes.OK).json({ albums, count: albums.length });// Return the found albums and the count of albums
 };
 
 module.exports = {
@@ -71,4 +95,5 @@ module.exports = {
   getSingleAlbum,
   updatePriceOfAlbums,
   getAlbumsPurchasedByUser,
+  getFilteredAlbums,
 };

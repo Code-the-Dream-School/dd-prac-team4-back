@@ -11,6 +11,7 @@ const {
   getAllAlbums,
   getSingleAlbum,
   updatePriceOfAlbums,
+  getFilteredAlbums,
 } = require('../controllers/albumController');
 
 router
@@ -19,7 +20,11 @@ router
   .get(getAllAlbums) //everyone can access all products- no middleware
   .patch(getAllAlbums,authenticateUser, authorizePermissions('admin'), updatePriceOfAlbums );
 
-  router
+
+    router
+    .get('/filter', getFilteredAlbums);
+
+router
   .route('/:id')
   .get(getSingleAlbum) //everyone can access all products- no middleware
   .patch(authenticateUser, authorizePermissions('admin'), updateAlbum); //only admin can update product
