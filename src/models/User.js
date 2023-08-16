@@ -34,6 +34,12 @@ const UserSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 50,
   },
+  username: {
+    type: String,
+    required: [true, 'Please provide name'],
+    minlength: 2,
+    maxlength: 50,
+  },
   email: {
     type: String,
     unique: true, //checks index; if !index throws mongoose errors
