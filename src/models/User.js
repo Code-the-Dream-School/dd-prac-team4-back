@@ -34,6 +34,12 @@ const UserSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 50,
   },
+  username: {
+    type: String,
+    required: [true, 'Please provide name'],
+    minlength: 2,
+    maxlength: 50,
+  },
   email: {
     type: String,
     unique: true, //checks index; if !index throws mongoose errors
@@ -58,14 +64,15 @@ const UserSchema = new mongoose.Schema({
   creditCardInfo: creditCardSchema,
 });
 
-//before we save the document we hash password; this points to the user (this= user)
-UserSchema.pre('save', async function () {
-  //to see which properties were modified
-  console.log(this.modifiedPaths());
-  // in console we get false if we are not modifying name, and true if we do
-  console.log(this.isModified('name'));
+UserSchema.methods.comparePassword = async function (password) {
+  return await argon2.verify(this.password, password);
+};
 
-  if (!this.isModified('password')) return; //if the password is not modified then stop
+UserSchema.pre('save', async function () {
+  if (this.isModified('password')) {
+    const hashedPassword = await argon2.hash(this.password);
+    this.password = hashedPassword;
+  }
 });
 
 module.exports = mongoose.model('User', UserSchema);

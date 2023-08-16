@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 require('dotenv').config();
 
 const express = require('express');
@@ -9,12 +8,13 @@ const favicon = require('express-favicon');
 const { xss } = require('express-xss-sanitizer');
 const helmet = require('helmet');
 const passport = require('passport');
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
+
 const logger = require('../logs/logger');
+
 const app = express();
-const wishlistRoutes = require('./wishlistRoutes');
 require('express-async-errors');
 
 // ====== Middleware setup ======
@@ -24,7 +24,6 @@ const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 60, // limit each IP to 100 requests per windowMs
 });
-
 app.use(helmet());
 app.use(limiter);
 app.use(xss());
@@ -42,7 +41,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(cookieParser());
+app.use(cookieParser(process.env.JWT_SECRET)); // Cookie parser middleware with JWT secret
 
 // Configure express-session middleware
 app.use(
@@ -57,38 +56,23 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Database setup (using Mongoose)
-mongoose.set('strictQuery', true);
-const connectDB = (url) => {
-  return mongoose.connect(url);
-};
+// database
+const connectDB = require('./db/connect');
 
 //routers
 const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
+const albumRouter = require('./routes/albumRoutes');
+// middleware
+const notFoundMiddleware = require('./middleware/not-found');
+const errorHandlerMiddleware = require('./middleware/error-handler');
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
-app.use('/api/v1/wishlist', wishlistRoutes);
+app.use('/api/v1/albums', albumRouter);
 
 // Error handling middleware (must be defined after all other routes and middleware)
-//add later
-=======
-const { app, connectDB } = require('./expressServer');
-const logger = require('../logs/logger');
->>>>>>> ba863ab2c789707a1117eb629e8e4d5555427e8a
+app.use(notFoundMiddleware); // Not found middleware to handle invalid routes
+app.use(errorHandlerMiddleware); // Error handler middleware
 
-// Start the server
-const port = process.env.PORT || 8000;
-const start = async () => {
-  try {
-    await connectDB(process.env.MONGO_URL);
-    app.listen(port, () => {
-      logger.info(`Server running on http://localhost:${port}`);
-    });
-  } catch (error) {
-    logger.error(error);
-  }
-};
-
-start();
+module.exports = { app, connectDB };

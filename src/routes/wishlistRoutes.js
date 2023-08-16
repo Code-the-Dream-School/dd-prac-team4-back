@@ -1,6 +1,6 @@
 const express = require('express');
-const Wishlist = require('./Wishlist');
-const Album = require('./Album');
+const Wishlist = require('../models/Wishlist');
+const Album = require('../models/Album');
 const router = express.Router();
 const mongoose = require('mongoose');
 
