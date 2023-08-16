@@ -75,9 +75,6 @@ app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });
 
-// Use the albumRouter for /albums endpoint
-app.use('/albums', albumRouter);
-
 // Error handling middleware (must be defined after all other routes and middleware)
 app.use(notFoundMiddleware); // Not found middleware to handle invalid routes
 app.use(errorHandlerMiddleware); // Error handler middleware
