@@ -22,4 +22,4 @@ jobs:
       - name: Running ESLint for linting
         run: 'npm run lint:fix'
       - name: Run jest for testing
-        run: npm run jest
+        run: npm run test
