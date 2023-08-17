@@ -7,7 +7,9 @@
   },
   "host": "localhost:8000",
   "basePath": "/",
-  "schemes": ["http"],
+  "schemes": [
+    "http"
+  ],
   "paths": {
     "/register": {
       "post": {
@@ -155,7 +157,9 @@
     },
     "/{id}": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -217,7 +221,10 @@
         },
         "role": {
           "type": "string",
-          "enum": ["user", "admin"]
+          "enum": [
+            "user",
+            "admin"
+          ]
         },
         "profileImage": {
           "type": "object",
@@ -241,7 +248,11 @@
             },
             "preferredPaymentOption": {
               "type": "string",
-              "enum": ["credit card", "paypal", "google pay"]
+              "enum": [
+                "credit card",
+                "paypal",
+                "google pay"
+              ]
             }
           }
         }
