@@ -37,29 +37,31 @@ const updateAlbum = async (req, res) => {
 
 const getFilteredAlbums = async (req, res) => {
   const { limit, order, offset, albumName, artistName } = req.query;
-// Create an empty query object to store filtering parameters
+  // Create an empty query object to store filtering parameters
   const query = {};
   // Using $regex, we MongoDB search where the provided value is treated as a regular expression.
   if (albumName) {
     query.albumName = { $regex: albumName, $options: 'i' }; //If the albumName parameter is provided.
   }
   if (artistName) {
-    query.artistName = { $regex: artistName, $options: 'i' };// If the artistName. $options: 'i' - case-insensitive
+    query.artistName = { $regex: artistName, $options: 'i' }; // If the artistName. $options: 'i' - case-insensitive
   }
-// Create an empty sortOptions object to store sorting parameters. Methods provided by the Mongoose library
+  // Create an empty sortOptions object to store sorting parameters. Methods provided by the Mongoose library
   const sortOptions = {};
-  if (order === 'asc') { // If the order is 'asc', set sorting to ascending based on creation date
+  if (order === 'asc') {
+    // If the order is 'asc', set sorting to ascending based on creation date
     sortOptions.createdAt = 1;
-  } else if (order === 'desc') { // If the order is 'desc', set sorting to descending based on creation date
+  } else if (order === 'desc') {
+    // If the order is 'desc', set sorting to descending based on creation date
     sortOptions.createdAt = -1;
   }
-// Use the Album model to find albums based on the specified filtering and sorting parameters
+  // Use the Album model to find albums based on the specified filtering and sorting parameters
   const albums = await Album.find(query)
     .sort(sortOptions)
     .skip(parseInt(offset) || 0) // Skip a specified number of albums (pagination implementation)
     .limit(parseInt(limit) || 10); // Limit the number of returned albums (pagination implementation)
 
-  res.status(StatusCodes.OK).json({ albums, count: albums.length });// Return the found albums and the count of albums
+  res.status(StatusCodes.OK).json({ albums, count: albums.length }); // Return the found albums and the count of albums
 };
 
 module.exports = {
