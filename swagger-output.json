@@ -7,9 +7,7 @@
   },
   "host": "localhost:8000",
   "basePath": "/",
-  "schemes": [
-    "http"
-  ],
+  "schemes": ["http"],
   "paths": {
     "/register": {
       "post": {
@@ -157,21 +155,29 @@
     },
     "/{id}": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Mongo ObjectID of the user to fetch"
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "User successfully fetched.",
+            "schema": {
+              "$ref": "#/definitions/PasswordlessUser"
+            }
+          },
+          "403": {
+            "description": "Requester forbidden to fetch this user."
+          },
+          "404": {
+            "description": "No user with id found."
           }
         }
       },
@@ -188,6 +194,55 @@
         "responses": {
           "default": {
             "description": ""
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "PasswordlessUser": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "John Doe"
+        },
+        "username": {
+          "type": "string",
+          "example": "johndoe"
+        },
+        "email": {
+          "type": "string",
+          "example": "john@example.com"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["user", "admin"]
+        },
+        "profileImage": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "example": "https://example.com/profile-image.jpg"
+            }
+          }
+        },
+        "creditCardInfo": {
+          "type": "object",
+          "properties": {
+            "hashedNumber": {
+              "type": "string",
+              "example": "1234567890"
+            },
+            "expiry": {
+              "type": "string",
+              "example": "12/24"
+            },
+            "preferredPaymentOption": {
+              "type": "string",
+              "enum": ["credit card", "paypal", "google pay"]
+            }
           }
         }
       }
