@@ -66,10 +66,12 @@ const albumRouter = require('./routes/albumRoutes');
 // middleware
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
+const pathToSwaggerUi = require('swagger-ui-dist').absolutePath();
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/albums', albumRouter);
+app.use('/swagger', express.static(pathToSwaggerUi));
 
 // Error handling middleware (must be defined after all other routes and middleware)
 app.use(notFoundMiddleware); // Not found middleware to handle invalid routes
