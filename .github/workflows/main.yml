@@ -1,0 +1,25 @@
+name: Node CI
+'on':
+  pull_request: null
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version:
+          - 16.x
+    steps:
+      - uses: actions/checkout@v3
+      - name: 'Set up Node.js ${{ matrix.node-version }}'
+        uses: actions/setup-node@v3
+        with:
+          node-version: '${{ matrix.node-version }}'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run prettier for formatting
+        run: npm run format
+      - name: Running ESLint for linting
+        run: 'npm run lint:fix'
+      - name: Run jest for testing
+        run: npm run test
