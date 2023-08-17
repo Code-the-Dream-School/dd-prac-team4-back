@@ -8,22 +8,25 @@ const profileImageSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  altText: {
+    type: String,
+  },
 });
 
 // Mongoose schema for hashed credit card info
 const creditCardSchema = new mongoose.Schema({
   hashedNumber: {
     type: String,
-    required: false,
+    required: true,
   },
   expiry: {
     type: String,
-    required: false,
+    required: true,
   },
   preferredPaymentOption: {
     type: String,
     enum: ['credit card', 'paypal', 'google pay'],
-    required: false,
+    required: true,
   },
 });
 
@@ -62,6 +65,12 @@ const UserSchema = new mongoose.Schema({
   },
   profileImage: profileImageSchema,
   creditCardInfo: creditCardSchema,
+});
+// using this virtual we want to  return all the albums this single user has purchased
+UserSchema.virtual('purchasedAlbums', {
+  ref: 'PurchasedAlbum',
+  localField: '_id',
+  foreignField: 'user',
 });
 
 UserSchema.methods.comparePassword = async function (password) {
