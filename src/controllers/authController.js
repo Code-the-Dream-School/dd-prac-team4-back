@@ -4,21 +4,6 @@ const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const { attachCookiesToResponse, createTokenUser } = require('../utils');
 
-// TODO: SET up CUSTOM ERRORs later
-
-// create token
-const createJWT = (user) => {
-  const payload = {
-    name: user.name,
-    userId: user._id,
-    role: user.role,
-  };
-  const token = jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_LIFETIME,
-  });
-  return token;
-};
-
 const register = async (req, res) => {
 
   const { name, email, password, username } = req.body;

@@ -66,7 +66,7 @@ const UserSchema = new mongoose.Schema({
   profileImage: profileImageSchema,
   creditCardInfo: creditCardSchema,
 });
-
+// using this virtual we want to  return all the albums this single user has purchased
 UserSchema.virtual('purchasedAlbums', {
   ref: 'PurchasedAlbum',
   localField: '_id',

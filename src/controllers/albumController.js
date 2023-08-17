@@ -57,9 +57,9 @@ res.status(StatusCodes.OK).json({ albums: updatedAlbums})
 const getAlbumWithAllUsersWhoPurchasedIt = async (req, res) => {
   // Show current user by id with all the albums they've purchased
   let usersThatPurchasedThisAlbum = await Album.findOne({ _id: req.params.id }).populate({
-      path: 'purchasedByUsers', // name of the virtual to populate
-      populate: { path: 'user' } // nested populate, without this we would just get back a list of PurchasedAlbum models. 
-      // But we just want to further populate to get the Album model refferred to in  the PurchasedAlbum.album proprty.
+      path: 'purchasedByUsers', // we want to fill with data this virtual field// name of the virtual to populate
+      populate: { path: 'user' } //with this data// nested populate, without this we would just get back a list of PurchasedAlbum models. 
+      // But we just want to further populate to get the User model refferred to in  the PurchasedAlbum.user proprty.
     });
     res.status(StatusCodes.OK).json({ usersThatPurchasedThisAlbum, count: usersThatPurchasedThisAlbum.length });
   }

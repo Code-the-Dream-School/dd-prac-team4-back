@@ -9,7 +9,7 @@ const {
 
 const getAllUsers = async (req, res) => {
   // Function to get all users
-  console.log(req.user);
+  //console.log(req.user);
   // Find all users with the role 'user' in the database and exclude the 'password' field
   const users = await User.find({ role: 'user' }).select('-password');
   res.status(StatusCodes.OK).json({ users }); // Send a JSON response with the status code 200 OK and the users
@@ -28,13 +28,6 @@ const getSingleUser = async (req, res) => {
 };
 
 const showCurrentUser = async (req, res) => {
-  // Function to get the current user's information
-  // Send a JSON response with the status code 200 OK and the current user's information
-  res.status(StatusCodes.OK).json({ user: req.user });
-};
-
-// update user with user.save()
-const updateUser = async (req, res) => {
   const user = await User.findOne({ _id: req.user.userId }).select('-password');
 
   if (!user) {
@@ -93,15 +86,15 @@ const deleteSingleUser = async (req, res) => {
 //Fetching a user from the database, including all the albums they've purchased
 const getCurrentUserWithPurchasedAlbums = async (req, res) => {
   // Show current user by id with all the albums they've purchased + see createTokenUser- userId comes from there
-  let usersWithAlbums = await User.findById(req.user.userId).populate({
-      path: 'purchasedAlbums', // name of the virtual to populate
-      populate: { path: 'album' } // nested populate, without this we would just get back a list of PurchasedAlbum models. 
-      // But we just want to further populate to get the Album model refferred to in  the PurchasedAlbum.album proprty.
-    });
-    res.status(StatusCodes.OK).json({ usersWithAlbums, count: usersWithAlbums.length });
-  }
-
-  
+  let userWithAlbums = await User.findById(req.user.userId).populate({
+    path: 'purchasedAlbums', // we fill in virtual field purchasedAlbums // name of the virtual to populate
+    populate: { path: 'album' }, //  with this info // nested populate, without this we would just get back a list of PurchasedAlbum models.
+    // But we just want to further populate to get the Album model refferred to in  the PurchasedAlbum.album proprty.
+  });
+  res
+    .status(StatusCodes.OK)
+    .json({ userWithAlbums, count: userWithAlbums.length });
+};
 
 module.exports = {
   getAllUsers,
