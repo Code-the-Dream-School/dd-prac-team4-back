@@ -34,7 +34,7 @@
     "mongoose": "^7.4.1",
     "morgan": "^1.10.0",
     "passport": "^0.6.0",
-    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-dist": "^5.4.1",
     "validator": "^13.9.0",
     "winston": "^3.10.0"
   },
@@ -45,6 +45,6 @@
     "nodemon": "^3.0.1",
     "prettier": "^3.0.0",
     "swagger-autogen": "^2.23.5",
-    "swagger-ui-dist": "^5.4.1"
+    "swagger-jsdoc": "^6.2.8"
   }
 }
