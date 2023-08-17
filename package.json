@@ -10,7 +10,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "test": "jest",
-    "swagger": "node ./swagger.js"
+    "generate-api-docs": "node ./swagger.js"
   },
   "author": "",
   "license": "ISC",
@@ -45,6 +45,6 @@
     "nodemon": "^3.0.1",
     "prettier": "^3.0.0",
     "swagger-autogen": "^2.23.5",
-    "swagger-ui-dist": "^5.3.1"
+    "swagger-ui-dist": "^5.4.1"
   }
 }

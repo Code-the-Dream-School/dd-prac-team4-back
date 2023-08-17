@@ -15,8 +15,19 @@ const getAllUsers = async (req, res) => {
 };
 
 const getSingleUser = async (req, res) => {
-  // #swagger.tags = ['Users']
-  // Function to get a single user by ID
+  /*
+     #swagger.tags = ['Users']
+     #swager.summary = 'Fetch a user by id'
+     #swagger.parameters['id'] = {
+        description: 'Mongo ObjectID of the user to fetch',
+     }
+     #swagger.responses[200] = {
+				description: 'User successfully fetched.',
+				schema: { $ref: '#/definitions/PasswordlessUser' }
+		 }
+		 #swagger.responses[404] = { description: 'No user with id found.' }
+		 #swagger.responses[403] = { description: 'Requester forbidden to fetch this user.' }
+  */
   // Find the user in the database based on the provided user ID and exclude the 'password' field
   const user = await User.findOne({ _id: req.params.id }).select('-password');
   if (!user) {
