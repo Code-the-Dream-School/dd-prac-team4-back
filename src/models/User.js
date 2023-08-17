@@ -70,7 +70,7 @@ const UserSchema = new mongoose.Schema({
 UserSchema.virtual('purchasedAlbums', {
   ref: 'PurchasedAlbum',
   localField: '_id',
-  foreignField: 'user'
+  foreignField: 'user',
 });
 
 UserSchema.methods.comparePassword = async function (password) {

@@ -93,7 +93,7 @@ const getCurrentUserWithPurchasedAlbums = async (req, res) => {
   });
   res
     .status(StatusCodes.OK)
-    .json({ userWithAlbums, count: userWithAlbums.length });
+    .json({ userWithAlbums, count: userWithAlbums.purchasedAlbums.length });
 };
 
 module.exports = {
