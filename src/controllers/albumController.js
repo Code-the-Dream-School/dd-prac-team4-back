@@ -1,20 +1,7 @@
 const Album = require('../models/Album');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
-const winston = require('winston');
-
-// Configure Winston transports (output destinations)
-const logger = winston.createLogger({
-  transports: [
-    new winston.transports.Console(), // Output logs to the console
-    new winston.transports.File({ filename: 'app.log' }) // Output logs to a file
-    // You can add more transports as needed
-  ],
-  format: winston.format.combine(
-    winston.format.timestamp(), // Add timestamps to log messages
-    winston.format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`)
-  )
-});
+const  logger  = require('../../logs/logger')
 
 const createAlbum = async (req, res) => {
   req.body.user = req.user.userId;
