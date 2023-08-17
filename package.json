@@ -1,7 +1,7 @@
 {
-  "name": "bb-practicum-team-1-back",
+  "name": "bb-practicum-team-4-back",
   "version": "1.0.0",
-  "description": "Back-End Repo for Team 1 of Baboon/Bald Eagle Practicum",
+  "description": "Back-End Repo for Team 4 of Deer/Dove Practicum",
   "main": "app.js",
   "scripts": {
     "dev": "nodemon src/app.js",
@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "test": "jest"
+    "test": "jest",
+    "generate-api-docs": "node ./swagger.js"
   },
   "author": "",
   "license": "ISC",
@@ -33,6 +34,7 @@
     "mongoose": "^7.4.1",
     "morgan": "^1.10.0",
     "passport": "^0.6.0",
+    "swagger-jsdoc": "^6.2.8",
     "validator": "^13.9.0",
     "winston": "^3.10.0"
   },
@@ -40,10 +42,9 @@
     "@types/jest": "^29.5.3",
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^8.9.0",
-    "jest": "^29.6.2",
-    "mongodb-memory-server": "^8.14.0",
-    "nodemon": "^2.0.21",
+    "nodemon": "^3.0.1",
     "prettier": "^3.0.0",
-    "supertest": "^6.3.3"
+    "swagger-autogen": "^2.23.5",
+    "swagger-ui-dist": "^5.4.1"
   }
 }

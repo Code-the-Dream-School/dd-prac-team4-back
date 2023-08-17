@@ -28,3 +28,29 @@ Note: In the below example, the group's front-end repository was named `bb-pract
 ![browser server](images/back-end-running-browser.png)
 
 > Update the .node-version file to match the version of Node.js the **team** is using. This is used by Render.com to [deploy the app](https://render.com/docs/node-version).
+
+### Generating and Using API Documentation
+
+To generate and access the API documentation on backend, follow these steps:
+
+1. Generate the API documentation using the provided script:
+
+   ** `npm run generate-api-docs`**
+
+   This command will generate the API documentation files in a suitable format.You should see an outcome similar to the one shown below:
+
+   Outcome of the command
+   ![Outcome of the command](swagger-autogen-success.png)
+
+2. Run the application using the following command:
+
+   **`npm run dev`**
+
+   This will start the server, and you can access the application by navigating to `http://localhost:8000` in your web browser.
+
+3. Once the documentation is generated, you can access it by opening the `api-docs` folder in your project's root directory.Open the following URL in your web browser to view the API documentation:
+   `http://localhost:8000/api-docs/`
+
+   You will see a page similar to the one shown below:
+
+![Api documentation](api-documentation.png)
