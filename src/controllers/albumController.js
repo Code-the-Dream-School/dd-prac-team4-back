@@ -62,12 +62,10 @@ const getAlbumWithAllUsersWhoPurchasedIt = async (req, res) => {
     populate: { path: 'user' }, //with this data// nested populate, without this we would just get back a list of PurchasedAlbum models.
     // But we just want to further populate to get the User model refferred to in  the PurchasedAlbum.user proprty.
   });
-  res
-    .status(StatusCodes.OK)
-    .json({
-      usersThatPurchasedThisAlbum,
-      count: usersThatPurchasedThisAlbum.length,
-    });
+  res.status(StatusCodes.OK).json({
+    usersThatPurchasedThisAlbum,
+    count: usersThatPurchasedThisAlbum.length,
+  });
 };
 
 const getFilteredAlbums = async (req, res) => {

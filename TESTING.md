@@ -4,11 +4,11 @@
 
 This documentation provides a step-by-step guide to creating integration tests for the "Get User By Id" endpoint in backend application.
 
-*Jest*  - a popular Javascript testing framework. This is the library that will look for all the files named **.test.js in the repo and run them. It also gives us a framework for defining test cases (describe, it blocks)
+_Jest_ - a popular Javascript testing framework. This is the library that will look for all the files named \*\*.test.js in the repo and run them. It also gives us a framework for defining test cases (describe, it blocks)
 
-*Supertest* - A popular library for testing HTTP backends, like an Express server
+_Supertest_ - A popular library for testing HTTP backends, like an Express server
 
-*MongoDb-Memory-Server* - In order to make sure our tests don’t mess up our live production database, we can use this library to run mongodb in-memory locally, and have mongoose connect to that version of the db when running tests
+_MongoDb-Memory-Server_ - In order to make sure our tests don’t mess up our live production database, we can use this library to run mongodb in-memory locally, and have mongoose connect to that version of the db when running tests
 
 ## Steps to Create a Test
 
@@ -16,7 +16,7 @@ This documentation provides a step-by-step guide to creating integration tests f
 
 This process covers environment setup, test writing, and the utilization of necessary libraries(these have already been installed in the repo):
 
->npm install jest supertest mongodb-memory-server
+> npm install jest supertest mongodb-memory-server
 
 Add a script to run tests in the "scripts" section of your package.json:
 
@@ -26,7 +26,8 @@ Add a script to run tests in the "scripts" section of your package.json:
   "test": "jest"
 },
 ```
-Now you have a configured package.json with installed dependencies and a script to run tests using the command *npm test*.
+
+Now you have a configured package.json with installed dependencies and a script to run tests using the command _npm test_.
 
 ### Step 2: Code Separation in the Application
 
@@ -46,7 +47,7 @@ Now, in your `app.js` file, retain only the code necessary for launching the ser
 
 ```javascript
 // app.js
-const { app, connectDB } = require("./expressServer")
+const { app, connectDB } = require('./expressServer');
 const logger = require('../logs/logger');
 
 // Start the server
@@ -176,8 +177,9 @@ describe('/api/v1/users/:user_id endpoint', () => {
   it('should return a 404 status if the user is not found', async () => {
     // Test case 2: Arrange, Act, Assert
   });
-}); 
+});
 ```
+
 ### The pattern for crafting effective tests - **ARRANGE-ACT-ASSERT:**
 
 Effective tests typically adhere to the "ARRANGE-ACT-ASSERT" pattern, which entails:
@@ -195,7 +197,9 @@ In Jest, expectations (assertions) are defined using the `expect()` function. Yo
 ```javascript
 expect(response.status).toBe(200);
 expect(response.body).toHaveProperty('user');
-expect(response.body.user).toMatchObject({ /* expected user data */ });
+expect(response.body.user).toMatchObject({
+  /* expected user data */
+});
 expect(response.body.user).not.toHaveProperty('password');
 ```
 
