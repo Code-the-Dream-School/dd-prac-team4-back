@@ -1,57 +1,94 @@
 const User = require('../models/User');
-const jwt = require('jsonwebtoken');
+const { StatusCodes } = require('http-status-codes');
+const CustomError = require('../errors');
+const {
+  createTokenUser,
+  attachCookiesToResponse,
+  checkPermissions,
+} = require('../utils');
 
-// create token (we use it here after updating user's data )
-const createJWT = ({ payload }) => {
-  const token = jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_LIFETIME,
-  });
-  return token;
-};
-
-//returning a regular javascript object that is a subset of the fields of the User model.
-const formatUserForFrontend = (user) => {
-  return { name: user.name, userId: user._id, role: user.role };
+const getAllUsers = async (req, res) => {
+  // Function to get all users
+  // Find all users with the role 'user' in the database and exclude the 'password' field
+  const users = await User.find({ role: 'user' }).select('-password');
+  res.status(StatusCodes.OK).json({ users }); // Send a JSON response with the status code 200 OK and the users
 };
 
 const getSingleUser = async (req, res) => {
   // #swagger.tags = ['Users']
-  const user = await User.findOne({ _id: req.params.id });
+  // Function to get a single user by ID
+  // Find the user in the database based on the provided user ID and exclude the 'password' field
+  const user = await User.findOne({ _id: req.params.id }).select('-password');
   if (!user) {
-    res.status(400).json({ msg: `No user with id : ${req.params.id}` });
+    // Throw a NotFoundError if the user is not found
+    throw new CustomError.NotFoundError(`No user with id: ${req.params.id}`);
   }
-  // If the user is found, it calls the formatUserForFrontend function to format the user data before sending it in the response
-  const tokenUser = formatUserForFrontend(user);
-
-  res.status(200).json({ user: tokenUser });
+  checkPermissions(req.user, user._id); // Check if the user has permission to access the user's information
+  res.status(StatusCodes.OK).json({ user }); // Send a JSON response with the status code 200 OK and the user
 };
 
-const updateUser = async (req, res) => {
-  const { email, name } = req.body;
-  if (!email && !name) {
-    res.status(400).json({ msg: 'Please provide all values' });
+const showCurrentUser = async (req, res) => {
+  const user = await User.findOne({ _id: req.user.userId }).select('-password');
+
+  if (!user) {
+    throw new CustomError.NotFoundError('User not found');
   }
 
-  const user = await User.findOne({ _id: req.params.id }); //get user
-  // Update email if request included a non-null value, otherwise keep the email as-is
-  user.email = email || user.email;
+  res.status(StatusCodes.OK).json({ user });
+};
 
-  // Update name if request included a non-null value, otherwise keep the name as-is
-  user.name = name || user.name;
+// Update the information of the current user
+const updateCurrentUser = async (req, res) => {
+  const { email, name } = req.body;
+  if (!email || !name) {
+    // Check if email and name are provided
+    throw new CustomError.BadRequestError('Please provide all values');
+  }
+  const user = await User.findOne({ _id: req.user.userId }).select('-password'); // Find the user in the database based on the current user's ID
+  // Update the user's email and name
+  user.email = email;
+  user.name = name;
+  await user.save(); // Save the updated user to the database
+  const tokenUser = createTokenUser(user); // Create a token user and attach the user's cookies to the response
+  attachCookiesToResponse({ res, user: tokenUser });
+  // Send a JSON response with the status code 200 OK and the updated user
+  res.status(StatusCodes.OK).json({ user });
+};
 
-  await user.save(); // using pre save hook (see user model) to save updated user
-  //create tokenUser with data updated
-  const createJWT = (user) => {
-    return { name: user.name, userId: user._id, role: user.role };
-  };
+const updateUserPassword = async (req, res) => {
+  // Function to update the current user's password
+  const { oldPassword, newPassword } = req.body;
+  if (!oldPassword || !newPassword) {
+    // Check if oldPassword and newPassword are provided
+    throw new CustomError.BadRequestError('Please provide both values');
+  }
+  const user = await User.findOne({ _id: req.user.userId }); // Find the user in the database based on the current user's ID
+  // Compare the old password provided with the user's current password
+  const isPasswordCorrect = await user.comparePassword(oldPassword);
+  if (!isPasswordCorrect) {
+    // Throw an UnauthenticatedError if the old password is incorrect
+    throw new CustomError.UnauthenticatedError('Invalid Credentials');
+  }
 
-  user = await user.save();
-  //After updating the user, it calls the formatUserForFrontend function to format the updated user data before sending it in the response
-  const tokenUser = formatUserForFrontend(user);
-  res.status(200).json({ user: tokenUser });
+  user.password = newPassword; // Update the user's password
+
+  await user.save(); // Save the updated user to the database
+  // Send a JSON response with the status code 200 OK and a success message
+  res.status(StatusCodes.OK).json({ msg: 'Success! Password Updated.' });
+};
+
+const deleteSingleUser = async (req, res) => {
+  const userId = req.params.id;
+  // Find the user by ID and delete
+  await User.findByIdAndDelete(userId);
+  res.status(StatusCodes.OK).json({ message: 'User deleted successfully' });
 };
 
 module.exports = {
+  getAllUsers,
   getSingleUser,
-  updateUser,
+  showCurrentUser,
+  updateCurrentUser,
+  updateUserPassword,
+  deleteSingleUser,
 };

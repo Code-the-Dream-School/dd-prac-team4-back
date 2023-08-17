@@ -5,10 +5,11 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon src/app.js",
-    "start": "node app.js",
+    "start": "node src/app.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
+    "test": "jest",
     "swagger": "node ./swagger.js"
   },
   "author": "",
@@ -38,6 +39,7 @@
     "winston": "^3.10.0"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.3",
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^8.9.0",
     "nodemon": "^3.0.1",
