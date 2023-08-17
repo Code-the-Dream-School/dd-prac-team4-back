@@ -56,7 +56,7 @@ describe('GET /api/v1/users/:user_id endpoint', () => {
       email: 'ava@ava.com',
       password: 'secret',
       role: 'user',
-      username: 'ava123'
+      username: 'ava123',
     });
 
     // Act: Log in and get a signed cookie

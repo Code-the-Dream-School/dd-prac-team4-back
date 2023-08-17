@@ -5,7 +5,7 @@
     // Add any additional rules or override default rules here
     "arrow-parens": "error",
     "arrow-spacing": "error",
-    "no-unused-vars": "warn",
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
     "no-unused-expressions": "warn",
     "jest/no-disabled-tests": "warn",
     "jest/no-focused-tests": "error",
