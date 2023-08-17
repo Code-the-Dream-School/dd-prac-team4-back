@@ -19,6 +19,11 @@ const { join } = require('path');
 const app = express();
 require('express-async-errors');
 
+// Create a health endpoint for Render.com
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 // ====== Middleware setup ======
 
 //Security middleware
