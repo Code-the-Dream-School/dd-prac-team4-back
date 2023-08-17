@@ -35,15 +35,22 @@ To generate and access the API documentation on backend, follow these steps:
 
 1. Generate the API documentation using the provided script:
 
-   `npm run generate-api-docs`
+   ** `npm run generate-api-docs`**
 
-   This command will generate the API documentation files in a suitable format.
+   This command will generate the API documentation files in a suitable format.You should see an outcome similar to the one shown below:
 
-2. To run the application, use the following command:
+   Outcome of the command
+   ![Outcome of the command](swagger-autogen-success.png)
 
-`npm run dev`
+2. Run the application using the following command:
 
-This will start the server, and you can access the application by navigating to `http://localhost:8000` in your web browser.
+   **`npm run dev`**
 
-3. Once the documentation is generated, you can access it by opening the api-docs folder in your project's root directory.
+   This will start the server, and you can access the application by navigating to `http://localhost:8000` in your web browser.
+
+3. Once the documentation is generated, you can access it by opening the `api-docs` folder in your project's root directory.Open the following URL in your web browser to view the API documentation:
    `http://localhost:8000/api-docs/`
+
+   You will see a page similar to the one shown below:
+
+![Api documentation](api-documentation.png)
