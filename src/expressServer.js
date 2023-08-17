@@ -8,14 +8,21 @@ const favicon = require('express-favicon');
 const { xss } = require('express-xss-sanitizer');
 const helmet = require('helmet');
 const passport = require('passport');
-// const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
-
 const logger = require('../logs/logger');
+const swaggerOutputFile = require('../swagger-output.json');
+const pathToSwaggerUi = require('swagger-ui-dist').absolutePath();
+const { readFileSync } = require('fs');
+const { join } = require('path');
 
 const app = express();
 require('express-async-errors');
+
+// Create a health endpoint for Render.com
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
 
 // ====== Middleware setup ======
 
@@ -35,6 +42,30 @@ app.use(
     stream: { write: (message) => logger.info(message.trim()) },
   })
 );
+
+// API Docs
+// By default, the swagger-ui-dist package will serve Swagger UI with an example pets API.
+// We want to serve our own API documentation, so we need to modify the swagger-ui-dist files:
+const swaggerConfig = readFileSync(
+  join(pathToSwaggerUi, 'swagger-initializer.js')
+)
+  .toString()
+  .replace(
+    'https://petstore.swagger.io/v2/swagger.json',
+    '/musicstore-api.json'
+  );
+// When the HTML requests the swagger-initializer.js file, we will serve our own modified version
+app.get('*swagger-initializer.js', (req, res) =>
+  res.setHeader('content-type', 'application/javascript').send(swaggerConfig)
+);
+
+// Serve Swagger UI API documentation from the static files path
+app.use('/api-docs', express.static(pathToSwaggerUi));
+
+// Serve the Swagger JSON document
+app.get('/musicstore-api.json', (req, res) => {
+  res.json(swaggerOutputFile);
+});
 
 // Express request middleware
 app.use(express.json());
