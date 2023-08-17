@@ -1,7 +1,7 @@
 {
-  "name": "bb-practicum-team-1-back",
+  "name": "bb-practicum-team-4-back",
   "version": "1.0.0",
-  "description": "Back-End Repo for Team 1 of Baboon/Bald Eagle Practicum",
+  "description": "Back-End Repo for Team 4 of Deer/Dove Practicum",
   "main": "app.js",
   "scripts": {
     "dev": "nodemon src/app.js",
