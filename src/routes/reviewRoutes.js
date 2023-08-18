@@ -4,6 +4,6 @@ const { authenticateUser } = require('../middleware/authentication');
 
 const { createReview } = require('../controllers/reviewController');
 
-router.route('/').post(authenticateUser, createReview);
+router.route('/album/:albumId').post(authenticateUser, createReview);
 
 module.exports = router;
