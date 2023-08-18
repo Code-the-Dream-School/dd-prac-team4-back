@@ -1,7 +1,7 @@
 const Album = require('../models/Album');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
-const  logger  = require('../../logs/logger')
+const logger = require('../../logs/logger');
 
 const createAlbum = async (req, res) => {
   req.body.user = req.user.userId;
