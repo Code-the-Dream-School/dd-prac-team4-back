@@ -94,6 +94,7 @@ const connectDB = require('./db/connect');
 const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
 const albumRouter = require('./routes/albumRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
 // middleware
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
@@ -101,6 +102,7 @@ const errorHandlerMiddleware = require('./middleware/error-handler');
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/albums', albumRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 // Error handling middleware (must be defined after all other routes and middleware)
 app.use(notFoundMiddleware); // Not found middleware to handle invalid routes
