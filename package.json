@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "nodemon src/app.js",
     "start": "node src/app.js",
-    "lint": "eslint .",
+    "lint:check": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "jest",
     "generate-api-docs": "node ./swagger.js"
   },
@@ -43,9 +44,20 @@
     "@types/jest": "^29.5.3",
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^8.9.0",
+    "eslint-plugin-jest": "^27.2.3",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.0",
+    "mongodb-memory-server": "^8.15.1",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.0",
+    "supertest": "^6.3.3",
     "swagger-autogen": "^2.23.5",
     "swagger-jsdoc": "^6.2.8"
+  },
+  "lint-staged": {
+    "*.js": [
+      "npm run lint:fix",
+      "npm run format"
+    ]
   }
 }
