@@ -47,12 +47,17 @@
     "eslint-plugin-jest": "^27.2.3",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.0",
+    "mongodb-memory-server": "^8.15.1",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.0",
+    "supertest": "^6.3.3",
     "swagger-autogen": "^2.23.5",
     "swagger-jsdoc": "^6.2.8"
   },
   "lint-staged": {
-    "*.js": "npm run lint:fix && npm run format"
+    "*.js": [
+      "npm run lint:fix",
+      "npm run format"
+    ]
   }
 }

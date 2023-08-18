@@ -28,13 +28,12 @@ router
   .get(getSingleAlbum) //everyone can access all products- no middleware
   .patch(authenticateUser, authorizePermissions('admin'), updateAlbum); //only admin can update album
 
-
-  router
+router
   .route('/:id/listOfUsersWhoPurchasedThisAlbum')
   .get(
     authenticateUser,
     authorizePermissions('admin'),
     getAlbumWithAllUsersWhoPurchasedIt
-  ) //only admin can see who purchased album
+  ); //only admin can see who purchased album
 
 module.exports = router;
