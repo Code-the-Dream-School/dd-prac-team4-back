@@ -31,6 +31,7 @@ const orderSchema = new mongoose.Schema({
   orderStatus: {
     type: String,
     enum: ['pending', 'payment_successful', 'payment_failed', 'cancelled', 'complete'],
+    default: 'pending',
     required: true, // Order status is required
   },
   // The tax field represents the tax percentage applied to the order
@@ -52,6 +53,7 @@ const orderSchema = new mongoose.Schema({
   },
   // The paymentIntentId field stores the Stripe state of the purchase
   paymentIntentId: String, // Payment intent ID is a string
+  orderItems: [orderItemSchema],
 }, {
   timestamps: true, // Automatically add createdAt and updatedAt timestamps
 });
