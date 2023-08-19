@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 
 // mongoose schema for the individual order items
 const orderItemSchema = new mongoose.Schema({
-
   // The album field references the Album model and is required
   album: {
     type: mongoose.Schema.Types.ObjectId,
@@ -36,6 +35,7 @@ const orderSchema = new mongoose.Schema(
         'cancelled',
         'complete',
       ],
+      default: 'pending',
       required: [true, 'Please provide an order status'], // Order status is required
     },
     // The tax field represents the tax percentage applied to the order
@@ -66,34 +66,45 @@ const orderSchema = new mongoose.Schema(
   }
 );
 
-// Middleware: Update order status for pending orders older than 10 minutes
+// Create a function to update order statuses
+const updateOrderStatus = async () => {
+  try {
+    // Get the current date and subtract 1 minute
+    const oneMinutesAgo = new Date(Date.now() - 1 * 60 * 1000);
+
+    // Update orders with a status of "pending" that were created 1 minute ago or earlier,
+    // and set the order status to "cancelled"
+    const result = await Order.updateMany(
+      { orderStatus: 'pending', createdAt: { $lte: oneMinutesAgo } },
+      { $set: { orderStatus: 'cancelled' } }
+    );
+    console.log('Update result:', result);
+  } catch (error) {
+    console.error('Error updating orders:', error);
+  }
+};
+
+// Call the updateOrderStatus function every 1 minute (60 * 1000 milliseconds)
+setInterval(updateOrderStatus, 1 * 60 * 1000);
+
+// Middleware: Update order statuses before executing a find operation
 orderSchema.pre('find', async function (next) {
-  // Create a date object representing the time 10 minutes ago
-  const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
-  console.log('Running pre(find) middleware'); 
-  // Update all orders with a "pending" status and that were created before or equal to 10 minutes ago
-  await this.updateMany(
-    { orderStatus: 'pending', createdAt: { $lte: tenMinutesAgo } },
-    { $set: { orderStatus: 'cancelled' } } // Set the order status to "cancelled"
-  );
+  console.log('Pre-find started');
+  // Call the updateOrderStatus function to update order statuses
+  await updateOrderStatus();
+  console.log('Pre-find finished');
   next();
 });
 
-// updates the status of orders with a "pending" status that were created more
-// than 10 minutes ago to "cancelled". This happens before executing a findOne operation.
+// Middleware: Update order statuses before executing a findOne operation
 orderSchema.pre('findOne', async function (next) {
-  // Get the current date and subtract 10 minutes
-  const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
-  console.log('Running pre(findOne) middleware');
-  // Find orders with "pending" status created more than 10 minutes ago
-  // and change their status to "cancelled"
-  await this.updateMany(
-    { orderStatus: 'pending', createdAt: { $lte: tenMinutesAgo } },
-    { $set: { orderStatus: 'cancelled' } }
-  );
+  console.log('Pre-findOne started');
+  // Call the updateOrderStatus function to update order statuses
+  await updateOrderStatus();
+  console.log('Pre-findOne finished');
   next();
 });
 
 const Order = mongoose.model('Order', orderSchema);
 
-module.exports = { OrderItem, Order };
+module.exports = { Order };
