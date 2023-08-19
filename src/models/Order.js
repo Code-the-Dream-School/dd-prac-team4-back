@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 // mongoose schema for the individual order items
 const orderItemSchema = new mongoose.Schema({
+
   // The album field references the Album model and is required
   album: {
     type: mongoose.Schema.Types.ObjectId,

@@ -12,16 +12,23 @@ const {
   updateCurrentUser,
   updateUserPassword,
   deleteSingleUser,
+  getCurrentUserWithPurchasedAlbums,
 } = require('../controllers/userController');
 
 // Define routes for handling user-related operations
 router
   .route('/')
   .get(authenticateUser, authorizePermissions('admin'), getAllUsers);
+
 // - GET /: Retrieve all users (requires authentication and admin permission)
 
 router.route('/showMe').get(authenticateUser, showCurrentUser);
 // - GET /showMe: Retrieve the currently authenticated user's information
+
+router
+  .route('/showMe/withAlbums')
+  .get(authenticateUser, getCurrentUserWithPurchasedAlbums);
+//getting a user with their albums
 
 router.route('/updateCurrentUser').patch(authenticateUser, updateCurrentUser);
 // - PATCH /updateUser: Update the currently authenticated user's information

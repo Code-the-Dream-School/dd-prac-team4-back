@@ -52,6 +52,7 @@ describe('GET /api/v1/users/:user_id endpoint', () => {
     // Arrange: Create a test user
     const user = await User.create({
       name: 'ava',
+      username: 'ava',
       email: 'ava@ava.com',
       password: 'secret',
       role: 'user',
