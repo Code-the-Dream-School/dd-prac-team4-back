@@ -6,7 +6,11 @@ const CustomError = require('../errors');
 //create review
 const createReview = async (req, res) => {
   //( frontend sends an album property in the req.body) ! we MUST PROVIDE which album we are requesting- "album": "64d2a94c793389a43fc5a8ec",
-  const { album: albumId } = req.body; //check /look for the album in req.body and assign it to albumId
+  const { albumId } = req.params; //check /look for the albumId in req.params 
+  
+  //add it to req.body before creating the review
+  req.body.album = req.album.albumId;
+
   //check if album exists in db
   const isValidAlbum = await Album.exists({ _id: albumId });
   if (!isValidAlbum) {
@@ -42,13 +46,13 @@ const updateReview = async (req, res) => {
   }
 
   // Check if the requesting user is the author of the review
-  //option 1
+  //option 1 -only checks if the user is the author of the review
   if (review.user.toString() !== req.user.userId) {
     throw new CustomError.UnauthorizedError(
       'You are not authorized to update this review'
     );
   }
-  //option 2
+  //option 2 -checks if it's an admin or user who wrote the review
   // checkPermissions(req.user, review.user);
 
   // Validate if required fields are present in the request body
