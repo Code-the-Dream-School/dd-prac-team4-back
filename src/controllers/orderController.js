@@ -6,9 +6,6 @@ const { BadRequestError } = require('../errors');
 const createOrder = async (req, res) => {
   const { orderItems, subtotal, tax, total } = req.body;
 
-  // Create an array of OrderItem objects
-  const orderItemObjects = orderItems.map((item) => new OrderItem(item));
-
   // Perform necessary checks and validations
   if (!orderItems?.length) {
     throw new BadRequestError(
@@ -19,7 +16,7 @@ const createOrder = async (req, res) => {
   // Create an Order document in the database
   const order = await Order.create({
     user: req.user.userId,
-    orderItems: orderItemObjects,
+    orderItems,
     subtotal,
     tax,
     total,
