@@ -6,9 +6,9 @@ const CustomError = require('../errors');
 //create review
 const createReview = async (req, res) => {
   //( frontend sends an album property in the req.body) ! we MUST PROVIDE which album we are requesting- "album": "64d2a94c793389a43fc5a8ec",
-  const { album: albumId } = req.body; //check /look for the album in req.body and assign it to albumId // in postman in REQUEST { album: albumId } : {"album": "647e247e69c32ece45e23978"}
+  const { album: albumId } = req.body; //check /look for the album in req.body and assign it to albumId
   //check if album exists in db
-  const isValidAlbum = await Album.findOne({ _id: albumId });
+  const isValidAlbum = await Album.exists({ _id: albumId });
   if (!isValidAlbum) {
     throw new CustomError.NotFoundError(`No album with id : ${albumId}`);
   }
@@ -19,8 +19,8 @@ const createReview = async (req, res) => {
   });
 
   if (alreadySubmitted) {
-    throw new CustomError.BadRequestError(
-      'Already submitted review for this album'
+    throw new CustomError.Conflict(
+      'You already submitted review for this album'
     );
   }
   //The user property is added to the request body with the userId of the authenticated user. This ensures that the created review is associated with the correct user.
@@ -30,10 +30,6 @@ const createReview = async (req, res) => {
 };
 
 //add get all reviews
-
-
-
-
 
 //update review
 const updateReview = async (req, res) => {
@@ -45,7 +41,7 @@ const updateReview = async (req, res) => {
     throw new CustomError.NotFoundError(`No review with id ${reviewId}`);
   }
 
-// Check if the requesting user is the author of the review
+  // Check if the requesting user is the author of the review
   //option 1
   if (review.user.toString() !== req.user.userId) {
     throw new CustomError.UnauthorizedError(
@@ -55,7 +51,7 @@ const updateReview = async (req, res) => {
   //option 2
   // checkPermissions(req.user, review.user);
 
-// Validate if required fields are present in the request body
+  // Validate if required fields are present in the request body
   //option A:
   if (!req.body.rating || !req.body.title || !req.body.comment) {
     throw new CustomError.BadRequestError(
@@ -82,7 +78,42 @@ const updateReview = async (req, res) => {
   res.status(StatusCodes.OK).json({ review });
 };
 
+// get All Reviews
+const getAllReviews = async (req, res) => {
+  const reviews = await Review.find({}).populate({
+    //adding more info to the review using populate method- aka fill , add the info from mongoose model
+   //review+ about which album 
+   path: 'album', //we pass what we want to reference //line 26 in Review.js
+   select: 'artistName albumName image price', //and what properties we want to get from Album model (Album.js)
+
+    //and to populate user data: review+user who wrote it
+    // path: 'user', //we pass what we want to reference //in Review.js
+    // select: 'email name username', //and what properties we want to get from album model
+  });
+  res.status(StatusCodes.OK).json({ reviews, count: reviews.length });
+};
+
+const getSingleReview = async (req, res) => {
+    const { id: reviewId } = req.params; //using object destructuring to extract the id property from the params object of the req (request) object and assign it to the reviewId variable.
+    const review = await Review.findOne({ _id: reviewId }); //look for specific review match between id in url and _id in db
+    
+    //in case we want to add extra info to the single review //here: about which album is this review
+    //   .populate({ 
+    //     path: 'album',
+    //     select: 'artistName albumName image price',
+    //   });
+
+    //check if there is no review- throw an error
+    if (!review) {
+      throw new CustomError.NotFoundError(`No review with id ${reviewId}`);
+    }
+  
+    res.status(StatusCodes.OK).json({ review });
+  };
+
 module.exports = {
   createReview,
   updateReview,
+  getAllReviews,
+  getSingleReview,
 };
