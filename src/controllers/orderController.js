@@ -1,4 +1,4 @@
-const { Order, OrderItem } = require('../models/Order');
+const { Order } = require('../models/Order');
 const { StatusCodes } = require('http-status-codes');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { BadRequestError } = require('../errors');
