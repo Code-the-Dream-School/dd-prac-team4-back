@@ -24,6 +24,11 @@ app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });
 
+// Base path simple response so that it's clear that the backend is working
+app.get('/', (req, res) => {
+  res.send('<h1>Music Store API</h1><a href="/api-docs">API Docs</a>');
+});
+
 // ====== Middleware setup ======
 
 //Security middleware
