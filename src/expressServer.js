@@ -21,11 +21,13 @@ require('express-async-errors');
 
 // Create a health endpoint for Render.com
 app.get('/health', (req, res) => {
+  /* #swagger.ignore = true */
   res.status(200).send('OK');
 });
 
 // Base path simple response so that it's clear that the backend is working
 app.get('/', (req, res) => {
+  /* #swagger.ignore = true */
   res.send('<h1>Music Store API</h1><a href="/api-docs">API Docs</a>');
 });
 
@@ -69,6 +71,7 @@ app.use('/api-docs', express.static(pathToSwaggerUi));
 
 // Serve the Swagger JSON document
 app.get('/musicstore-api.json', (req, res) => {
+  /* #swagger.ignore = true */
   res.json(swaggerOutputFile);
 });
 
@@ -104,7 +107,7 @@ const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/users', userRouter);
+app.use('/api/v1/users', userRouter /* #swagger.tags = ['Users'] */);
 app.use('/api/v1/albums', albumRouter);
 
 // Error handling middleware (must be defined after all other routes and middleware)
