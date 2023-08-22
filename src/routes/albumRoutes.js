@@ -15,6 +15,7 @@ const {
   getAlbumWithAllUsersWhoPurchasedIt,
 } = require('../controllers/albumController');
 
+
 router
   .route('/')
   .post(authenticateUser, authorizePermissions('admin'), createAlbum) //only admin can create product
@@ -35,5 +36,8 @@ router
     authorizePermissions('admin'),
     getAlbumWithAllUsersWhoPurchasedIt
   ); //only admin can see who purchased album
+
+
+ 
 
 module.exports = router;

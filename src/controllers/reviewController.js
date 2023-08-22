@@ -6,10 +6,10 @@ const CustomError = require('../errors');
 //create review
 const createReview = async (req, res) => {
   //( frontend sends an album property in the req.body) ! we MUST PROVIDE which album we are requesting- "album": "64d2a94c793389a43fc5a8ec",
-  const { albumId } = req.params; //check /look for the albumId in req.params 
-  
+  const { albumId } = req.params; //check /look for the albumId in req.params
+
   //add it to req.body before creating the review
-  req.body.album = req.album.albumId;
+  req.body.album = albumId;
 
   //check if album exists in db
   const isValidAlbum = await Album.exists({ _id: albumId });
@@ -32,8 +32,6 @@ const createReview = async (req, res) => {
   const review = await Review.create(req.body);
   res.status(StatusCodes.CREATED).json({ review });
 };
-
-//add get all reviews
 
 //update review
 const updateReview = async (req, res) => {
@@ -86,9 +84,9 @@ const updateReview = async (req, res) => {
 const getAllReviews = async (req, res) => {
   const reviews = await Review.find({}).populate({
     //adding more info to the review using populate method- aka fill , add the info from mongoose model
-   //review+ about which album 
-   path: 'album', //we pass what we want to reference //line 26 in Review.js
-   select: 'artistName albumName image price', //and what properties we want to get from Album model (Album.js)
+    //review+ about which album
+    path: 'album', //we pass what we want to reference //line 26 in Review.js
+    select: 'artistName albumName image price', //and what properties we want to get from Album model (Album.js)
 
     //and to populate user data: review+user who wrote it
     // path: 'user', //we pass what we want to reference //in Review.js
@@ -97,27 +95,38 @@ const getAllReviews = async (req, res) => {
   res.status(StatusCodes.OK).json({ reviews, count: reviews.length });
 };
 
-const getSingleReview = async (req, res) => {
-    const { id: reviewId } = req.params; //using object destructuring to extract the id property from the params object of the req (request) object and assign it to the reviewId variable.
-    const review = await Review.findOne({ _id: reviewId }); //look for specific review match between id in url and _id in db
-    
-    //in case we want to add extra info to the single review //here: about which album is this review
-    //   .populate({ 
-    //     path: 'album',
-    //     select: 'artistName albumName image price',
-    //   });
+//get All reviews for a particular product/album
+const getAllReviewsForThisProduct = async (req, res) => {
+  const { albumId } = req.params; //check /look for the albumId in req.params
+  const allProductReviews = await Review.find({ album: albumId });
+  res
+    .status(StatusCodes.OK)
+    .json({ allProductReviews, count: allProductReviews.length });
+};
 
-    //check if there is no review- throw an error
-    if (!review) {
-      throw new CustomError.NotFoundError(`No review with id ${reviewId}`);
-    }
-  
-    res.status(StatusCodes.OK).json({ review });
-  };
+//get single review
+const getSingleReview = async (req, res) => {
+  const { id: reviewId } = req.params; //using object destructuring to extract the id property from the params object of the req (request) object and assign it to the reviewId variable.
+  const review = await Review.findOne({ _id: reviewId }); //look for specific review match between id in url and _id in db
+
+  //in case we want to add extra info to the single review //here: about which album is this review
+  //   .populate({
+  //     path: 'album',
+  //     select: 'artistName albumName image price',
+  //   });
+
+  //check if there is no review- throw an error
+  if (!review) {
+    throw new CustomError.NotFoundError(`No review with id ${reviewId}`);
+  }
+
+  res.status(StatusCodes.OK).json({ review });
+};
 
 module.exports = {
   createReview,
   updateReview,
   getAllReviews,
   getSingleReview,
+  getAllReviewsForThisProduct,
 };
