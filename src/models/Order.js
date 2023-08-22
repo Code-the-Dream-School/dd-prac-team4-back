@@ -62,8 +62,11 @@ const orderSchema = new mongoose.Schema(
     orderItems: [orderItemSchema],
     expiresAt: {
       type: Date,
-      default: Date.now() + 60 * 1000, // Initial time for 1 minute
-      index: { expires: '1m' }, // Index for automatic deletion after 1 minute
+      // Set expiresAt to the future by 2 minutes for orders with the "cancelled" status
+      default: function () {
+        return new Date(Date.now() + 2 * 60 * 1000); // 2 minutes
+      },
+      index: { expires: '2m' }, // Index for automatic deletion after 2 minutes
     },
   },
   {
@@ -71,10 +74,32 @@ const orderSchema = new mongoose.Schema(
   }
 );
 
+// Create a function to update order statuses
+const updateOrderStatus = async () => {
+  try {
+    // Get the current date and subtract 1 minute
+    const oneMinutesAgo = new Date(Date.now() - 1 * 60 * 1000);
+
+    // Update orders with a status of "pending" that were created 1 minute ago or earlier,
+    // and set the order status to "cancelled"
+    const result = await Order.updateMany(
+      { orderStatus: 'pending', createdAt: { $lte: oneMinutesAgo } },
+      { $set: { orderStatus: 'cancelled' } }
+    );
+    console.log('Update result:', result);
+  } catch (error) {
+    console.error('Error updating orders:', error);
+  }
+};
+
+// Call the updateOrderStatus function every 1 minute (60 * 1000 milliseconds)
+setInterval(updateOrderStatus, 1 * 60 * 1000);
+
 // Middleware: Update order statuses before executing a find operation
 orderSchema.pre('find', async function (next) {
   console.log('Pre-find started');
-  
+  // Call the updateOrderStatus function to update order statuses
+  await updateOrderStatus();
   console.log('Pre-find finished');
   next();
 });
@@ -82,7 +107,8 @@ orderSchema.pre('find', async function (next) {
 // Middleware: Update order statuses before executing a findOne operation
 orderSchema.pre('findOne', async function (next) {
   console.log('Pre-findOne started');
-  
+  // Call the updateOrderStatus function to update order statuses
+  await updateOrderStatus();
   console.log('Pre-findOne finished');
   next();
 });
