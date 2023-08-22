@@ -1,22 +1,24 @@
 const mongoose = require('mongoose');
+// Must be required to ensure that the model is created before we try to use it
+require('./PurchasedAlbum');
 
 const AlbumSchema = new mongoose.Schema(
   {
     artistName: {
       type: String,
       required: [true, 'Please provide artist name'],
-      maxlength: [100, 'Artist name can not be more than 100 characters'],
+      maxlength: [300, 'Artist name can not be more than 300 characters'],
       trim: true,
     },
     albumName: {
       type: String,
       required: [true, 'Please provide album name'],
-      maxlength: [100, 'Album name can not be more than 100 characters'],
+      maxlength: [300, 'Album name can not be more than 300 characters'],
       trim: true,
     },
     price: {
       type: Number,
-      required: [true, 'Please provide album price'],
+      default: 0,
       min: 0,
     },
     image: {
@@ -29,12 +31,11 @@ const AlbumSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      required: [false, 'Please provide music category'],
-      enum: ['pop', 'rock', 'rap'],
+      required: false,
     },
     spotifyUrl: {
       type: String,
-      required: false, //CHANGE TO TRUE LATER!!!!!!
+      required: true,
       validate: {
         validator: function (v) {
           return /^https:\/\/open\.spotify\.com\/album\/[a-zA-Z0-9]+$/.test(v); //ensures that the URL starts with https://open.spotify.com/album/ followed by alphanumeric characters.
@@ -50,14 +51,21 @@ const AlbumSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    user: {
-      type: mongoose.Types.ObjectId,
-      ref: 'User', // we are referencing the user model . if we don´t provide user- in postman we'll get  "msg": "Path `user` is required."
-      required: false, //CHANGE TO TRUE LATER!!!!!!
-    },
   },
-  { timestamps: true } //timestamps provides fields of createdAt , updatedAt... and exact time,
+  {
+    //timestamps provides fields of createdAt , updatedAt... and exact time,
+    timestamps: true,
+    // when converting from a model to JSON (eg: when we return it in `res.json(...)`) we want to include virtual properties (eg: purchasedByUsers)
+    toJSON: { virtuals: true },
+  }
 );
+
+//this is returning all of the users that have purchased this album
+AlbumSchema.virtual('purchasedByUsers', {
+  ref: 'PurchasedAlbum', //specifies that the virtual field purchasedAlbums is referencing the PurchasedAlbum model.
+  localField: '_id', //_id field (from the db= id of the product) of the Album model is used as the local field to establish the relationship.
+  foreignField: 'album', // album field in the PurchasedAlbum model is used as the foreign field to establish the relationship.
+});
 
 const Album = mongoose.model('Album', AlbumSchema);
 

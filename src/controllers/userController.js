@@ -9,13 +9,25 @@ const {
 
 const getAllUsers = async (req, res) => {
   // Function to get all users
+  //console.log(req.user);
   // Find all users with the role 'user' in the database and exclude the 'password' field
   const users = await User.find({ role: 'user' }).select('-password');
   res.status(StatusCodes.OK).json({ users }); // Send a JSON response with the status code 200 OK and the users
 };
 
 const getSingleUser = async (req, res) => {
-  // Function to get a single user by ID
+  /*
+     #swagger.summary = 'Fetch a user by id'
+     #swagger.parameters['id'] = {
+        description: 'Mongo ObjectID of the user to fetch',
+     }
+     #swagger.responses[200] = {
+				description: 'User successfully fetched.',
+				schema: { $ref: '#/definitions/PasswordlessUser' }
+		 }
+		 #swagger.responses[404] = { description: 'No user with id found.' }
+		 #swagger.responses[403] = { description: 'Requester forbidden to fetch this user.' }
+  */
   // Find the user in the database based on the provided user ID and exclude the 'password' field
   const user = await User.findOne({ _id: req.params.id }).select('-password');
   if (!user) {
@@ -68,7 +80,6 @@ const updateUserPassword = async (req, res) => {
     // Throw an UnauthenticatedError if the old password is incorrect
     throw new CustomError.UnauthenticatedError('Invalid Credentials');
   }
-
   user.password = newPassword; // Update the user's password
 
   await user.save(); // Save the updated user to the database
@@ -83,6 +94,25 @@ const deleteSingleUser = async (req, res) => {
   res.status(StatusCodes.OK).json({ message: 'User deleted successfully' });
 };
 
+//Fetching a user from the database, including all the albums they've purchased
+const getCurrentUserWithPurchasedAlbums = async (req, res) => {
+  // Show current user by id with all the albums they've purchased + see createTokenUser- userId comes from there
+  let userWithAlbums = await User.findById(req.user.userId)
+    .select('-password')
+    .populate({
+      path: 'purchasedAlbums', // we fill in virtual field purchasedAlbums // name of the virtual to populate
+      populate: { path: 'album' }, //  with this info // nested populate, without this we would just get back a list of PurchasedAlbum models.
+      // But we just want to further populate to get the Album model refferred to in  the PurchasedAlbum.album proprty.
+    });
+  if (!userWithAlbums) {
+    throw new CustomError.NotFoundError(`No user with id: ${req.params.id}`);
+  }
+  res.status(StatusCodes.OK).json({
+    user: userWithAlbums,
+    purchasedAlbumCount: userWithAlbums.purchasedAlbums.length,
+  });
+};
+
 module.exports = {
   getAllUsers,
   getSingleUser,
@@ -90,4 +120,5 @@ module.exports = {
   updateCurrentUser,
   updateUserPassword,
   deleteSingleUser,
+  getCurrentUserWithPurchasedAlbums,
 };

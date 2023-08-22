@@ -1,0 +1,41 @@
+name: Node CI
+'on':
+  pull_request: null
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version:
+          - 16.x
+    steps:
+      - uses: actions/checkout@v3
+      - name: 'Set up Node.js ${{ matrix.node-version }}'
+        uses: actions/setup-node@v3
+        with:
+          node-version: '${{ matrix.node-version }}'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Running prettier to check for valid formatting
+        id: format
+        run: 'npm run format:check'
+      - name: Echo message if exit code is 1
+        run: echo "Code style issues found. Please run Prettier by running the command `npm run format` locally."
+        if: ${{ steps.format.outcome == 'failure' && steps.format.exitCode == 1 }}
+
+      - name: Running ESLint to check for valid syntax
+        id: lint
+        run: 'npm run lint:check'
+      - name: Echo message if exit code is 1
+        run: echo "Code syntax issues found. Please run ESLint  by running the command `npm run lint:fix` locally."
+        if: ${{ steps.lint.outcome == 'failure' && steps.lint.exitCode == 1 }}
+
+      - name: Running jest to run all tests
+        env:
+          JWT_SECRET: ${{ vars.CI_JWT_SECRET }}
+          JWT_LIFETIME: ${{ vars.CI_JWT_LIFETIME }}
+          SESSION_SECRET: ${{ vars.CI_SESSION_SECRET }}
+        run: 'npm run test'
