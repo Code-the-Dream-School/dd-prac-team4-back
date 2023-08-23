@@ -12,11 +12,11 @@ const {
 
 router.route('/').get(getAllReviews);
 
+router
+  .route('/album/:albumId')
+  .post(authenticateUser, createReview)
+  .get(getAllReviewsForThisProduct);
 
-router.route('/album/:albumId').post(authenticateUser, createReview);
-
-router.route('/:id').patch(authenticateUser, updateReview).get(getSingleReview)
-
-router.route('/album/:albumId').get(getAllReviewsForThisProduct)
+router.route('/:id').patch(authenticateUser, updateReview).get(getSingleReview);
 
 module.exports = router;

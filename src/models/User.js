@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const argon2 = require('argon2');
+// Must be required to ensure that the model is created before we try to use it
+require('./PurchasedAlbum');
 
 // Mongoose schema for profileImage
 const profileImageSchema = new mongoose.Schema({
@@ -30,42 +32,46 @@ const creditCardSchema = new mongoose.Schema({
   },
 });
 
-const UserSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Please provide name'],
-    minlength: 2,
-    maxlength: 50,
-  },
-  username: {
-    type: String,
-    required: [true, 'Please provide name'],
-    minlength: 2,
-    maxlength: 50,
-  },
-  email: {
-    type: String,
-    unique: true, //checks index; if !index throws mongoose errors
-    required: [true, 'Please provide email'],
-    validate: {
-      validator: validator.isEmail,
-      message: 'Please provide valid email',
+const UserSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'Please provide name'],
+      minlength: 2,
+      maxlength: 50,
     },
+    username: {
+      type: String,
+      required: [true, 'Please provide name'],
+      minlength: 2,
+      maxlength: 50,
+    },
+    email: {
+      type: String,
+      unique: true, //checks index; if !index throws mongoose errors
+      required: [true, 'Please provide email'],
+      validate: {
+        validator: validator.isEmail,
+        message: 'Please provide valid email',
+      },
+    },
+    password: {
+      type: String,
+      required: [true, 'Please provide password'],
+      minlength: 6,
+    },
+    role: {
+      type: String,
+      // acceptable values for the role property
+      enum: ['admin', 'user'],
+      default: 'user',
+    },
+    profileImage: profileImageSchema,
+    creditCardInfo: creditCardSchema,
   },
-  password: {
-    type: String,
-    required: [true, 'Please provide password'],
-    minlength: 6,
-  },
-  role: {
-    type: String,
-    // acceptable values for the role property
-    enum: ['admin', 'user'],
-    default: 'user',
-  },
-  profileImage: profileImageSchema,
-  creditCardInfo: creditCardSchema,
-});
+  // when converting from a model to JSON (eg: when we return it in `res.json(...)`) we want to include virtual properties (eg: purchasedAlbums)
+  { toJSON: { virtuals: true } }
+);
 // using this virtual we want to  return all the albums this single user has purchased
 UserSchema.virtual('purchasedAlbums', {
   ref: 'PurchasedAlbum',

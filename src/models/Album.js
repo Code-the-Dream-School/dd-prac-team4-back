@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+// Must be required to ensure that the model is created before we try to use it
+require('./PurchasedAlbum');
 
 const AlbumSchema = new mongoose.Schema(
   {
@@ -50,7 +52,12 @@ const AlbumSchema = new mongoose.Schema(
       default: 0,
     },
   },
-  { timestamps: true } //timestamps provides fields of createdAt , updatedAt... and exact time,
+  {
+    //timestamps provides fields of createdAt , updatedAt... and exact time,
+    timestamps: true,
+    // when converting from a model to JSON (eg: when we return it in `res.json(...)`) we want to include virtual properties (eg: purchasedByUsers)
+    toJSON: { virtuals: true },
+  }
 );
 
 //this is returning all of the users that have purchased this album

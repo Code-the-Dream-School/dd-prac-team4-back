@@ -60,12 +60,18 @@ const getAlbumWithAllUsersWhoPurchasedIt = async (req, res) => {
     _id: req.params.id,
   }).populate({
     path: 'purchasedByUsers', // we want to fill with data this virtual field// name of the virtual to populate
-    populate: { path: 'user' }, //with this data// nested populate, without this we would just get back a list of PurchasedAlbum models.
+    populate: { path: 'user', options: { select: { password: 0 } } }, //with this data// nested populate, without this we would just get back a list of PurchasedAlbum models.
     // But we just want to further populate to get the User model refferred to in  the PurchasedAlbum.user proprty.
+    // Also we pass in a `select` so that we don't return the hashed user passwords
   });
+  if (!usersThatPurchasedThisAlbum) {
+    throw new CustomError.NotFoundError(
+      `No album with id ${req.params.id} was found`
+    );
+  }
   res.status(StatusCodes.OK).json({
-    usersThatPurchasedThisAlbum,
-    count: usersThatPurchasedThisAlbum.length,
+    album: usersThatPurchasedThisAlbum,
+    purchasingUsersCount: usersThatPurchasedThisAlbum.purchasedByUsers.length,
   });
 };
 

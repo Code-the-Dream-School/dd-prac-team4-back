@@ -17,8 +17,7 @@ const getAllUsers = async (req, res) => {
 
 const getSingleUser = async (req, res) => {
   /*
-     #swagger.tags = ['Users']
-     #swager.summary = 'Fetch a user by id'
+     #swagger.summary = 'Fetch a user by id'
      #swagger.parameters['id'] = {
         description: 'Mongo ObjectID of the user to fetch',
      }
@@ -98,14 +97,20 @@ const deleteSingleUser = async (req, res) => {
 //Fetching a user from the database, including all the albums they've purchased
 const getCurrentUserWithPurchasedAlbums = async (req, res) => {
   // Show current user by id with all the albums they've purchased + see createTokenUser- userId comes from there
-  let userWithAlbums = await User.findById(req.user.userId).populate({
-    path: 'purchasedAlbums', // we fill in virtual field purchasedAlbums // name of the virtual to populate
-    populate: { path: 'album' }, //  with this info // nested populate, without this we would just get back a list of PurchasedAlbum models.
-    // But we just want to further populate to get the Album model refferred to in  the PurchasedAlbum.album proprty.
+  let userWithAlbums = await User.findById(req.user.userId)
+    .select('-password')
+    .populate({
+      path: 'purchasedAlbums', // we fill in virtual field purchasedAlbums // name of the virtual to populate
+      populate: { path: 'album' }, //  with this info // nested populate, without this we would just get back a list of PurchasedAlbum models.
+      // But we just want to further populate to get the Album model refferred to in  the PurchasedAlbum.album proprty.
+    });
+  if (!userWithAlbums) {
+    throw new CustomError.NotFoundError(`No user with id: ${req.params.id}`);
+  }
+  res.status(StatusCodes.OK).json({
+    user: userWithAlbums,
+    purchasedAlbumCount: userWithAlbums.purchasedAlbums.length,
   });
-  res
-    .status(StatusCodes.OK)
-    .json({ userWithAlbums, count: userWithAlbums.purchasedAlbums.length });
 };
 
 module.exports = {
