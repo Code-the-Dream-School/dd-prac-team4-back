@@ -62,9 +62,13 @@ const orderSchema = new mongoose.Schema(
     orderItems: [orderItemSchema],
     expiresAt: {
       type: Date,
-      // Set expiresAt to the future by 2 minutes for orders with the "cancelled" status
+      // Set expiresAt only for orders with the "cancelled" status
       default: function () {
-        return new Date(Date.now() + 2 * 60 * 1000); // 2 minutes
+        if (this.orderStatus === 'cancelled') {
+          return new Date(Date.now() + 2 * 60 * 1000); // 2 minutes
+        }
+        // If the status is not "cancelled", expiresAt is not set
+        return undefined;
       },
       index: { expires: '2m' }, // Index for automatic deletion after 2 minutes
     },
