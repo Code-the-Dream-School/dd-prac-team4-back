@@ -105,9 +105,11 @@ orderSchema.pre('findOne', async function (next) {
   console.log('Pre-findOne finished');
   next();
 });
-
-// Create a TTL (Time To Live) index for automatically deleting orders from MongoDB after 2 minutes if their status is "cancelled."
-orderSchema.index({ createdAt: 1 }, { expireAfterSeconds: 120, partialFilterExpression: { orderStatus: 'cancelled' } });
+// TTL (Time To Live) index to automatically delete orders with "cancelled" status after 2 minutes
+orderSchema.index(
+  { expiresAt: 1 },
+  { expireAfterSeconds: 120, partialFilterExpression: { orderStatus: 'cancelled' } }
+);
 
 const Order = mongoose.model('Order', orderSchema);
 
