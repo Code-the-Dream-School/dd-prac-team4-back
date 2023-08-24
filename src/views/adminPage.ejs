@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Page</title>
+  <link rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+  <h1>Admin Page</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Album Title</th>
+        <th>Artist</th>
+        <th>Price</th>
+        <th>Select</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% function formatPrice(price) {
+          return price.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+      } %>
+      <% albums.forEach(function (album) { %>
+        <tr>
+          <td><%= album.albumName %></td>
+          <td><%= album.artistName %></td>
+          <td><%= formatPrice(album.price) %></td>
+          <td><input type="checkbox" value="<%= album._id %>"></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <script>
+    // JavaScript
+  </script>
+</body>
+</html>
