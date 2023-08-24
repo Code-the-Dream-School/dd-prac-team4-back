@@ -1,14 +1,21 @@
 {
   "extends": ["eslint:recommended", "prettier"],
+  "plugins": ["jest"],
   "rules": {
     // Add any additional rules or override default rules here
     "arrow-parens": "error",
     "arrow-spacing": "error",
-    "no-unused-vars": "warn",
-    "no-unused-expressions": "warn"
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "no-unused-expressions": "warn",
+    "jest/no-disabled-tests": "warn",
+    "jest/no-focused-tests": "error",
+    "jest/no-identical-title": "error",
+    "jest/prefer-to-have-length": "warn",
+    "jest/valid-expect": "error"
   },
   "env": {
     "node": true,
-    "es2023": true
+    "es2023": true,
+    "jest/globals": true
   }
 }
