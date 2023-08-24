@@ -33,8 +33,8 @@ async function removeAlbumFromWishlist(req, res) {
       return res.status(400).json({ error: 'Invalid ID format' });
     }
 
-    const wishlist = await Wishlist.findByIdAndUpdate(
-      wishlist_id,
+    await Wishlist.findByIdAndUpdate(
+      { _id: wishlist_id, user: req.user.userId },
       { $pull: { albums: album_id } },
       { new: true }
     ).populate('albums');
