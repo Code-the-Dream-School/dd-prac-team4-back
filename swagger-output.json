@@ -7,7 +7,9 @@
   },
   "host": "localhost:8000",
   "basePath": "/",
-  "schemes": ["http"],
+  "schemes": [
+    "http"
+  ],
   "paths": {
     "/api/v1/auth/register": {
       "post": {
@@ -81,7 +83,9 @@
     },
     "/api/v1/users/": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -92,7 +96,9 @@
     },
     "/api/v1/users/showMe": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -103,7 +109,9 @@
     },
     "/api/v1/users/showMe/withAlbums": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -114,7 +122,9 @@
     },
     "/api/v1/users/updateCurrentUser": {
       "patch": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -142,7 +152,9 @@
     },
     "/api/v1/users/updateUserPasssword": {
       "patch": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -170,7 +182,9 @@
     },
     "/api/v1/users/{id}": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Fetch a user by id",
         "description": "",
         "parameters": [
@@ -198,7 +212,9 @@
         }
       },
       "delete": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -357,6 +373,150 @@
           }
         }
       }
+    },
+    "/api/v1/orders/": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "orderItems": {
+                  "example": "any"
+                },
+                "subtotal": {
+                  "example": "any"
+                },
+                "tax": {
+                  "example": "any"
+                },
+                "total": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/reviews/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/reviews/album/{albumId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "albumId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "albumId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "album": {
+                  "example": "any"
+                },
+                "user": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/reviews/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "rating": {
+                  "example": "any"
+                },
+                "title": {
+                  "example": "any"
+                },
+                "comment": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -377,7 +537,10 @@
         },
         "role": {
           "type": "string",
-          "enum": ["user", "admin"]
+          "enum": [
+            "user",
+            "admin"
+          ]
         },
         "profileImage": {
           "type": "object",
@@ -401,7 +564,11 @@
             },
             "preferredPaymentOption": {
               "type": "string",
-              "enum": ["credit card", "paypal", "google pay"]
+              "enum": [
+                "credit card",
+                "paypal",
+                "google pay"
+              ]
             }
           }
         }
