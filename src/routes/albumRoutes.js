@@ -15,7 +15,6 @@ const {
   getAlbumWithAllUsersWhoPurchasedIt,
 } = require('../controllers/albumController');
 
-
 router
   .route('/')
   .post(authenticateUser, authorizePermissions('admin'), createAlbum) //only admin can create product
@@ -28,7 +27,6 @@ router
   .route('/:id')
   .get(getSingleAlbum) //everyone can access all products- no middleware
   .patch(authenticateUser, authorizePermissions('admin'), updateAlbum); //only admin can update album
-
 
 router
   .route('/:id/listOfUsersWhoPurchasedThisAlbum')
