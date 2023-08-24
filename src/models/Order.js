@@ -116,4 +116,3 @@ orderSchema.index(
 const Order = mongoose.model('Order', orderSchema);
 
 module.exports = { Order };
-
