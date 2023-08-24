@@ -39,11 +39,11 @@ async function removeAlbumFromWishlist(req, res) {
       { new: true }
     ).populate('albums');
 
-    if (!wishlist) {
+    if (!Wishlist) {
       return res.status(404).json({ error: 'Wishlist not found' });
     }
 
-    res.json(wishlist);
+    res.json(Wishlist);
   } catch (error) {
     res.status(500).json({ error: 'Could not update wishlist' });
   }
