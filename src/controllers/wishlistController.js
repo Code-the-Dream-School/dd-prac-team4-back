@@ -32,21 +32,17 @@ async function removeAlbumFromWishlist(req, res) {
     return res.status(400).json({ error: 'Invalid ID format' });
   }
 
-  try {
-    const wishlist = await Wishlist.findByIdAndUpdate(
-      { _id: wishlist_id, user: req.user.userId },
-      { $pull: { albums: album_id } },
-      { new: true }
-    ).populate('albums');
+  const wishlist = await Wishlist.findByIdAndUpdate(
+    { _id: wishlist_id, user: req.user.userId },
+    { $pull: { albums: album_id } },
+    { new: true }
+  ).populate('albums');
 
-    if (!wishlist) {
-      return res.status(404).json({ error: 'Wishlist not found' });
-    }
-
-    res.json(wishlist);
-  } catch (error) {
-    res.status(500).json({ error: 'Could not update wishlist' });
+  if (!wishlist) {
+    return res.status(404).json({ error: 'Wishlist not found' });
   }
+
+  res.json(wishlist);
 }
 
 module.exports = {
