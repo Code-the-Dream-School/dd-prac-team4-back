@@ -1,13 +1,10 @@
-const { Order, OrderItem } = require('../models/Order');
+const { Order } = require('../models/Order');
 const { StatusCodes } = require('http-status-codes');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { BadRequestError } = require('../errors');
 
 const createOrder = async (req, res) => {
   const { orderItems, subtotal, tax, total } = req.body;
-
-  // Create an array of OrderItem objects
-  const orderItemObjects = orderItems.map((item) => new OrderItem(item));
 
   // Perform necessary checks and validations
   if (!orderItems?.length) {
@@ -19,7 +16,7 @@ const createOrder = async (req, res) => {
   // Create an Order document in the database
   const order = await Order.create({
     user: req.user.userId,
-    orderItems: orderItemObjects,
+    orderItems,
     subtotal,
     tax,
     total,
