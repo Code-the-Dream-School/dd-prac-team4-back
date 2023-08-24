@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Wishlist = require('./wishlist');
+const Wishlist = require('../models/Wishlist');
 
 // Add an album to a wishlist
 async function addAlbumToWishlist(req, res) {
