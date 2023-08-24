@@ -23,27 +23,27 @@ async function addAlbumToWishlist(req, res) {
 
 // Remove an album from a wishlist
 async function removeAlbumFromWishlist(req, res) {
+  const { wishlist_id, album_id } = req.params;
+
+  if (
+    !mongoose.Types.ObjectId.isValid(wishlist_id) ||
+    !mongoose.Types.ObjectId.isValid(album_id)
+  ) {
+    return res.status(400).json({ error: 'Invalid ID format' });
+  }
+
   try {
-    const { wishlist_id, album_id } = req.params;
-
-    if (
-      !mongoose.Types.ObjectId.isValid(wishlist_id) ||
-      !mongoose.Types.ObjectId.isValid(album_id)
-    ) {
-      return res.status(400).json({ error: 'Invalid ID format' });
-    }
-
-    await Wishlist.findByIdAndUpdate(
+    const wishlist = await Wishlist.findByIdAndUpdate(
       { _id: wishlist_id, user: req.user.userId },
       { $pull: { albums: album_id } },
       { new: true }
     ).populate('albums');
 
-    if (!Wishlist) {
+    if (!wishlist) {
       return res.status(404).json({ error: 'Wishlist not found' });
     }
 
-    res.json(Wishlist);
+    res.json(wishlist);
   } catch (error) {
     res.status(500).json({ error: 'Could not update wishlist' });
   }
