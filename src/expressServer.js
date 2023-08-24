@@ -104,6 +104,8 @@ const connectDB = require('./db/connect');
 const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
 const albumRouter = require('./routes/albumRoutes');
+const orderRouter = require('./routes/orderRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
 // middleware
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
@@ -111,6 +113,8 @@ const errorHandlerMiddleware = require('./middleware/error-handler');
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter /* #swagger.tags = ['Users'] */);
 app.use('/api/v1/albums', albumRouter);
+app.use('/api/v1/orders', orderRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 // Serve static files from the 'public' folder
 app.use('/admin', require('./routes/adminRoutes'));
