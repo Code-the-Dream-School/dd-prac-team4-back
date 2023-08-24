@@ -1,6 +1,9 @@
 const express = require('express');
 const Wishlist = require('../models/Wishlist');
-const Album = require('../models/Album');
+const {
+  addAlbumToWishlist,
+  removeAlbumFromWishlist,
+} = require('../controllers/wishlistController');
 const router = express.Router();
 const mongoose = require('mongoose');
 
