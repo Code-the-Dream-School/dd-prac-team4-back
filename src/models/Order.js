@@ -60,7 +60,6 @@ const orderSchema = new mongoose.Schema(
     // The paymentIntentId field stores the Stripe state of the purchase
     paymentIntentId: String, // Payment intent ID is a string
     orderItems: [orderItemSchema],
-    
   },
   {
     timestamps: true, // Automatically add createdAt and updatedAt timestamps
@@ -108,7 +107,10 @@ orderSchema.pre('findOne', async function (next) {
 // TTL (Time To Live) index to automatically delete orders with "cancelled" status after 2 minutes
 orderSchema.index(
   { expiresAt: 1 },
-  { expireAfterSeconds: 120, partialFilterExpression: { orderStatus: 'cancelled' } }
+  {
+    expireAfterSeconds: 120,
+    partialFilterExpression: { orderStatus: 'cancelled' },
+  }
 );
 
 const Order = mongoose.model('Order', orderSchema);
