@@ -17,8 +17,7 @@ const getAllUsers = async (req, res) => {
 
 const getSingleUser = async (req, res) => {
   /*
-     #swagger.tags = ['Users']
-     #swager.summary = 'Fetch a user by id'
+     #swagger.summary = 'Fetch a user by id'
      #swagger.parameters['id'] = {
         description: 'Mongo ObjectID of the user to fetch',
      }
