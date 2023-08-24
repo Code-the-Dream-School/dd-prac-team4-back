@@ -1,4 +1,4 @@
-const { Order, OrderItem } = require('../models/Order');
+const { Order } = require('../models/Order');
 const { StatusCodes } = require('http-status-codes');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { BadRequestError } = require('../errors');
@@ -6,12 +6,11 @@ const { BadRequestError } = require('../errors');
 const createOrder = async (req, res) => {
   const { orderItems, subtotal, tax, total } = req.body;
 
-  // Create an array of OrderItem objects
-  const orderItemObjects = orderItems.map(item => new OrderItem(item));
-
   // Perform necessary checks and validations
   if (!orderItems?.length) {
-    throw new BadRequestError('Unable to create order because the order items are missing.'); 
+    throw new BadRequestError(
+      'Unable to create order because the order items are missing.'
+    );
   }
 
   // Create an Order document in the database
@@ -35,7 +34,9 @@ const createOrder = async (req, res) => {
   await order.save();
 
   // Send the payment intent client secret and order information to the client
-  res.status(StatusCodes.CREATED).json({ clientSecret: paymentIntent.client_secret, order });
+  res
+    .status(StatusCodes.CREATED)
+    .json({ clientSecret: paymentIntent.client_secret, order });
 };
 
 module.exports = { createOrder };

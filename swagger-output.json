@@ -81,9 +81,7 @@
     },
     "/api/v1/users/": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "description": "",
         "responses": {
           "default": {
@@ -94,9 +92,7 @@
     },
     "/api/v1/users/showMe": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "description": "",
         "responses": {
           "default": {
@@ -107,9 +103,7 @@
     },
     "/api/v1/users/showMe/withAlbums": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "description": "",
         "responses": {
           "default": {
@@ -120,9 +114,7 @@
     },
     "/api/v1/users/updateCurrentUser": {
       "patch": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "description": "",
         "parameters": [
           {
@@ -150,9 +142,7 @@
     },
     "/api/v1/users/updateUserPasssword": {
       "patch": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "description": "",
         "parameters": [
           {
@@ -180,9 +170,7 @@
     },
     "/api/v1/users/{id}": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Fetch a user by id",
         "description": "",
         "parameters": [
@@ -210,9 +198,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "description": "",
         "parameters": [
           {
