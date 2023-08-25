@@ -6,6 +6,9 @@
 </head>
 <body>
   <h1>Admin Page</h1>
+  <% function formatPrice(price) {
+    return price.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+} %>
   <table>
     <thead>
       <tr>
@@ -16,9 +19,6 @@
       </tr>
     </thead>
     <tbody>
-      <% function formatPrice(price) {
-          return price.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-      } %>
       <% albums.forEach(function (album) { %>
         <tr>
           <td><%= album.albumName %></td>
