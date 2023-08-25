@@ -78,6 +78,8 @@ app.get('/musicstore-api.json', (req, res) => {
 // Express request middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.set('views', `${__dirname}/views`); // Set up EJS for server-side rendering
+app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(cookieParser(process.env.JWT_SECRET)); // Cookie parser middleware with JWT secret
@@ -115,6 +117,10 @@ app.use('/api/v1/albums', albumRouter);
 app.use('/api/v1/orders', orderRouter);
 app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/wishlist', wishlistRoutes);
+
+// Serve static files from the 'public' folder
+app.use('/admin', require('./routes/adminRoutes'));
+app.use(express.static(__dirname + '/public'));
 
 // Error handling middleware (must be defined after all other routes and middleware)
 app.use(notFoundMiddleware); // Not found middleware to handle invalid routes
