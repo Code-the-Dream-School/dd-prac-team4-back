@@ -85,7 +85,7 @@ const updateOrderStatus = async () => {
 };
 
 // Call the updateOrderStatus function every 1 minute (60 * 1000 milliseconds)
-setInterval(updateOrderStatus, 1 * 60 * 1000);
+const intervalId = setInterval(updateOrderStatus, 1 * 60 * 1000);
 
 // Middleware: Update order statuses before executing a find operation
 orderSchema.pre('find', async function (next) {
@@ -115,4 +115,5 @@ orderSchema.index(
 
 const Order = mongoose.model('Order', orderSchema);
 
-module.exports = { Order };
+// Export intervalId as well, so that we can clear the interval when the server is stopped
+module.exports = { Order, intervalId };
