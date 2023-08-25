@@ -104,6 +104,7 @@ const userRouter = require('./routes/userRoutes');
 const albumRouter = require('./routes/albumRoutes');
 const orderRouter = require('./routes/orderRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
+const wishlistRoutes = require('./routes/wishlistRoutes');
 // middleware
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
@@ -113,6 +114,7 @@ app.use('/api/v1/users', userRouter /* #swagger.tags = ['Users'] */);
 app.use('/api/v1/albums', albumRouter);
 app.use('/api/v1/orders', orderRouter);
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/wishlist', wishlistRoutes);
 
 // Error handling middleware (must be defined after all other routes and middleware)
 app.use(notFoundMiddleware); // Not found middleware to handle invalid routes
