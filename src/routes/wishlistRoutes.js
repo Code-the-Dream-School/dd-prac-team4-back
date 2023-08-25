@@ -6,10 +6,10 @@ const {
 
 const router = express.Router();
 
-router.patch('/wishlist/:wishlist_id/add_album/:album_id', addAlbumToWishlist);
+router.patch('/:wishlist_id/add_album/:album_id', addAlbumToWishlist);
 
 router.patch(
-  '/wishlist/:wishlist_id/remove_album/:album_id',
+  '/:wishlist_id/remove_album/:album_id',
   removeAlbumFromWishlist
 );
 
