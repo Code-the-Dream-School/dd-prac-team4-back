@@ -104,7 +104,7 @@ const userRouter = require('./routes/userRoutes');
 const albumRouter = require('./routes/albumRoutes');
 const orderRouter = require('./routes/orderRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
-const wishlistRoutes = require('.routes/wishlistRoutes');
+const wishlistRoutes = require('./routes/wishlistRoutes');
 // middleware
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
