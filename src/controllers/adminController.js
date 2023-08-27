@@ -5,6 +5,10 @@ const adminHomePage = async (req, res) => {
   res.render('adminPage', { albums: allAlbums });
 };
 
+const { updatePriceOfAlbums } = require('../controllers/albumController');
+
+
 module.exports = {
   adminHomePage,
+  updatePriceOfAlbums
 };
