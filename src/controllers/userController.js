@@ -8,7 +8,7 @@ const {
 } = require('../utils');
 
 const getAllUsers = async (req, res) => {
-/*
+  /*
      #swagger.summary = 'Fetch all registered users in a database whose role is user (exclude admins)'
      #swagger.parameters['role'] = {
         description: 'Role of the user to fetch',
@@ -73,7 +73,7 @@ const showCurrentUser = async (req, res) => {
 
 // Update the information of the current user
 const updateCurrentUser = async (req, res) => {
-   /*
+  /*
      #swagger.summary = 'Fetch a user by id, update their data and return a new token user.'
      #swagger.parameters['id'] = {
         description: 'Mongo ObjectID of the user to fetch',
@@ -101,7 +101,7 @@ const updateCurrentUser = async (req, res) => {
 };
 
 const updateUserPassword = async (req, res) => {
- /*
+  /*
      #swagger.summary = 'Fetch a user by id, update their password and save it to the database.'
      #swagger.parameters['id'] = {
         description: 'Mongo ObjectID of the user to fetch',
@@ -135,7 +135,7 @@ const updateUserPassword = async (req, res) => {
 };
 
 const deleteSingleUser = async (req, res) => {
-   /*
+  /*
      #swagger.summary = 'Fetch a user by id and delete user.'
      #swagger.parameters['id'] = {
         description: 'Mongo ObjectID of the user to fetch',
