@@ -123,9 +123,47 @@ const getSingleReview = async (req, res) => {
   res.status(StatusCodes.OK).json({ review });
 };
 
+// delete review
+const deleteReview = async (req, res) => {
+  const { reviewId } = req.params; // take the id of the review from req.params
+
+  try {
+    // Fetch the existing review
+    const review = await Review.findOne({ _id: reviewId });
+
+    // Check if the review exists
+    if (!review) {
+      throw new CustomError.NotFoundError(`No review with id ${reviewId}`);
+    }
+
+    // Check if the requesting user is the author of the review
+    if (review.user.toString() !== req.user.userId) {
+      throw new CustomError.ForbiddenError(
+        'You are not authorized to delete this review'
+      );
+    }
+
+    // Delete the review
+    await review.remove();
+
+    res.status(StatusCodes.OK).json({ message: 'Review deleted successfully' });
+  } catch (error) {
+    if (error instanceof CustomError) {
+      // Handle custom errors
+      res.status(error.statusCode).json({ error: error.message });
+    } else {
+      // Handle other errors
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: 'Internal server error' });
+    }
+  }
+};
+
 module.exports = {
   createReview,
   updateReview,
+  deleteReview,
   getAllReviews,
   getSingleReview,
   getAllReviewsForThisProduct,
