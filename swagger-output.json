@@ -7,10 +7,15 @@
   },
   "host": "localhost:8000",
   "basePath": "/",
-  "schemes": ["http"],
+  "schemes": [
+    "http"
+  ],
   "paths": {
     "/api/v1/auth/register": {
       "post": {
+        "tags": [
+          "Authentication"
+        ],
         "description": "",
         "parameters": [
           {
@@ -44,6 +49,9 @@
     },
     "/api/v1/auth/login": {
       "post": {
+        "tags": [
+          "Authentication"
+        ],
         "description": "",
         "parameters": [
           {
@@ -71,6 +79,9 @@
     },
     "/api/v1/auth/logout": {
       "post": {
+        "tags": [
+          "Authentication"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -81,8 +92,25 @@
     },
     "/api/v1/users/": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Fetch all registered users in a database whose role is user (exclude admins)",
         "description": "",
+        "parameters": [
+          {
+            "name": "role",
+            "description": "Role of the user to fetch",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "description": "Mongo ObjectID of the user to fetch",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -92,41 +120,81 @@
     },
     "/api/v1/users/showMe": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Fetch a user by id",
         "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Mongo ObjectID of the user to fetch",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "User successfully fetched.",
+            "schema": {
+              "$ref": "#/definitions/PasswordlessUser"
+            }
+          },
+          "404": {
+            "description": "No user with id found."
           }
         }
       }
     },
     "/api/v1/users/showMe/withAlbums": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Fetch a user by id and all albums they purchased.",
         "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Mongo ObjectID of the user to fetch",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "User and their albums purchased fetched successfully."
+          },
+          "404": {
+            "description": "No user with id found."
           }
         }
       }
     },
     "/api/v1/users/updateCurrentUser": {
       "patch": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Fetch a user by id, update their data and return a new token user.",
         "description": "",
         "parameters": [
+          {
+            "name": "id",
+            "description": "Mongo ObjectID of the user to fetch",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
               "properties": {
-                "email": {
+                "description": {
                   "example": "any"
                 },
-                "name": {
+                "schema": {
                   "example": "any"
                 }
               }
@@ -134,27 +202,42 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "User successfully fetched and updated.",
+            "schema": {
+              "$ref": "#/definitions/PasswordlessUser"
+            }
+          },
+          "400": {
+            "description": "Error. Need to provide both name and email values."
           }
         }
       }
     },
     "/api/v1/users/updateUserPasssword": {
       "patch": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Fetch a user by id, update their password and save it to the database.",
         "description": "",
         "parameters": [
+          {
+            "name": "id",
+            "description": "Mongo ObjectID of the user to fetch",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
               "properties": {
-                "oldPassword": {
+                "description": {
                   "example": "any"
                 },
-                "newPassword": {
+                "schema": {
                   "example": "any"
                 }
               }
@@ -162,15 +245,26 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "User successfully fetched and password updated.",
+            "schema": {
+              "$ref": "#/definitions/PasswordlessUser"
+            }
+          },
+          "400": {
+            "description": "Error. Need to provide both name and email values."
+          },
+          "401": {
+            "description": "Error. Invalid credentials."
           }
         }
       }
     },
     "/api/v1/users/{id}": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Fetch a user by id",
         "description": "",
         "parameters": [
@@ -189,34 +283,41 @@
               "$ref": "#/definitions/PasswordlessUser"
             }
           },
-          "403": {
-            "description": "Requester forbidden to fetch this user."
-          },
           "404": {
             "description": "No user with id found."
           }
         }
       },
       "delete": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Fetch a user by id and delete user.",
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Mongo ObjectID of the user to fetch"
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "User successfully fetched and deleted."
+          },
+          "404": {
+            "description": "No user with id found."
           }
         }
       }
     },
     "/api/v1/albums/": {
       "get": {
+        "tags": [
+          "Albums"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -225,6 +326,9 @@
         }
       },
       "post": {
+        "tags": [
+          "Albums"
+        ],
         "description": "",
         "parameters": [
           {
@@ -247,6 +351,9 @@
         }
       },
       "patch": {
+        "tags": [
+          "Albums"
+        ],
         "description": "",
         "parameters": [
           {
@@ -271,6 +378,9 @@
     },
     "/api/v1/albums/filter": {
       "get": {
+        "tags": [
+          "Albums"
+        ],
         "description": "",
         "parameters": [
           {
@@ -308,6 +418,9 @@
     },
     "/api/v1/albums/{id}": {
       "get": {
+        "tags": [
+          "Albums"
+        ],
         "description": "",
         "parameters": [
           {
@@ -324,6 +437,9 @@
         }
       },
       "patch": {
+        "tags": [
+          "Albums"
+        ],
         "description": "",
         "parameters": [
           {
@@ -342,6 +458,9 @@
     },
     "/api/v1/albums/{id}/listOfUsersWhoPurchasedThisAlbum": {
       "get": {
+        "tags": [
+          "Albums"
+        ],
         "description": "",
         "parameters": [
           {
@@ -360,6 +479,9 @@
     },
     "/api/v1/orders/": {
       "post": {
+        "tags": [
+          "Orders"
+        ],
         "description": "",
         "parameters": [
           {
@@ -393,6 +515,9 @@
     },
     "/api/v1/reviews/": {
       "get": {
+        "tags": [
+          "Reviews"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -403,6 +528,9 @@
     },
     "/api/v1/reviews/album/{albumId}": {
       "get": {
+        "tags": [
+          "Reviews"
+        ],
         "description": "",
         "parameters": [
           {
@@ -419,6 +547,9 @@
         }
       },
       "post": {
+        "tags": [
+          "Reviews"
+        ],
         "description": "",
         "parameters": [
           {
@@ -452,6 +583,9 @@
     },
     "/api/v1/reviews/{id}": {
       "get": {
+        "tags": [
+          "Reviews"
+        ],
         "description": "",
         "parameters": [
           {
@@ -468,6 +602,9 @@
         }
       },
       "patch": {
+        "tags": [
+          "Reviews"
+        ],
         "description": "",
         "parameters": [
           {
@@ -501,6 +638,82 @@
           }
         }
       }
+    },
+    "/api/v1/wishlist/wishlist/{wishlist_id}/add_album/{album_id}": {
+      "patch": {
+        "tags": [
+          "Wishlist"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "wishlist_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "album_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/wishlist/wishlist/{wishlist_id}/remove_album/{album_id}": {
+      "patch": {
+        "tags": [
+          "Wishlist"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "wishlist_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "album_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/admin/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -521,7 +734,10 @@
         },
         "role": {
           "type": "string",
-          "enum": ["user", "admin"]
+          "enum": [
+            "user",
+            "admin"
+          ]
         },
         "profileImage": {
           "type": "object",
@@ -545,11 +761,21 @@
             },
             "preferredPaymentOption": {
               "type": "string",
-              "enum": ["credit card", "paypal", "google pay"]
+              "enum": [
+                "credit card",
+                "paypal",
+                "google pay"
+              ]
             }
           }
         }
-      }
+      },
+      "required": [
+        "name",
+        "username",
+        "email",
+        "role"
+      ]
     }
   }
 }

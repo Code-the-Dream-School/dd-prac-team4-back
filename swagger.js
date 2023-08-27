@@ -16,10 +16,10 @@ const doc = {
     // Here we can define objects to use in our swagger documentation
     // These can be used as examples for request bodies, response bodies, etc
     PasswordlessUser: {
-      name: 'John Doe',
-      username: 'johndoe',
-      email: 'john@example.com',
-      role: { '@enum': ['user', 'admin'] },
+      $name: 'John Doe',
+      $username: 'johndoe',
+      $email: 'john@example.com',
+      $role: { '@enum': ['user', 'admin'] },
       profileImage: {
         url: 'https://example.com/profile-image.jpg',
       },

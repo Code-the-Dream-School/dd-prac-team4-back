@@ -8,6 +8,18 @@ const {
 } = require('../utils');
 
 const getAllUsers = async (req, res) => {
+/*
+     #swagger.summary = 'Fetch all registered users in a database whose role is user (exclude admins)'
+     #swagger.parameters['role'] = {
+        description: 'Role of the user to fetch',
+     }
+     #swagger.responses[200] = {
+				description: 'Users successfully fetched.',
+        schema: [{ $ref: '#/definitions/PasswordlessUser'' }]
+		 }
+		 
+  */
+
   // Function to get all users
   //console.log(req.user);
   // Find all users with the role 'user' in the database and exclude the 'password' field
@@ -26,7 +38,7 @@ const getSingleUser = async (req, res) => {
 				schema: { $ref: '#/definitions/PasswordlessUser' }
 		 }
 		 #swagger.responses[404] = { description: 'No user with id found.' }
-		 #swagger.responses[403] = { description: 'Requester forbidden to fetch this user.' }
+
   */
   // Find the user in the database based on the provided user ID and exclude the 'password' field
   const user = await User.findOne({ _id: req.params.id }).select('-password');
@@ -39,6 +51,17 @@ const getSingleUser = async (req, res) => {
 };
 
 const showCurrentUser = async (req, res) => {
+  /*
+     #swagger.summary = 'Fetch a user by id'
+     #swagger.parameters['id'] = {
+        description: 'Mongo ObjectID of the user to fetch',
+     }
+     #swagger.responses[200] = {
+				description: 'User successfully fetched.',
+				schema: { $ref: '#/definitions/PasswordlessUser' }
+		 }
+		 #swagger.responses[404] = { description: 'No user with id found.' }
+  */
   const user = await User.findOne({ _id: req.user.userId }).select('-password');
 
   if (!user) {
@@ -50,6 +73,17 @@ const showCurrentUser = async (req, res) => {
 
 // Update the information of the current user
 const updateCurrentUser = async (req, res) => {
+   /*
+     #swagger.summary = 'Fetch a user by id, update their data and return a new token user.'
+     #swagger.parameters['id'] = {
+        description: 'Mongo ObjectID of the user to fetch',
+     }
+     #swagger.responses[200] = {
+				description: 'User successfully fetched and updated.',
+				schema: { $ref: '#/definitions/PasswordlessUser' }
+		 }
+		 #swagger.responses[400] = { description: 'Error. Need to provide both name and email values.' }
+  */
   const { email, name } = req.body;
   if (!email || !name) {
     // Check if email and name are provided
@@ -67,6 +101,19 @@ const updateCurrentUser = async (req, res) => {
 };
 
 const updateUserPassword = async (req, res) => {
+ /*
+     #swagger.summary = 'Fetch a user by id, update their password and save it to the database.'
+     #swagger.parameters['id'] = {
+        description: 'Mongo ObjectID of the user to fetch',
+     }
+     #swagger.responses[200] = {
+				description: 'User successfully fetched and password updated.',
+				schema: { $ref: '#/definitions/PasswordlessUser' }
+		 }
+		 #swagger.responses[400] = { description: 'Error. Need to provide both name and email values.' }
+     #swagger.responses[401] = { description: 'Error. Invalid credentials.' }
+  */
+
   // Function to update the current user's password
   const { oldPassword, newPassword } = req.body;
   if (!oldPassword || !newPassword) {
@@ -88,7 +135,22 @@ const updateUserPassword = async (req, res) => {
 };
 
 const deleteSingleUser = async (req, res) => {
+   /*
+     #swagger.summary = 'Fetch a user by id and delete user.'
+     #swagger.parameters['id'] = {
+        description: 'Mongo ObjectID of the user to fetch',
+     }
+     #swagger.responses[200] = {
+				description: 'User successfully fetched and deleted.'
+				
+		 }
+		  #swagger.responses[404] = { description: 'No user with id found.' }
+  */
   const userId = req.params.id;
+  if (!userId) {
+    // Throw a NotFoundError if the user is not found
+    throw new CustomError.NotFoundError(`No user with id: ${req.params.id}`);
+  }
   // Find the user by ID and delete
   await User.findByIdAndDelete(userId);
   res.status(StatusCodes.OK).json({ message: 'User deleted successfully' });
@@ -96,6 +158,17 @@ const deleteSingleUser = async (req, res) => {
 
 //Fetching a user from the database, including all the albums they've purchased
 const getCurrentUserWithPurchasedAlbums = async (req, res) => {
+  /*
+     #swagger.summary = 'Fetch a user by id and all albums they purchased.'
+     #swagger.parameters['id'] = {
+        description: 'Mongo ObjectID of the user to fetch',
+     }
+     #swagger.responses[200] = {
+				description: 'User and their albums purchased fetched successfully.'
+				
+		 }
+		  #swagger.responses[404] = { description: 'No user with id found.' }
+  */
   // Show current user by id with all the albums they've purchased + see createTokenUser- userId comes from there
   let userWithAlbums = await User.findById(req.user.userId)
     .select('-password')
