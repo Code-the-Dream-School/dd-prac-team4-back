@@ -52,7 +52,7 @@ const getSingleUser = async (req, res) => {
 
 const showCurrentUser = async (req, res) => {
   /*
-     #swagger.summary = 'Fetch a user by id'
+     #swagger.summary = 'Returns information about the requesting user based on cookie session'
      #swagger.parameters['id'] = {
         description: 'Mongo ObjectID of the user to fetch',
      }
