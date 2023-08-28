@@ -110,7 +110,7 @@ const updateUserPassword = async (req, res) => {
 				description: 'User successfully fetched and password updated.',
 				schema: { $ref: '#/definitions/PasswordlessUser' }
 		 }
-		 #swagger.responses[400] = { description: 'Error. Need to provide both name and email values.' }
+		 #swagger.responses[400] = { description: 'Error. Need to provide both new and old password values' }
      #swagger.responses[401] = { description: 'Error. Invalid credentials.' }
   */
 
