@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 // mongoose schema for the individual order items
-const OrderItemSchema = mongoose.Schema({
+const OrderItemSchema = new mongoose.Schema({
   // The album field references the Album model and is required
   album: {
     type: mongoose.Schema.Types.ObjectId,
@@ -24,11 +27,6 @@ const OrderSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User', // Referencing the User model
       required: [true, 'Please provide user'],
-    },
-    email: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User', // Referencing the User model
-      required: [true, 'Please provide email'],
     },
     // The orderStatus field indicates the current status of the order
     orderStatus: {
@@ -74,10 +72,15 @@ const OrderSchema = new mongoose.Schema(
 // Create a function to update order statuses
 const updateOrderStatus = async () => {
   try {
-    // Get the current date and subtract 1 minute
-    //const oneMinutesAgo = new Date(Date.now() - 1 * 60 * 1000);
-    const oneMinutesAgo = new Date(Date.now() - 72000000); // for tests -delete later
-    // Update orders with a status of "pending" that were created 1 minute ago or earlier,
+    
+let isDevelopment = process.env.NODE_ENV !== 'production';
+const timeDuration = isDevelopment
+  ? parseInt(process.env.DEV_TIME_DURATION)
+  : parseInt(process.env.PROD_TIME_DURATION);
+// Get the current date and subtract __x   minutes
+const oneMinutesAgo = new Date(Date.now() - timeDuration);
+
+    // Update orders with a status of "pending" that were created x time ago or earlier,
     // and set the order status to "cancelled"
     const result = await Order.updateMany(
       { orderStatus: 'pending', createdAt: { $lte: oneMinutesAgo } },
@@ -89,10 +92,10 @@ const updateOrderStatus = async () => {
   }
 };
 
-// Call the updateOrderStatus function every 1 minute (60 * 1000 milliseconds)
+// Call the updateOrderStatus function every .... x time
 
-//const intervalId = setInterval(updateOrderStatus, 1 * 60 * 1000);
-const intervalId = setInterval(updateOrderStatus, 72000000); // 2 hours
+//const intervalId = setInterval(updateOrderStatus, process.env.PROD_TIME_DURATION); //prod 1h
+const intervalId = setInterval(updateOrderStatus, process.env.DEV_TIME_DURATION); // dev 20h
 
 // Middleware: Update order statuses before executing a find operation
 OrderSchema.pre('find', async function (next) {
