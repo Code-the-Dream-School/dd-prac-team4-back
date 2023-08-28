@@ -18,6 +18,7 @@ const createOrder = async (req, res) => {
   // Create an Order document in the database
   const order = await Order.create({
     user: req.user.userId,
+    email: req.user.email,
     orderItems: orderItems,
     subtotal,
     tax,
