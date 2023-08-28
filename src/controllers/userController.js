@@ -15,7 +15,7 @@ const getAllUsers = async (req, res) => {
      }
      #swagger.responses[200] = {
 				description: 'Users successfully fetched.',
-        schema: [{ $ref: '#/definitions/PasswordlessUser'' }]
+        schema: [{ $ref: '#/definitions/PasswordlessUser' }]
 		 }
 		 
   */
