@@ -5,6 +5,7 @@ const { authenticateUser } = require('../middleware/authentication');
 const {
   createReview,
   updateReview,
+  deleteReview,
   getAllReviews,
   getSingleReview,
   getAllReviewsForThisProduct,
@@ -17,6 +18,10 @@ router
   .post(authenticateUser, createReview)
   .get(getAllReviewsForThisProduct);
 
-router.route('/:id').patch(authenticateUser, updateReview).get(getSingleReview);
+router
+  .route('/:id')
+  .patch(authenticateUser, updateReview)
+  .get(getSingleReview)
+  .delete(authenticateUser, deleteReview);
 
 module.exports = router;
