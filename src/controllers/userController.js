@@ -74,7 +74,7 @@ const showCurrentUser = async (req, res) => {
 // Update the information of the current user
 const updateCurrentUser = async (req, res) => {
   /*
-     #swagger.summary = 'Fetch a user by id, update their data and return a new token user.'
+     #swagger.summary = 'Fetch a user by id, update their data and return a new user.'
      #swagger.parameters['id'] = {
         description: 'Mongo ObjectID of the user to fetch',
      }
