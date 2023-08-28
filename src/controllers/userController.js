@@ -35,7 +35,7 @@ const getSingleUser = async (req, res) => {
      }
      #swagger.responses[200] = {
 				description: 'User successfully fetched.',
-				schema: { $ref: '#/definitions/PasswordlessUser' }
+				schema: { user: { $ref: '#/definitions/PasswordlessUser' } }
 		 }
 		 #swagger.responses[404] = { description: 'No user with id found.' }
 
