@@ -3,11 +3,12 @@ const router = express.Router();
 const expressBasicAuth = require('express-basic-auth');
 const adminController = require('../controllers/adminController');
 
-router.use(
+// Middleware for Basic Authentication
+router.use( 
   expressBasicAuth({
     users: { [process.env.ADMIN_USERNAME]: process.env.ADMIN_PASSWORD },
-    challenge: true,
-    realm: 'admin site',
+    challenge: true,  // Sends authentication challenge if credentials are not provided
+    realm: 'admin site',  // Authentication realm for the challenge
   })
 );
 

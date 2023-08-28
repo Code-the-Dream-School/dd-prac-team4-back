@@ -1,16 +1,14 @@
 document.addEventListener('DOMContentLoaded', function () {
   const updatePriceBtn = document.getElementById('updatePriceBtn');
   const newPriceInput = document.getElementById('newPrice');
-  const successMessage = document.getElementById('successMessage');
-  const errorMessage = document.getElementById('errorMessage');
+  const messageContainer = document.getElementById('messageContainer');
 
   updatePriceBtn.addEventListener('click', async () => {
     // Disable the price update button to prevent multiple clicks
     updatePriceBtn.disabled = true;
 
-    // Clear success and error messages
-    successMessage.textContent = '';
-    errorMessage.textContent = '';
+    // Clear the message container
+    messageContainer.textContent = '';
 
     // Get the selected albums and the new price
     const selectedAlbums = Array.from(
@@ -18,6 +16,14 @@ document.addEventListener('DOMContentLoaded', function () {
     ).map((checkbox) => checkbox.value);
 
     const newPrice = newPriceInput.value;
+
+    // Check if any albums are selected
+    if (selectedAlbums.length === 0) {
+      messageContainer.textContent = 'Please select albums to update.';
+      messageContainer.classList.add('error-message');
+      updatePriceBtn.disabled = false;
+      return; // Don't proceed with the request
+    }
 
     // Form an array of objects as expected by the server
     const updates = selectedAlbums.map(albumId => ({ id: albumId, price: newPrice }));
@@ -36,11 +42,16 @@ document.addEventListener('DOMContentLoaded', function () {
         throw new Error('Failed to update prices.');
       }
 
-      // If the update is successful, reload the page to update the data
+      // If the update is successful, display a success message
+      messageContainer.textContent = 'Successful!';
+      messageContainer.classList.add('success-message');
+
+      // Reload the page to update the data
       location.reload(true);
     } catch (error) {
       // Display an error message on the page
-      errorMessage.textContent = 'An error occurred while updating prices.';
+      messageContainer.textContent = 'Not Successful!';
+      messageContainer.classList.add('error-message');
     } finally {
       // Enable the price update button after the request is complete
       updatePriceBtn.disabled = false;
