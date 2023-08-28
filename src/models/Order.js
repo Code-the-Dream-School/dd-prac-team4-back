@@ -25,6 +25,11 @@ const OrderSchema = new mongoose.Schema(
       ref: 'User', // Referencing the User model
       required: [true, 'Please provide user'],
     },
+    email: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User', // Referencing the User model
+      required: [true, 'Please provide email'],
+    },
     // The orderStatus field indicates the current status of the order
     orderStatus: {
       type: String,
