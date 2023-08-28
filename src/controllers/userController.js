@@ -49,7 +49,7 @@ const getSingleUser = async (req, res) => {
 
 const showCurrentUser = async (req, res) => {
   /*
-     #swagger.summary = 'Fetch a user by id'
+     #swagger.summary = 'Returns information about the requesting user based on cookie session
      #swagger.responses[200] = {
 				description: 'User successfully fetched.',
 				schema: { $ref: '#/definitions/PasswordlessUser' }
@@ -68,7 +68,7 @@ const showCurrentUser = async (req, res) => {
 // Update the information of the current user
 const updateCurrentUser = async (req, res) => {
   /*
-     #swagger.summary = 'Fetch a user by id, update their data and return a new token user.'
+     #swagger.summary = 'Fetch a user by id, update their data and return a new user.'
      #swagger.responses[200] = {
 				description: 'User successfully fetched and updated.',
 				schema: { $ref: '#/definitions/PasswordlessUser' }
@@ -93,7 +93,7 @@ const updateCurrentUser = async (req, res) => {
 
 const updateUserPassword = async (req, res) => {
   /*
-     #swagger.summary = 'Fetch a user by id, update their password and save it to the database.'
+     #swagger.summary = 'Fetch the current requesting user by id, update their password and save it to the database.'
      #swagger.responses[200] = {
 				description: 'User successfully fetched and password updated.',
 				schema: { $ref: '#/definitions/PasswordlessUser' }

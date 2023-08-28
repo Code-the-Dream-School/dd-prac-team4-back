@@ -97,17 +97,18 @@
         ],
         "summary": "Fetch all registered users in a database whose role is user (exclude admins)",
         "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "description": "Mongo ObjectID of the user to fetch",
-            "in": "query",
-            "type": "string"
-          }
-        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Users successfully fetched.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/PasswordlessUser"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           }
         }
       }
@@ -117,7 +118,7 @@
         "tags": [
           "Users"
         ],
-        "summary": "Fetch a user by id",
+        "summary": "Returns information about the requesting user based on cookie session",
         "description": "",
         "parameters": [
           {
@@ -129,10 +130,16 @@
         ],
         "responses": {
           "200": {
-            "description": "User successfully fetched.",
+            "description": "User and their albums purchased fetched successfully.",
             "schema": {
               "$ref": "#/definitions/PasswordlessUser"
             }
+          },
+          "400": {
+            "description": "Error. Need to provide both new and old password values"
+          },
+          "401": {
+            "description": "Error. Invalid credentials."
           },
           "404": {
             "description": "No user with id found."
@@ -170,15 +177,9 @@
         "tags": [
           "Users"
         ],
-        "summary": "Fetch a user by id, update their data and return a new token user.",
+        "summary": "Fetch a user by id, update their data and return a new user.",
         "description": "",
         "parameters": [
-          {
-            "name": "id",
-            "description": "Mongo ObjectID of the user to fetch",
-            "in": "query",
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
@@ -213,15 +214,9 @@
         "tags": [
           "Users"
         ],
-        "summary": "Fetch a user by id, update their password and save it to the database.",
+        "summary": "Fetch the current requesting user by id, update their password and save it to the database.",
         "description": "",
         "parameters": [
-          {
-            "name": "id",
-            "description": "Mongo ObjectID of the user to fetch",
-            "in": "query",
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
@@ -246,7 +241,7 @@
             }
           },
           "400": {
-            "description": "Error. Need to provide both name and email values."
+            "description": "Error. Need to provide both new and old password values"
           },
           "401": {
             "description": "Error. Invalid credentials."
@@ -274,8 +269,19 @@
           "200": {
             "description": "User successfully fetched.",
             "schema": {
-              "$ref": "#/definitions/PasswordlessUser"
+              "type": "object",
+              "properties": {
+                "user": {
+                  "$ref": "#/definitions/PasswordlessUser"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
             }
+          },
+          "403": {
+            "description": "Requester forbidden to fetch this user."
           },
           "404": {
             "description": "No user with id found."
@@ -293,8 +299,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string",
-            "description": "Mongo ObjectID of the user to fetch"
+            "type": "string"
           }
         ],
         "responses": {
