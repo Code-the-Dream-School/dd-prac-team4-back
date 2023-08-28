@@ -10,9 +10,6 @@ const {
 const getAllUsers = async (req, res) => {
   /*
      #swagger.summary = 'Fetch all registered users in a database whose role is user (exclude admins)'
-     #swagger.parameters['role'] = {
-        description: 'Role of the user to fetch',
-     }
      #swagger.responses[200] = {
 				description: 'Users successfully fetched.',
         schema: [{ $ref: '#/definitions/PasswordlessUser' }]
@@ -38,7 +35,7 @@ const getSingleUser = async (req, res) => {
 				schema: { user: { $ref: '#/definitions/PasswordlessUser' } }
 		 }
 		 #swagger.responses[404] = { description: 'No user with id found.' }
-
+    #swagger.responses[403] = { description: 'Requester forbidden to fetch this user.' }
   */
   // Find the user in the database based on the provided user ID and exclude the 'password' field
   const user = await User.findOne({ _id: req.params.id }).select('-password');
@@ -52,10 +49,7 @@ const getSingleUser = async (req, res) => {
 
 const showCurrentUser = async (req, res) => {
   /*
-     #swagger.summary = 'Returns information about the requesting user based on cookie session'
-     #swagger.parameters['id'] = {
-        description: 'Mongo ObjectID of the user to fetch',
-     }
+     #swagger.summary = 'Fetch a user by id'
      #swagger.responses[200] = {
 				description: 'User successfully fetched.',
 				schema: { $ref: '#/definitions/PasswordlessUser' }
@@ -74,10 +68,7 @@ const showCurrentUser = async (req, res) => {
 // Update the information of the current user
 const updateCurrentUser = async (req, res) => {
   /*
-     #swagger.summary = 'Fetch a user by id, update their data and return a new user.'
-     #swagger.parameters['id'] = {
-        description: 'Mongo ObjectID of the user to fetch',
-     }
+     #swagger.summary = 'Fetch a user by id, update their data and return a new token user.'
      #swagger.responses[200] = {
 				description: 'User successfully fetched and updated.',
 				schema: { $ref: '#/definitions/PasswordlessUser' }
@@ -102,10 +93,7 @@ const updateCurrentUser = async (req, res) => {
 
 const updateUserPassword = async (req, res) => {
   /*
-     #swagger.summary = 'Fetch the current requesting user by id, update their password and save it to the database.'
-     #swagger.parameters['id'] = {
-        description: 'Mongo ObjectID of the user to fetch',
-     }
+     #swagger.summary = 'Fetch a user by id, update their password and save it to the database.'
      #swagger.responses[200] = {
 				description: 'User successfully fetched and password updated.',
 				schema: { $ref: '#/definitions/PasswordlessUser' }
@@ -137,9 +125,6 @@ const updateUserPassword = async (req, res) => {
 const deleteSingleUser = async (req, res) => {
   /*
      #swagger.summary = 'Fetch a user by id and delete user.'
-     #swagger.parameters['id'] = {
-        description: 'Mongo ObjectID of the user to fetch',
-     }
      #swagger.responses[200] = {
 				description: 'User successfully fetched and deleted.'
 				

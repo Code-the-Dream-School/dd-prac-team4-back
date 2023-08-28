@@ -7,11 +7,15 @@
   },
   "host": "localhost:8000",
   "basePath": "/",
-  "schemes": ["http"],
+  "schemes": [
+    "http"
+  ],
   "paths": {
     "/api/v1/auth/register": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "description": "",
         "parameters": [
           {
@@ -45,7 +49,9 @@
     },
     "/api/v1/auth/login": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "description": "",
         "parameters": [
           {
@@ -73,7 +79,9 @@
     },
     "/api/v1/auth/logout": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -84,16 +92,12 @@
     },
     "/api/v1/users/": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Fetch all registered users in a database whose role is user (exclude admins)",
         "description": "",
         "parameters": [
-          {
-            "name": "role",
-            "description": "Role of the user to fetch",
-            "in": "query",
-            "type": "string"
-          },
           {
             "name": "id",
             "description": "Mongo ObjectID of the user to fetch",
@@ -110,7 +114,9 @@
     },
     "/api/v1/users/showMe": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Fetch a user by id",
         "description": "",
         "parameters": [
@@ -136,7 +142,9 @@
     },
     "/api/v1/users/showMe/withAlbums": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Fetch a user by id and all albums they purchased.",
         "description": "",
         "parameters": [
@@ -159,7 +167,9 @@
     },
     "/api/v1/users/updateCurrentUser": {
       "patch": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Fetch a user by id, update their data and return a new token user.",
         "description": "",
         "parameters": [
@@ -200,7 +210,9 @@
     },
     "/api/v1/users/updateUserPasssword": {
       "patch": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Fetch a user by id, update their password and save it to the database.",
         "description": "",
         "parameters": [
@@ -244,7 +256,9 @@
     },
     "/api/v1/users/{id}": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Fetch a user by id",
         "description": "",
         "parameters": [
@@ -269,7 +283,9 @@
         }
       },
       "delete": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Fetch a user by id and delete user.",
         "description": "",
         "parameters": [
@@ -293,7 +309,9 @@
     },
     "/api/v1/albums/": {
       "get": {
-        "tags": ["Albums"],
+        "tags": [
+          "Albums"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -302,7 +320,9 @@
         }
       },
       "post": {
-        "tags": ["Albums"],
+        "tags": [
+          "Albums"
+        ],
         "description": "",
         "parameters": [
           {
@@ -325,7 +345,9 @@
         }
       },
       "patch": {
-        "tags": ["Albums"],
+        "tags": [
+          "Albums"
+        ],
         "description": "",
         "parameters": [
           {
@@ -350,7 +372,9 @@
     },
     "/api/v1/albums/filter": {
       "get": {
-        "tags": ["Albums"],
+        "tags": [
+          "Albums"
+        ],
         "description": "",
         "parameters": [
           {
@@ -388,7 +412,9 @@
     },
     "/api/v1/albums/{id}": {
       "get": {
-        "tags": ["Albums"],
+        "tags": [
+          "Albums"
+        ],
         "description": "",
         "parameters": [
           {
@@ -405,7 +431,9 @@
         }
       },
       "patch": {
-        "tags": ["Albums"],
+        "tags": [
+          "Albums"
+        ],
         "description": "",
         "parameters": [
           {
@@ -424,7 +452,9 @@
     },
     "/api/v1/albums/{id}/listOfUsersWhoPurchasedThisAlbum": {
       "get": {
-        "tags": ["Albums"],
+        "tags": [
+          "Albums"
+        ],
         "description": "",
         "parameters": [
           {
@@ -443,7 +473,9 @@
     },
     "/api/v1/orders/": {
       "post": {
-        "tags": ["Orders"],
+        "tags": [
+          "Orders"
+        ],
         "description": "",
         "parameters": [
           {
@@ -477,7 +509,9 @@
     },
     "/api/v1/reviews/": {
       "get": {
-        "tags": ["Reviews"],
+        "tags": [
+          "Reviews"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -488,7 +522,9 @@
     },
     "/api/v1/reviews/album/{albumId}": {
       "get": {
-        "tags": ["Reviews"],
+        "tags": [
+          "Reviews"
+        ],
         "description": "",
         "parameters": [
           {
@@ -505,7 +541,9 @@
         }
       },
       "post": {
-        "tags": ["Reviews"],
+        "tags": [
+          "Reviews"
+        ],
         "description": "",
         "parameters": [
           {
@@ -539,7 +577,9 @@
     },
     "/api/v1/reviews/{id}": {
       "get": {
-        "tags": ["Reviews"],
+        "tags": [
+          "Reviews"
+        ],
         "description": "",
         "parameters": [
           {
@@ -556,7 +596,9 @@
         }
       },
       "patch": {
-        "tags": ["Reviews"],
+        "tags": [
+          "Reviews"
+        ],
         "description": "",
         "parameters": [
           {
@@ -593,7 +635,9 @@
     },
     "/api/v1/wishlist/wishlist/{wishlist_id}/add_album/{album_id}": {
       "patch": {
-        "tags": ["Wishlist"],
+        "tags": [
+          "Wishlist"
+        ],
         "description": "",
         "parameters": [
           {
@@ -624,7 +668,9 @@
     },
     "/api/v1/wishlist/wishlist/{wishlist_id}/remove_album/{album_id}": {
       "patch": {
-        "tags": ["Wishlist"],
+        "tags": [
+          "Wishlist"
+        ],
         "description": "",
         "parameters": [
           {
@@ -682,7 +728,10 @@
         },
         "role": {
           "type": "string",
-          "enum": ["user", "admin"]
+          "enum": [
+            "user",
+            "admin"
+          ]
         },
         "profileImage": {
           "type": "object",
@@ -706,12 +755,21 @@
             },
             "preferredPaymentOption": {
               "type": "string",
-              "enum": ["credit card", "paypal", "google pay"]
+              "enum": [
+                "credit card",
+                "paypal",
+                "google pay"
+              ]
             }
           }
         }
       },
-      "required": ["name", "username", "email", "role"]
+      "required": [
+        "name",
+        "username",
+        "email",
+        "role"
+      ]
     }
   }
 }
