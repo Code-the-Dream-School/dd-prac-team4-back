@@ -18,7 +18,7 @@ router
 
 router
   .route('/:id')
-  .get(authenticateUser, authorizePermissions('admin'), getSingleOrder)
+  .get(authenticateUser, getSingleOrder)
   .delete(authenticateUser, authorizePermissions('admin'), deleteOrder);
 
 module.exports = router;
