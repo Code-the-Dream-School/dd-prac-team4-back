@@ -2,6 +2,8 @@ const { Order } = require('../models/Order');
 const { StatusCodes } = require('http-status-codes');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { BadRequestError } = require('../errors');
+const CustomError = require('../errors');
+const { checkPermissions } = require('../utils');
 
 const createOrder = async (req, res) => {
   const { orderItems, subtotal, tax, total } = req.body;
@@ -39,4 +41,33 @@ const createOrder = async (req, res) => {
     .json({ clientSecret: paymentIntent.client_secret, order });
 };
 
-module.exports = { createOrder };
+const getAllOrders = async (req, res) => {
+  const orders = await Order.find({});
+  res.status(StatusCodes.OK).json({ orders, count: orders.length });
+};
+
+const getSingleOrder = async (req, res) => {
+  const { id: orderId } = req.params;
+  const order = await Order.findOne({ _id: orderId });
+  if (!order) {
+    throw new CustomError.NotFoundError(`No order with id ${orderId}`);
+  }
+
+  checkPermissions(req.user, order.user);
+
+  res.status(StatusCodes.OK).json({ order });
+};
+
+const deleteOrder = async (req, res) => {
+  const { id: orderId } = req.params;
+  const order = await Order.findOneAndDelete({ _id: orderId });
+
+  if (!order) {
+    throw new CustomError.NotFoundError(`No order with id ${orderId}`);
+  }
+  checkPermissions(req.user, order.user);
+
+  res.status(StatusCodes.OK).json({ msg: 'Success! Order was deleted' });
+};
+
+module.exports = { createOrder, getAllOrders, getSingleOrder, deleteOrder };
