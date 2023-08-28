@@ -10,6 +10,51 @@ h1 {
   margin: 20px auto;
 }
 
+#priceEditForm {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#priceEditForm label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 10px;
+}
+
+#newPrice {
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+#updatePriceBtn {
+  padding: 5px 10px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#updatePriceBtn:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+#messageContainer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.success-message {
+  color: green;
+}
+
+.error-message {
+  color: red;
+}
+
 table {
   width: 80%;
   margin: 20px auto;
