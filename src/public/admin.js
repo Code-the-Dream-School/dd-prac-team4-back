@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
   const updatePriceBtn = document.getElementById('updatePriceBtn');
   const newPriceInput = document.getElementById('newPrice');
-  const priceEditForm = document.getElementById('priceEditForm');
   const successMessage = document.getElementById('successMessage');
   const errorMessage = document.getElementById('errorMessage');
 
@@ -20,17 +19,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const newPrice = newPriceInput.value;
 
-    // Send a request to the server to update prices
+    // Form an array of objects as expected by the server
+    const updates = selectedAlbums.map(albumId => ({ id: albumId, price: newPrice }));
+
+    // Send a request to the server
     try {
-      const response = await fetch('/admin/api/albums', {
+      const response = await fetch('admin/api/albums', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          albumIds: selectedAlbums,
-          newPrice: newPrice,
-        }),
+        body: JSON.stringify(updates), // Send an array of objects
       });
 
       if (!response.ok) {
