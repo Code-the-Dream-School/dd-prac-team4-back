@@ -26,7 +26,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Form an array of objects as expected by the server
-    const updates = selectedAlbums.map(albumId => ({ id: albumId, price: newPrice }));
+    const updates = selectedAlbums.map((albumId) => ({
+      id: albumId,
+      price: newPrice,
+    }));
 
     // Send a request to the server
     try {
