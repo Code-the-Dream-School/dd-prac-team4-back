@@ -48,8 +48,11 @@ const getAllOrders = async (req, res) => {
 
 const getSingleOrder = async (req, res) => {
   const { id: orderId } = req.params;
-   // Fetch the order using the provided orderId and populate user information
-  const order = await Order.findById(orderId).populate({path: 'user', options: { select: { password: 0 } } })
+  // Fetch the order using the provided orderId and populate user information
+  const order = await Order.findById(orderId).populate({
+    path: 'user',
+    options: { select: { password: 0 } },
+  });
 
   if (!order) {
     throw new CustomError.NotFoundError(`No order with id ${orderId}`);
@@ -62,15 +65,15 @@ const getSingleOrder = async (req, res) => {
 
 const deleteOrder = async (req, res) => {
   const { id: orderId } = req.params;
-  const order = await Order.findById(orderId)
+  const order = await Order.findById(orderId);
   if (!order) {
     throw new NotFoundError(`No order with id ${orderId}`);
   }
-  checkPermissions(req.user, order.user)
-  
+  checkPermissions(req.user, order.user);
+
   await Order.findByIdAndDelete(orderId); // or more simply can just call delete on the documnent we've already fetched:  await order.remove()
-  
-  res.status(StatusCodes.OK).json({ msg: 'Success! Order was deleted' })
+
+  res.status(StatusCodes.OK).json({ msg: 'Success! Order was deleted' });
 };
 
 module.exports = { createOrder, getAllOrders, getSingleOrder, deleteOrder };

@@ -72,13 +72,12 @@ const OrderSchema = new mongoose.Schema(
 // Create a function to update order statuses
 const updateOrderStatus = async () => {
   try {
-    
-let isDevelopment = process.env.NODE_ENV !== 'production';
-const timeDuration = isDevelopment
-  ? parseInt(process.env.DEV_TIME_DURATION)
-  : parseInt(process.env.PROD_TIME_DURATION);
-// Get the current date and subtract __x   minutes
-const oneMinutesAgo = new Date(Date.now() - timeDuration);
+    let isDevelopment = process.env.NODE_ENV !== 'production';
+    const timeDuration = isDevelopment
+      ? parseInt(process.env.DEV_TIME_DURATION)
+      : parseInt(process.env.PROD_TIME_DURATION);
+    // Get the current date and subtract __x   minutes
+    const oneMinutesAgo = new Date(Date.now() - timeDuration);
 
     // Update orders with a status of "pending" that were created x time ago or earlier,
     // and set the order status to "cancelled"
@@ -95,7 +94,10 @@ const oneMinutesAgo = new Date(Date.now() - timeDuration);
 // Call the updateOrderStatus function every .... x time
 
 //const intervalId = setInterval(updateOrderStatus, process.env.PROD_TIME_DURATION); //prod 1h
-const intervalId = setInterval(updateOrderStatus, process.env.DEV_TIME_DURATION); // dev 20h
+const intervalId = setInterval(
+  updateOrderStatus,
+  process.env.DEV_TIME_DURATION
+); // dev 20h
 
 // Middleware: Update order statuses before executing a find operation
 OrderSchema.pre('find', async function (next) {
