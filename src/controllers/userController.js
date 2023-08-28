@@ -102,7 +102,7 @@ const updateCurrentUser = async (req, res) => {
 
 const updateUserPassword = async (req, res) => {
   /*
-     #swagger.summary = 'Fetch a user by id, update their password and save it to the database.'
+     #swagger.summary = 'Fetch the current requesting user by id, update their password and save it to the database.'
      #swagger.parameters['id'] = {
         description: 'Mongo ObjectID of the user to fetch',
      }
