@@ -30,31 +30,20 @@ const createWishlist = async (req, res) => {
 // Add an album to a wishlist
 async function addAlbumToWishlist(req, res) {
   const { wishlist_id, album_id } = req.params;
-  console.log('Received request to add album to wishlist');
   if (
     !mongoose.Types.ObjectId.isValid(wishlist_id) ||
     !mongoose.Types.ObjectId.isValid(album_id)
   ) {
     return res.status(400).json({ error: 'Invalid ID format' });
   }
-  console.log('Updating wishlist to add album');
-
-  let wishlist = await Wishlist.findOne({
-    _id: wishlist_id,
-    user: req.user.userId,
-  });
-
-  if (!wishlist) {
-    // Wishlist doesn't exist, create a new one
-    wishlist = await createWishlist(req.user.userId);
-  }
-
-  wishlist = await Wishlist.findOneAndUpdate(
-    { _id: wishlist._id },
+  const wishlist = await Wishlist.findOneAndUpdate(
+    wishlist_id,
     { $addToSet: { albums: album_id } },
     { new: true }
   ).populate('albums');
-
+  if (!wishlist) {
+    return res.status(404).json({ error: 'Wishlist not found' });
+  }
   res.json(wishlist);
 }
 
