@@ -10,7 +10,7 @@ const createAlbum = async (req, res) => {
 };
 
 const getAllAlbums = async (req, res) => {
-  const albums = await Album.find({});
+  const albums = await Album.find({ price: { $gt: 0 } }); // Fetch albums with price greater than 0
   res.status(StatusCodes.OK).json({ albums, count: albums.length });
 };
 
@@ -75,10 +75,11 @@ const getAlbumWithAllUsersWhoPurchasedIt = async (req, res) => {
   });
 };
 
+// question for Akos: how can we test this route in postman? it is set to show 10 results per page and don't know how to see ne 2nd the 3d pages..etcпш
 const getFilteredAlbums = async (req, res) => {
   const { limit, order, offset, albumName, artistName } = req.query;
   // Create an empty query object to store filtering parameters
-  const query = {};
+  const query = {price: { $gt: 0 } }// Add the price condition to the query};
   // Using $regex, we MongoDB search where the provided value is treated as a regular expression.
   if (albumName) {
     query.albumName = { $regex: albumName, $options: 'i' }; //If the albumName parameter is provided.
@@ -103,6 +104,8 @@ const getFilteredAlbums = async (req, res) => {
 
   res.status(StatusCodes.OK).json({ albums, count: albums.length }); // Return the found albums and the count of albums
 };
+
+
 
 module.exports = {
   updateAlbum,
