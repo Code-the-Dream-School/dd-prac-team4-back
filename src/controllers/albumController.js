@@ -4,17 +4,48 @@ const CustomError = require('../errors');
 const logger = require('../../logs/logger');
 
 const createAlbum = async (req, res) => {
+    /*
+     #swagger.summary = 'Create new album and save it to the database'
+    
+     #swagger.responses[201] = {
+				description: 'Albums was successfully created.',
+        schema: [{ $ref: '#/definitions/Album'' }]
+		 }
+		 
+  */
   req.body.user = req.user.userId;
   const album = await Album.create(req.body);
   res.status(StatusCodes.CREATED).json({ album });
 };
 
+// question for Akos - what does minimin means on line 20?
 const getAllAlbums = async (req, res) => {
+  /*
+     #swagger.summary = 'Fetch all albums in a database'
+    
+     #swagger.responses[200] = {
+				description: 'Albums  successfully fetched.',
+        schema: { albums: [{ $ref: '#/definitions/Album' }] }
+		 }
+		 
+  */
   const albums = await Album.find({ price: { $gt: 0 } }); // Fetch albums with price greater than 0
   res.status(StatusCodes.OK).json({ albums, count: albums.length });
 };
 
 const getSingleAlbum = async (req, res) => {
+   /*
+     #swagger.summary = 'Fetch an album  by id'
+     #swagger.parameters['id'] = {
+        description: 'Mongo ObjectID of the album to fetch',
+     }
+     #swagger.responses[200] = {
+				description: 'Album successfully fetched.',
+				schema: { $ref: '#/definitions/Album' }
+		 }
+		 #swagger.responses[404] = { description: 'No album with this id wasfound.' }
+
+  */
   const { id: albumId } = req.params;
   const album = await Album.findOne({ _id: albumId });
   if (!album) {
@@ -24,6 +55,18 @@ const getSingleAlbum = async (req, res) => {
 };
 
 const updateAlbum = async (req, res) => {
+     /*
+     #swagger.summary = 'Fetch an album  by id and update it'
+     #swagger.parameters['id'] = {
+        description: 'Mongo ObjectID of the album to fetch',
+     }
+     #swagger.responses[200] = {
+				description: 'Album successfully fetched and updated.',
+				schema: { $ref: '#/definitions/Album' }
+		 }
+		 #swagger.responses[404] = { description: 'No album with this id wasfound.' }
+
+  */
   const { id: albumId } = req.params;
   const album = await Album.findOneAndUpdate({ _id: albumId }, req.body, {
     new: true,
@@ -38,6 +81,14 @@ const updateAlbum = async (req, res) => {
 //will be user to let admin update price of several albums on the frontend
 
 const updatePriceOfAlbums = async (req, res) => {
+     /*
+     #swagger.summary = 'Update prices of albums passed in req.body'
+
+     #swagger.responses[200] = {
+				description: 'Albums prices  were successfully updated.',
+				chema: { albums: [{ $ref: '#/definitions/Album' }] }
+		 }
+  */
   const bulkUpdateOps = req.body.map((update) => ({
     updateOne: {
       filter: { _id: update.id },
@@ -55,6 +106,15 @@ const updatePriceOfAlbums = async (req, res) => {
 
 //Fetching an album from the database, including all the users that have purchased it
 const getAlbumWithAllUsersWhoPurchasedIt = async (req, res) => {
+       /*
+     #swagger.summary = 'Show all users that purchased this particular album'
+
+     #swagger.responses[200] = {
+				description: 'Album with users who purchased it was fetched  successfully ',
+				chema: { albums: [{ $ref: '#/definitions/Album' }] }
+		 }
+     #swagger.responses[404] = { description: 'No album with this id wasfound.' }
+  */
   // Show current user by id with all the albums they've purchased
   let usersThatPurchasedThisAlbum = await Album.findOne({
     _id: req.params.id,
@@ -77,6 +137,15 @@ const getAlbumWithAllUsersWhoPurchasedIt = async (req, res) => {
 
 // question for Akos: how can we test this route in postman? it is set to show 10 results per page and don't know how to see ne 2nd the 3d pages..etcпш
 const getFilteredAlbums = async (req, res) => {
+   /*
+     #swagger.summary = 'Fetch first 10 albums in a database with price more than 0'
+
+     #swagger.responses[200] = {
+				description: 'Filtered by price more than 0 albums were successfully fetched.',
+        schema: { albums: [{ $ref: '#/definitions/Album' }] }
+		 }
+		 
+  */
   const { limit, order, offset, albumName, artistName } = req.query;
   // Create an empty query object to store filtering parameters
   const query = { price: { $gt: 0 } }; // Add the price condition to the query};

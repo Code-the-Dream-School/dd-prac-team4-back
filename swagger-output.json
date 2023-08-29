@@ -7,7 +7,9 @@
   },
   "host": "localhost:8000",
   "basePath": "/",
-  "schemes": ["http"],
+  "schemes": [
+    "http"
+  ],
   "paths": {
     "/api/v1/auth/register": {
       "post": {
@@ -81,7 +83,9 @@
     },
     "/api/v1/users/": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -92,7 +96,9 @@
     },
     "/api/v1/users/showMe": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -103,7 +109,9 @@
     },
     "/api/v1/users/showMe/withAlbums": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -114,7 +122,9 @@
     },
     "/api/v1/users/updateCurrentUser": {
       "patch": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -142,7 +152,9 @@
     },
     "/api/v1/users/updateUserPasssword": {
       "patch": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -170,7 +182,9 @@
     },
     "/api/v1/users/{id}": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Fetch a user by id",
         "description": "",
         "parameters": [
@@ -198,7 +212,9 @@
         }
       },
       "delete": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -217,27 +233,37 @@
     },
     "/api/v1/albums/": {
       "get": {
+        "summary": "Fetch all albums in a database",
         "description": "",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Albums successfully fetched.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "albums": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Album"
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           }
         }
       },
       "post": {
+        "summary": "Create new album and save it to the database",
         "description": "",
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "user": {
-                  "example": "any"
-                }
-              }
-            }
+            "name": "id",
+            "description": "Mongo ObjectID of the album to fetch",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -247,6 +273,7 @@
         }
       },
       "patch": {
+        "summary": "Update prices of albums passed in req.body",
         "description": "",
         "parameters": [
           {
@@ -263,85 +290,109 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Albums prices were successfully updated.",
+            "chema": {
+              "albums": [
+                {
+                  "$ref": "#/definitions/Album"
+                }
+              ]
+            }
           }
         }
       }
     },
     "/api/v1/albums/filter": {
       "get": {
+        "summary": "Fetch first 10 albums in a database with price more than 0",
         "description": "",
         "parameters": [
           {
-            "name": "limit",
+            "name": "description",
             "in": "query",
             "type": "string"
           },
           {
-            "name": "order",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "albumName",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "artistName",
+            "name": "schema",
             "in": "query",
             "type": "string"
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Filtered by price more than 0 albums were successfully fetched.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "albums": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Album"
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           }
         }
       }
     },
     "/api/v1/albums/{id}": {
       "get": {
+        "summary": "Fetch an album by id",
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Mongo ObjectID of the album to fetch"
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Album successfully fetched.",
+            "schema": {
+              "$ref": "#/definitions/Album"
+            }
+          },
+          "404": {
+            "description": "No album with this id wasfound."
           }
         }
       },
       "patch": {
+        "summary": "Fetch an album by id and update it",
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Mongo ObjectID of the album to fetch"
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Album successfully fetched and updated.",
+            "schema": {
+              "$ref": "#/definitions/Album"
+            }
+          },
+          "404": {
+            "description": "No album with this id wasfound."
           }
         }
       }
     },
     "/api/v1/albums/{id}/listOfUsersWhoPurchasedThisAlbum": {
       "get": {
+        "summary": "Show all users that purchased this particular album",
         "description": "",
         "parameters": [
           {
@@ -352,8 +403,18 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Album with users who purchased it was fetched successfully ",
+            "chema": {
+              "albums": [
+                {
+                  "$ref": "#/definitions/Album"
+                }
+              ]
+            }
+          },
+          "404": {
+            "description": "No album with this id wasfound."
           }
         }
       }
@@ -467,6 +528,22 @@
           }
         }
       },
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
       "patch": {
         "description": "",
         "parameters": [
@@ -501,6 +578,86 @@
           }
         }
       }
+    },
+    "/api/v1/wishlist/wishlist/{wishlist_id}/add_album/{album_id}": {
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "wishlist_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "album_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/wishlist/wishlist/{wishlist_id}/remove_album/{album_id}": {
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "wishlist_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "album_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/admin/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/admin/api/albums": {
+      "patch": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -521,7 +678,10 @@
         },
         "role": {
           "type": "string",
-          "enum": ["user", "admin"]
+          "enum": [
+            "user",
+            "admin"
+          ]
         },
         "profileImage": {
           "type": "object",
@@ -545,7 +705,11 @@
             },
             "preferredPaymentOption": {
               "type": "string",
-              "enum": ["credit card", "paypal", "google pay"]
+              "enum": [
+                "credit card",
+                "paypal",
+                "google pay"
+              ]
             }
           }
         }
