@@ -37,7 +37,7 @@ async function addAlbumToWishlist(req, res) {
     return res.status(400).json({ error: 'Invalid ID format' });
   }
   const wishlist = await Wishlist.findOneAndUpdate(
-    wishlist_id,
+    { _id: wishlist_id, user: req.user.userId },
     { $addToSet: { albums: album_id } },
     { new: true }
   ).populate('albums');

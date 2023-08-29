@@ -15,6 +15,10 @@ router.patch(
   addAlbumToWishlist
 );
 
-router.patch('/:wishlist_id/remove_album/:album_id', removeAlbumFromWishlist);
+router.patch(
+  '/:wishlist_id/remove_album/:album_id',
+  authenticateUser,
+  removeAlbumFromWishlist
+);
 
 module.exports = router;
