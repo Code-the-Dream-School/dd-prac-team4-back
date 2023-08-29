@@ -46,7 +46,6 @@ async function addAlbumToWishlist(req, res) {
   }
   res.json(wishlist);
 }
-
 // Remove an album from a wishlist
 async function removeAlbumFromWishlist(req, res) {
   const { wishlist_id, album_id } = req.params;
