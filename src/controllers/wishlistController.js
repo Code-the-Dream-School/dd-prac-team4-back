@@ -1,16 +1,33 @@
 const mongoose = require('mongoose');
 const Wishlist = require('../models/Wishlist');
+const { StatusCodes } = require('http-status-codes');
+
+//Create wishlist
+const createWishlist = async (req, res) => {
+  const { albumId } = req.body; //frontend sends the albumId in the request body
+
+  const existingWishlist = await Wishlist.findOne({ user: req.user.userId });
+
+  if (!existingWishlist) {
+    const newWishlist = new Wishlist({
+      user: req.user.userId,
+      albums: [albumId],
+    });
+    await newWishlist.save();
+    return res.status(StatusCodes.CREATED).json({ wishlist: newWishlist });
+  }
+
+  if (existingWishlist.albums.includes(albumId)) {
+    console.log(`Album ${albumId} is already in the wishlist.`);
+    return res.status(StatusCodes.OK).json({ wishlist: existingWishlist });
+  }
+
+  existingWishlist.albums.push(albumId);
+  await existingWishlist.save();
+  return res.status(StatusCodes.OK).json({ wishlist: existingWishlist });
+};
 
 // Add an album to a wishlist
-async function createWishlist(userId) {
-  const newWishlist = new Wishlist({
-    user: userId,
-    albums: [],
-  });
-  await newWishlist.save();
-  return newWishlist;
-}
-
 async function addAlbumToWishlist(req, res) {
   const { wishlist_id, album_id } = req.params;
   console.log('Received request to add album to wishlist');
