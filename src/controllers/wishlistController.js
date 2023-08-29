@@ -39,7 +39,10 @@ async function addAlbumToWishlist(req, res) {
   }
   console.log('Updating wishlist to add album');
 
-  let wishlist = await Wishlist.findOne({ _id: wishlist_id });
+  let wishlist = await Wishlist.findOne({
+    _id: wishlist_id,
+    user: req.user.userId,
+  });
 
   if (!wishlist) {
     // Wishlist doesn't exist, create a new one
