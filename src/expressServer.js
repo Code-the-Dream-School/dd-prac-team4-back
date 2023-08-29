@@ -101,7 +101,7 @@ app.use(passport.session());
 const connectDB = require('./db/connect');
 
 //routers
-const authRouter = require('./routes/authRoutes');
+const authRouter = require('./routes/authRoutes'/* #swagger.tags = ['Authentication'] */); 
 const userRouter = require('./routes/userRoutes');
 const albumRouter = require('./routes/albumRoutes');
 const orderRouter = require('./routes/orderRoutes');

@@ -5,6 +5,36 @@ const CustomError = require('../errors');
 const { attachCookiesToResponse, createTokenUser } = require('../utils');
 
 const register = async (req, res) => {
+/* 
+    #swagger.summary = 'Register a new user'
+    #swagger.parameters['user'] = {
+      in: 'body',
+      description: 'User registration information',
+      required: true,
+      schema: {
+        type: 'object',
+        properties: {
+          name: { type: 'string' },
+          email: { type: 'string' },
+          password: { type: 'string' },
+          username: { type: 'string' }
+        }
+      }
+    }
+    #swagger.responses[201] = {
+      description: 'User registered successfully',
+      schema: {
+        $ref: '#/definitions/User' // Reference to the User object definition
+      }
+    }
+    #swagger.responses[400] = {
+      description: 'Bad request, missing email, name, password, or username'
+    }
+    #swagger.responses[409] = {
+      description: 'Conflict, email already exists'
+    }
+  */
+
   const { name, email, password, username } = req.body;
 
   if (!email || !name || !password || !username) {
@@ -33,6 +63,33 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
+  /* 
+    #swagger.summary = 'Login as a user'
+    #swagger.parameters['user'] = {
+      in: 'body',
+      description: 'User email and password for login',
+      required: true,
+      schema: {
+        type: 'object',
+        properties: {
+          email: { type: 'string' },
+          password: { type: 'string' }
+        }
+      }
+    }
+    #swagger.responses[201] = {
+      description: 'User logged in successfully',
+      schema: {
+        $ref: '#/definitions/User' // Reference to the User object definition
+      }
+    }
+    #swagger.responses[400] = {
+      description: 'Bad request, missing email or password'
+    }
+    #swagger.responses[401] = {
+      description: 'Unauthorized, invalid credentials'
+    }
+  */
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -55,8 +112,25 @@ const login = async (req, res) => {
 };
 
 //logout endpoint
-
 const logout = async (req, res) => {
+  /*
+    #swagger.summary = 'Logout a user'
+    #swagger.parameters['token'] = {
+        in: 'cookie',
+        description: 'JWT token in the cookie',
+        required: true,
+        type: 'string'
+    }
+    #swagger.responses[200] = {
+        description: 'User logged out successfully',
+        schema: { type: 'object', properties: { msg: { type: 'string' } } }
+    }
+    #swagger.security = [{ "JWT": [] }]  // Specify that JWT token is required for access
+    #swagger.responses[401] = {
+        description: 'Unauthorized',
+        schema: { type: 'object', properties: { msg: { type: 'string' } } }
+    }
+  */
   res.clearCookie('token', {
     httpOnly: true,
     expires: new Date(Date.now()),
