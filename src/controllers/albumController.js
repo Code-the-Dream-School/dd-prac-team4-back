@@ -4,7 +4,7 @@ const CustomError = require('../errors');
 const logger = require('../../logs/logger');
 
 const createAlbum = async (req, res) => {
-    /*
+  /*
      #swagger.summary = 'Create new album and save it to the database'
     
      #swagger.responses[201] = {
@@ -34,7 +34,7 @@ const getAllAlbums = async (req, res) => {
 };
 
 const getSingleAlbum = async (req, res) => {
-   /*
+  /*
      #swagger.summary = 'Fetch an album  by id'
      #swagger.parameters['id'] = {
         description: 'Mongo ObjectID of the album to fetch',
@@ -55,7 +55,7 @@ const getSingleAlbum = async (req, res) => {
 };
 
 const updateAlbum = async (req, res) => {
-     /*
+  /*
      #swagger.summary = 'Fetch an album  by id and update it'
      #swagger.parameters['id'] = {
         description: 'Mongo ObjectID of the album to fetch',
@@ -81,7 +81,7 @@ const updateAlbum = async (req, res) => {
 //will be user to let admin update price of several albums on the frontend
 
 const updatePriceOfAlbums = async (req, res) => {
-     /*
+  /*
      #swagger.summary = 'Update prices of albums passed in req.body'
 
      #swagger.responses[200] = {
@@ -106,7 +106,7 @@ const updatePriceOfAlbums = async (req, res) => {
 
 //Fetching an album from the database, including all the users that have purchased it
 const getAlbumWithAllUsersWhoPurchasedIt = async (req, res) => {
-       /*
+  /*
      #swagger.summary = 'Show all users that purchased this particular album'
 
      #swagger.responses[200] = {
@@ -137,7 +137,7 @@ const getAlbumWithAllUsersWhoPurchasedIt = async (req, res) => {
 
 // question for Akos: how can we test this route in postman? it is set to show 10 results per page and don't know how to see ne 2nd the 3d pages..etcпш
 const getFilteredAlbums = async (req, res) => {
-   /*
+  /*
      #swagger.summary = 'Fetch first 10 albums in a database with price more than 0'
 
      #swagger.responses[200] = {

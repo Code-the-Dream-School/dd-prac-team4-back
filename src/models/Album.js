@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 // Must be required to ensure that the model is created before we try to use it
 require('./PurchasedAlbum');
 
-
 const AlbumSchema = new mongoose.Schema(
   {
     artistName: {
