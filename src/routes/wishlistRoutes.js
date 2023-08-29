@@ -6,7 +6,7 @@ const {
 } = require('../controllers/wishlistController');
 
 const router = express.Router();
-router.post('/wishlist', createWishlist); // Create wishlist route
+router.post('/', createWishlist); // Create wishlist route
 
 router.patch('/:wishlist_id/add_album/:album_id', addAlbumToWishlist);
 
