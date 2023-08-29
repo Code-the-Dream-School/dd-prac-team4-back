@@ -79,7 +79,7 @@ const getAlbumWithAllUsersWhoPurchasedIt = async (req, res) => {
 const getFilteredAlbums = async (req, res) => {
   const { limit, order, offset, albumName, artistName } = req.query;
   // Create an empty query object to store filtering parameters
-  const query = {price: { $gt: 0 } }// Add the price condition to the query};
+  const query = { price: { $gt: 0 } }; // Add the price condition to the query};
   // Using $regex, we MongoDB search where the provided value is treated as a regular expression.
   if (albumName) {
     query.albumName = { $regex: albumName, $options: 'i' }; //If the albumName parameter is provided.
@@ -104,8 +104,6 @@ const getFilteredAlbums = async (req, res) => {
 
   res.status(StatusCodes.OK).json({ albums, count: albums.length }); // Return the found albums and the count of albums
 };
-
-
 
 module.exports = {
   updateAlbum,
