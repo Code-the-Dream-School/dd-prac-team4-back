@@ -1,3 +1,4 @@
+const { testPing } = require('./testHandlers');
 const onConnect = (io, socket) => {
   console.log('a user connected');
 

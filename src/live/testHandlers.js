@@ -4,3 +4,5 @@ function testPing(payload) {
   console.log('Received: ', payload);
   return this.broadcast.emit('test:ping', `user sent: ${payload}`);
 }
+
+module.exports = { testPing };

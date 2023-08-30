@@ -132,6 +132,8 @@ const http = require('http');
 const server = http.createServer(app);
 const socketServer = new Server(server);
 const setupSocket = require('./live');
+const io = socketServer.of('/'); // Create an instance of Socket.io
+
 // Set up Socket.io connection event
 io.on('connection', (socket) => {
   setupSocket(io, socket); // Call your setupSocket function
