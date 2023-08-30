@@ -101,7 +101,7 @@ app.use(passport.session());
 const connectDB = require('./db/connect');
 
 //routers
-const authRouter = require('./routes/authRoutes'/* #swagger.tags = ['Authentication'] */); 
+const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
 const albumRouter = require('./routes/albumRoutes');
 const orderRouter = require('./routes/orderRoutes');
@@ -111,7 +111,7 @@ const wishlistRoutes = require('./routes/wishlistRoutes');
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 
-app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/auth', authRouter /* #swagger.tags = ['Authentication'] */);
 app.use('/api/v1/users', userRouter /* #swagger.tags = ['Users'] */);
 app.use('/api/v1/albums', albumRouter);
 app.use('/api/v1/orders', orderRouter);

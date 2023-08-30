@@ -7,15 +7,154 @@
   },
   "host": "localhost:8000",
   "basePath": "/",
-  "schemes": [
-    "http"
-  ],
+  "schemes": ["http"],
   "paths": {
+    "/api/v1/auth/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Register a new user",
+        "description": "",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User registration information",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "John Doe"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "jdoe@example.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "supersecretpassword"
+                },
+                "username": {
+                  "type": "string",
+                  "example": "jdoe99"
+                }
+              },
+              "required": ["name", "email", "password", "username"]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "schema": {
+              "$ref": "#/definitions/TokenizedUser"
+            }
+          },
+          "400": {
+            "description": "Bad request, missing email, name, password, or username"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Login as a user",
+        "description": "",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User email and password for login",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "jdoe@example.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "supersecretpassword"
+                }
+              },
+              "required": ["email", "password"]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User logged in successfully",
+            "schema": {
+              "$ref": "#/definitions/TokenizedUser"
+            }
+          },
+          "400": {
+            "description": "Bad request, missing email or password"
+          },
+          "401": {
+            "description": "Unauthorized, invalid credentials"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Logout a user",
+        "description": "",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "cookie",
+            "description": "JWT token in the cookie",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User logged out successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/v1/users/": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "description": "",
         "responses": {
           "default": {
@@ -26,9 +165,7 @@
     },
     "/api/v1/users/showMe": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "description": "",
         "responses": {
           "default": {
@@ -39,9 +176,7 @@
     },
     "/api/v1/users/showMe/withAlbums": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "description": "",
         "responses": {
           "default": {
@@ -52,9 +187,7 @@
     },
     "/api/v1/users/updateCurrentUser": {
       "patch": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "description": "",
         "parameters": [
           {
@@ -82,9 +215,7 @@
     },
     "/api/v1/users/updateUserPasssword": {
       "patch": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "description": "",
         "parameters": [
           {
@@ -112,9 +243,7 @@
     },
     "/api/v1/users/{id}": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Fetch a user by id",
         "description": "",
         "parameters": [
@@ -142,9 +271,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "description": "",
         "parameters": [
           {
@@ -563,10 +690,7 @@
         },
         "role": {
           "type": "string",
-          "enum": [
-            "user",
-            "admin"
-          ]
+          "enum": ["user", "admin"]
         },
         "profileImage": {
           "type": "object",
@@ -590,11 +714,33 @@
             },
             "preferredPaymentOption": {
               "type": "string",
-              "enum": [
-                "credit card",
-                "paypal",
-                "google pay"
-              ]
+              "enum": ["credit card", "paypal", "google pay"]
+            }
+          }
+        }
+      }
+    },
+    "TokenizedUser": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "example": "object"
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "token": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "user": {
+              "$ref": "#/definitions/PasswordlessUser"
             }
           }
         }

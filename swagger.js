@@ -31,6 +31,15 @@ const doc = {
         },
       },
     },
+    TokenizedUser: {
+      type: 'object',
+      properties: {
+        token: { type: 'string' },
+        user: {
+          $ref: '#/definitions/PasswordlessUser',
+        },
+      },
+    },
   },
 };
 

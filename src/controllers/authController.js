@@ -5,33 +5,27 @@ const CustomError = require('../errors');
 const { attachCookiesToResponse, createTokenUser } = require('../utils');
 
 const register = async (req, res) => {
-/* 
+  /* 
     #swagger.summary = 'Register a new user'
     #swagger.parameters['user'] = {
       in: 'body',
       description: 'User registration information',
       required: true,
       schema: {
-        type: 'object',
-        properties: {
-          name: { type: 'string' },
-          email: { type: 'string' },
-          password: { type: 'string' },
-          username: { type: 'string' }
-        }
+        $name: "John Doe",
+        $email: "jdoe@example.com",
+        $password: "supersecretpassword",
+        $username: "jdoe99"
       }
     }
     #swagger.responses[201] = {
       description: 'User registered successfully',
       schema: {
-        $ref: '#/definitions/User' // Reference to the User object definition
+        $ref: '#/definitions/TokenizedUser'
       }
     }
     #swagger.responses[400] = {
       description: 'Bad request, missing email, name, password, or username'
-    }
-    #swagger.responses[409] = {
-      description: 'Conflict, email already exists'
     }
   */
 
@@ -70,17 +64,14 @@ const login = async (req, res) => {
       description: 'User email and password for login',
       required: true,
       schema: {
-        type: 'object',
-        properties: {
-          email: { type: 'string' },
-          password: { type: 'string' }
-        }
+        $email: "jdoe@example.com",
+        $password: "supersecretpassword",
       }
     }
     #swagger.responses[201] = {
       description: 'User logged in successfully',
       schema: {
-        $ref: '#/definitions/User' // Reference to the User object definition
+        $ref: '#/definitions/TokenizedUser' 
       }
     }
     #swagger.responses[400] = {
@@ -125,11 +116,7 @@ const logout = async (req, res) => {
         description: 'User logged out successfully',
         schema: { type: 'object', properties: { msg: { type: 'string' } } }
     }
-    #swagger.security = [{ "JWT": [] }]  // Specify that JWT token is required for access
-    #swagger.responses[401] = {
-        description: 'Unauthorized',
-        schema: { type: 'object', properties: { msg: { type: 'string' } } }
-    }
+    #swagger.security = [{ "JWT": [] }]
   */
   res.clearCookie('token', {
     httpOnly: true,
