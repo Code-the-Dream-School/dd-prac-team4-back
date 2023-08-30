@@ -15,7 +15,7 @@ async function sendTestEmail(recipient) {
     transport.sendMail(
       {
         from: process.env.EMAIL_USERNAME,
-        to: recipient, // Вместо process.env.RECIPIENT_EMAIL используйте аргумент recipient
+        to: recipient,
         subject: 'Test Email',
         text: 'Hello, this is a test email!',
         html: '<p>Hello, this is a test email!</p>',
