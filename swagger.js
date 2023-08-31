@@ -34,32 +34,38 @@ const doc = {
     },
     UserWithAlbums: {
       $id: '64d6ca92a15d2e18ab96a2a3',
-        $name: 'John Doe',
-        $username: 'johndoe',
-        $email: 'john@example.com',
-        $role: { '@enum': ['user', 'admin'] },
-        profileImage: {
+      $name: 'John Doe',
+      $username: 'johndoe',
+      $email: 'john@example.com',
+      $role: { '@enum': ['user', 'admin'] },
+      profileImage: {
           url: 'https://example.com/profile-image.jpg',
-        creditCardInfo: {
+      },
+      creditCardInfo: {
           hashedNumber: '1234567890',
           expiry: '12/24',
           preferredPaymentOption: {
-            '@enum': ['credit card', 'paypal', 'google pay'],
+              '@enum': ['credit card', 'paypal', 'google pay'],
           },
-        },
-        },
-        
-        $artistName: 'Britney Spears',
-        $albumName: '...Baby one more time',
-        price: 20,
-        image: '/uploads/example.jpg',
-        releaseDate: '2023-07-28 T00:00:00.000+00:00',
-        category: 'pop',
-        spotifyUrl: 'https://api.spotify.com/v1/albums/6r1lh7fHMB499vGKtIyJLy',
-        averageRating: 4,
-        numOfReviews: 2,
-      
-    },
+      },
+      $purchasedAlbums: [{
+          $_id: '64ef50c8c5551074444547bc',
+          $user: '64d6ca92a15d2e18ab96a2a3',
+          $album: {
+              $id: '64d2a94c793389a43fc5a8d6',
+              $albumName: '...Baby one more time',
+              $artistName: 'Britney Spears',
+              $createdAt: '2023-08-08T20:45:00.942Z',
+              $updatedAt: '2023-08-17T10:10:42.861Z',
+              $price: 20.99,
+              image: 'https://i.scdn.co/image/ab67616d0000b27371cae34ad5a39bdab78af13e',
+              spotifyUrl: 'https://api.spotify.com/v1/albums/6r1lh7fHMB499vGKtIyJLy',
+              releaseDate: '2023-07-28T00:00:00.000Z',
+              averageRating: 0,
+              numOfReviews: 0,
+          },
+      }],
+  },
   },
 };
 

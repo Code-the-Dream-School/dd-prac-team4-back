@@ -161,8 +161,8 @@ const getCurrentUserWithPurchasedAlbums = async (req, res) => {
   /*
      #swagger.summary = 'Fetch a user by id and all albums they purchased.'
      #swagger.responses[200] = {
-				description: 'User and their albums purchased fetched successfully.'
-				
+				description: 'User and their albums purchased fetched successfully.',
+				schema: { user: { $ref: '#/definitions/UserWithAlbums' }, purchasedAlbumCount: 1}
 		 }
 		  #swagger.responses[404] = { description: 'No user with id found.' }
   */
