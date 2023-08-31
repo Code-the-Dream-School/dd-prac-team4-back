@@ -80,7 +80,7 @@ const doc = {
       category: 'rock',
       $spotifyUrl: 'https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv',
       averageRating: 4.5,
-      numOfReviews: 2
+      numOfReviews: 2,
     },
     NewAlbum: {
       $id: '64d2ae2308a725b72bd5c0cf',
@@ -91,9 +91,8 @@ const doc = {
       releaseDate: '2022-03-01T00:00:00.000Z',
       category: 'rock',
       $spotifyUrl: 'https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv',
-      
     },
-      AlbumsWithUsers: {
+    AlbumsWithUsers: {
       $id: '64d6ca92a15d2e18ab96a2a3',
       $name: 'John Doe',
       $username: 'johndoe',
