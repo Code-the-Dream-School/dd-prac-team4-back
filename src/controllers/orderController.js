@@ -33,7 +33,11 @@ const createOrder = async (req, res) => {
     metadata: {
       userId: req.user.userId,
       orderId: order._id, // key-values
-      totalQuantity: orderItems.length, // the total number of albums purchased in order
+      totalQuantity: orderItems.reduce(
+        (total, item) => total + item.quantity,
+        0
+      ), // the total number of items in the order
+      totalAlbums: orderItems.length, // the total number of albums purchased in order
     },
   });
 
