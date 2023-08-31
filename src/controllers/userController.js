@@ -132,6 +132,7 @@ const deleteSingleUser = async (req, res) => {
   res.status(StatusCodes.OK).json({ message: 'User deleted successfully' });
   /*
      #swagger.summary = 'Fetch a user by id and delete user.'
+     #swagger.description = '**ROLE REQUIRED:** admin'
      #swagger.responses[200] = {
 				description: 'User successfully fetched and deleted.'
 				
