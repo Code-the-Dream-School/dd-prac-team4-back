@@ -104,16 +104,7 @@
       "post": {
         "tags": ["Authentication"],
         "summary": "Logout a user",
-        "description": "",
-        "parameters": [
-          {
-            "name": "token",
-            "in": "cookie",
-            "description": "JWT token in the cookie",
-            "required": true,
-            "type": "string"
-          }
-        ],
+        "description": "This endpoint checks for a signed JWT token in an HTTP-only cookie and clears it. It checks the `token` field in the cookie.",
         "responses": {
           "200": {
             "description": "User logged out successfully",
@@ -723,24 +714,20 @@
     "TokenizedUser": {
       "type": "object",
       "properties": {
-        "type": {
-          "type": "string",
-          "example": "object"
-        },
-        "properties": {
+        "user": {
           "type": "object",
           "properties": {
-            "token": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "example": "string"
-                }
-              }
+            "name": {
+              "type": "string",
+              "example": "John Doe"
             },
-            "user": {
-              "$ref": "#/definitions/PasswordlessUser"
+            "userId": {
+              "type": "string",
+              "example": "64ef5885c2a489217c571253"
+            },
+            "role": {
+              "type": "string",
+              "enum": ["user", "admin"]
             }
           }
         }

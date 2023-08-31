@@ -32,12 +32,10 @@ const doc = {
       },
     },
     TokenizedUser: {
-      type: 'object',
-      properties: {
-        token: { type: 'string' },
-        user: {
-          $ref: '#/definitions/PasswordlessUser',
-        },
+      user: {
+        name: 'John Doe',
+        userId: '64ef5885c2a489217c571253',
+        role: { '@enum': ['user', 'admin'] },
       },
     },
   },
