@@ -160,10 +160,6 @@ const getCurrentUserWithPurchasedAlbums = async (req, res) => {
   });
   /*
      #swagger.summary = 'Fetch a user by id and all albums they purchased.'
-     #swagger.parameters['id'] = {
-        description: 'Mongo ObjectID of the user to fetch',
-        schema:  { $ref: '#/definitions/UserWithAlbums' }
-     }
      #swagger.responses[200] = {
 				description: 'User and their albums purchased fetched successfully.'
 				
