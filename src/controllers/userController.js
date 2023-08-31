@@ -59,7 +59,7 @@ const showCurrentUser = async (req, res) => {
      #swagger.summary = 'Returns information about the requesting user based on cookie session'
      #swagger.responses[200] = {
 				description: 'User successfully fetched.',
-				schema: { user: [{ $ref: '#/definitions/PasswordlessUser' }] }
+				schema: { user: { $ref: '#/definitions/PasswordlessUser' } }
 		 }
 		 #swagger.responses[404] = { description: 'No user with id found.' }
   */
