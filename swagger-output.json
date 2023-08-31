@@ -7,15 +7,11 @@
   },
   "host": "localhost:8000",
   "basePath": "/",
-  "schemes": [
-    "http"
-  ],
+  "schemes": ["http"],
   "paths": {
     "/api/v1/auth/register": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "description": "",
         "parameters": [
           {
@@ -49,9 +45,7 @@
     },
     "/api/v1/auth/login": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "description": "",
         "parameters": [
           {
@@ -79,9 +73,7 @@
     },
     "/api/v1/auth/logout": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "description": "",
         "responses": {
           "default": {
@@ -92,9 +84,7 @@
     },
     "/api/v1/users/": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Fetch all registered users in a database whose role is user (exclude admins)",
         "description": "**ROLE REQUIRED:** admin",
         "responses": {
@@ -120,9 +110,7 @@
     },
     "/api/v1/users/showMe": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Returns information about the requesting user based on cookie session",
         "description": "",
         "responses": {
@@ -148,9 +136,7 @@
     },
     "/api/v1/users/showMe/withAlbums": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Fetch a user by id and all albums they purchased.",
         "description": "",
         "responses": {
@@ -180,9 +166,7 @@
     },
     "/api/v1/users/updateCurrentUser": {
       "patch": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Fetch the requesting user, update their data and return the updated user.",
         "description": "",
         "parameters": [
@@ -225,9 +209,7 @@
     },
     "/api/v1/users/updateUserPasssword": {
       "patch": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Fetch the current requesting user by id, update their password and save it to the database.",
         "description": "",
         "parameters": [
@@ -274,9 +256,7 @@
     },
     "/api/v1/users/{id}": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Fetch a user by id",
         "description": "",
         "parameters": [
@@ -312,9 +292,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Fetch a user by id and delete user.",
         "description": "**ROLE REQUIRED:** admin",
         "parameters": [
@@ -337,9 +315,7 @@
     },
     "/api/v1/albums/": {
       "get": {
-        "tags": [
-          "Albums"
-        ],
+        "tags": ["Albums"],
         "description": "",
         "responses": {
           "default": {
@@ -348,9 +324,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Albums"
-        ],
+        "tags": ["Albums"],
         "description": "",
         "parameters": [
           {
@@ -373,9 +347,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "Albums"
-        ],
+        "tags": ["Albums"],
         "description": "",
         "parameters": [
           {
@@ -400,9 +372,7 @@
     },
     "/api/v1/albums/filter": {
       "get": {
-        "tags": [
-          "Albums"
-        ],
+        "tags": ["Albums"],
         "description": "",
         "parameters": [
           {
@@ -440,9 +410,7 @@
     },
     "/api/v1/albums/{id}": {
       "get": {
-        "tags": [
-          "Albums"
-        ],
+        "tags": ["Albums"],
         "description": "",
         "parameters": [
           {
@@ -459,9 +427,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "Albums"
-        ],
+        "tags": ["Albums"],
         "description": "",
         "parameters": [
           {
@@ -480,9 +446,7 @@
     },
     "/api/v1/albums/{id}/listOfUsersWhoPurchasedThisAlbum": {
       "get": {
-        "tags": [
-          "Albums"
-        ],
+        "tags": ["Albums"],
         "description": "",
         "parameters": [
           {
@@ -501,9 +465,7 @@
     },
     "/api/v1/orders/": {
       "post": {
-        "tags": [
-          "Orders"
-        ],
+        "tags": ["Orders"],
         "description": "",
         "parameters": [
           {
@@ -537,9 +499,7 @@
     },
     "/api/v1/reviews/": {
       "get": {
-        "tags": [
-          "Reviews"
-        ],
+        "tags": ["Reviews"],
         "description": "",
         "responses": {
           "default": {
@@ -550,9 +510,7 @@
     },
     "/api/v1/reviews/album/{albumId}": {
       "get": {
-        "tags": [
-          "Reviews"
-        ],
+        "tags": ["Reviews"],
         "description": "",
         "parameters": [
           {
@@ -569,9 +527,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Reviews"
-        ],
+        "tags": ["Reviews"],
         "description": "",
         "parameters": [
           {
@@ -605,9 +561,7 @@
     },
     "/api/v1/reviews/{id}": {
       "get": {
-        "tags": [
-          "Reviews"
-        ],
+        "tags": ["Reviews"],
         "description": "",
         "parameters": [
           {
@@ -624,9 +578,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "Reviews"
-        ],
+        "tags": ["Reviews"],
         "description": "",
         "parameters": [
           {
@@ -663,9 +615,7 @@
     },
     "/api/v1/wishlist/wishlist/{wishlist_id}/add_album/{album_id}": {
       "patch": {
-        "tags": [
-          "Wishlist"
-        ],
+        "tags": ["Wishlist"],
         "description": "",
         "parameters": [
           {
@@ -696,9 +646,7 @@
     },
     "/api/v1/wishlist/wishlist/{wishlist_id}/remove_album/{album_id}": {
       "patch": {
-        "tags": [
-          "Wishlist"
-        ],
+        "tags": ["Wishlist"],
         "description": "",
         "parameters": [
           {
@@ -760,10 +708,7 @@
         },
         "role": {
           "type": "string",
-          "enum": [
-            "user",
-            "admin"
-          ]
+          "enum": ["user", "admin"]
         },
         "profileImage": {
           "type": "object",
@@ -787,22 +732,12 @@
             },
             "preferredPaymentOption": {
               "type": "string",
-              "enum": [
-                "credit card",
-                "paypal",
-                "google pay"
-              ]
+              "enum": ["credit card", "paypal", "google pay"]
             }
           }
         }
       },
-      "required": [
-        "id",
-        "name",
-        "username",
-        "email",
-        "role"
-      ]
+      "required": ["id", "name", "username", "email", "role"]
     },
     "UserWithAlbums": {
       "type": "object",
@@ -825,10 +760,7 @@
         },
         "role": {
           "type": "string",
-          "enum": [
-            "user",
-            "admin"
-          ]
+          "enum": ["user", "admin"]
         },
         "profileImage": {
           "type": "object",
@@ -852,11 +784,7 @@
             },
             "preferredPaymentOption": {
               "type": "string",
-              "enum": [
-                "credit card",
-                "paypal",
-                "google pay"
-              ]
+              "enum": ["credit card", "paypal", "google pay"]
             }
           }
         },
@@ -931,22 +859,11 @@
                 ]
               }
             },
-            "required": [
-              "_id",
-              "user",
-              "album"
-            ]
+            "required": ["_id", "user", "album"]
           }
         }
       },
-      "required": [
-        "id",
-        "name",
-        "username",
-        "email",
-        "role",
-        "purchasedAlbums"
-      ]
+      "required": ["id", "name", "username", "email", "role", "purchasedAlbums"]
     }
   }
 }
