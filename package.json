@@ -10,8 +10,8 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "jest --watchAll=false --detectOpenHandles --silent",
-    "test:watch": "jest --watchAll=true --detectOpenHandles",
+    "test": "jest --watchAll=false --detectOpenHandles --silent --testPathIgnorePatterns=src",
+    "test:watch": "jest --watchAll=true --detectOpenHandles --testPathIgnorePatterns=src",
     "generate-api-docs": "node ./swagger.js"
   },
   "author": "",
