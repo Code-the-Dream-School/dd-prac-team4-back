@@ -2,6 +2,7 @@ const { Order } = require('../models/Order');
 const { StatusCodes } = require('http-status-codes');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { BadRequestError } = require('../errors');
+const PurchasedAlbum = require('../models/PurchasedAlbum');
 
 const createOrder = async (req, res) => {
   const { orderItems, subtotal, tax, total } = req.body;
@@ -32,6 +33,14 @@ const createOrder = async (req, res) => {
   // Save the paymentIntent to the Order model
   order.paymentIntentId = paymentIntent.id;
   await order.save();
+
+  // Create PurchasedAlbum entries for each album in orderItems
+  for (const orderItem of orderItems) {
+    await PurchasedAlbum.create({
+      album: orderItem.album, // album ID from orderItem
+      user: req.user.userId, // user ID from the request
+    });
+  }
 
   // Send the payment intent client secret and order information to the client
   res
