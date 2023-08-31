@@ -67,7 +67,7 @@ const deleteOrder = async (req, res) => {
   const { id: orderId } = req.params;
   const order = await Order.findById(orderId);
   if (!order) {
-    throw new NotFoundError(`No order with id ${orderId}`);
+    throw new CustomError.NotFoundError(`No order with id ${orderId}`);
   }
   checkPermissions(req.user, order.user);
 
