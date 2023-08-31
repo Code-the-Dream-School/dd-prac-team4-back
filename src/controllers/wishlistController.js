@@ -11,19 +11,22 @@ const createWishlist = async (req, res) => {
   if (!existingWishlist) {
     const newWishlist = new Wishlist({
       user: req.user.userId,
-      albums: [albumId],
+      albums: [], // start with an empty wishlist
     });
+
+    if (albumId) {
+      newWishlist.albums.push(albumId);
+    }
+
     await newWishlist.save();
     return res.status(StatusCodes.CREATED).json({ wishlist: newWishlist });
   }
 
-  if (existingWishlist.albums.includes(albumId)) {
-    console.log(`Album ${albumId} is already in the wishlist.`);
-    return res.status(StatusCodes.OK).json({ wishlist: existingWishlist });
+  if (albumId && !existingWishlist.albums.includes(albumId)) {
+    existingWishlist.albums.push(albumId);
+    await existingWishlist.save();
   }
 
-  existingWishlist.albums.push(albumId);
-  await existingWishlist.save();
   return res.status(StatusCodes.OK).json({ wishlist: existingWishlist });
 };
 
