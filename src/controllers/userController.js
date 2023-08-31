@@ -85,7 +85,7 @@ const updateCurrentUser = async (req, res) => {
      #swagger.summary = 'Fetch the requesting user, update their data and return the updated user.'
      #swagger.responses[200] = {
 				description: 'User successfully fetched and updated.',
-				schema: { user: [{ $ref: '#/definitions/PasswordlessUser' }] }
+				schema: { user: { $ref: '#/definitions/PasswordlessUser' } }
 		 }
 		 #swagger.responses[400] = { description: 'Error. Need to provide both name and email values.' }
   */
