@@ -16,6 +16,7 @@ const doc = {
     // Here we can define objects to use in our swagger documentation
     // These can be used as examples for request bodies, response bodies, etc
     PasswordlessUser: {
+      $id: '64d6ca92a15d2e18ab96a2a3',
       $name: 'John Doe',
       $username: 'johndoe',
       $email: 'john@example.com',
