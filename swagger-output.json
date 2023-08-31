@@ -96,7 +96,7 @@
           "Users"
         ],
         "summary": "Fetch all registered users in a database whose role is user (exclude admins)",
-        "description": "",
+        "description": "**ROLE REQUIRED:** admin",
         "responses": {
           "200": {
             "description": "Users successfully fetched.",
@@ -132,10 +132,7 @@
               "type": "object",
               "properties": {
                 "user": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/PasswordlessUser"
-                  }
+                  "$ref": "#/definitions/PasswordlessUser"
                 }
               },
               "xml": {
@@ -156,19 +153,24 @@
         ],
         "summary": "Fetch a user by id and all albums they purchased.",
         "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "description": "Mongo ObjectID of the user to fetch",
-            "schema": {
-              "$ref": "#/definitions/UserWithAlbums"
-            },
-            "in": "query"
-          }
-        ],
         "responses": {
           "200": {
-            "description": "User and their albums purchased fetched successfully."
+            "description": "User and their albums purchased fetched successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user": {
+                  "$ref": "#/definitions/UserWithAlbums"
+                },
+                "purchasedAlbumCount": {
+                  "type": "number",
+                  "example": 1
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "404": {
             "description": "No user with id found."
@@ -207,10 +209,7 @@
               "type": "object",
               "properties": {
                 "user": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/PasswordlessUser"
-                  }
+                  "$ref": "#/definitions/PasswordlessUser"
                 }
               },
               "xml": {
@@ -249,8 +248,26 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "User successfully fetched and password updated.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Success! Password Updated."
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Error. Need to provide both new and old password values"
+          },
+          "401": {
+            "description": "Error. Invalid credentials."
           }
         }
       }
@@ -299,7 +316,7 @@
           "Users"
         ],
         "summary": "Fetch a user by id and delete user.",
-        "description": "",
+        "description": "**ROLE REQUIRED:** admin",
         "parameters": [
           {
             "name": "id",
@@ -725,6 +742,10 @@
     "PasswordlessUser": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string",
+          "example": "64d6ca92a15d2e18ab96a2a3"
+        },
         "name": {
           "type": "string",
           "example": "John Doe"
@@ -776,6 +797,7 @@
         }
       },
       "required": [
+        "id",
         "name",
         "username",
         "email",
@@ -785,6 +807,10 @@
     "UserWithAlbums": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string",
+          "example": "64d6ca92a15d2e18ab96a2a3"
+        },
         "name": {
           "type": "string",
           "example": "John Doe"
@@ -810,74 +836,116 @@
             "url": {
               "type": "string",
               "example": "https://example.com/profile-image.jpg"
-            },
-            "creditCardInfo": {
-              "type": "object",
-              "properties": {
-                "hashedNumber": {
-                  "type": "string",
-                  "example": "1234567890"
-                },
-                "expiry": {
-                  "type": "string",
-                  "example": "12/24"
-                },
-                "preferredPaymentOption": {
-                  "type": "string",
-                  "enum": [
-                    "credit card",
-                    "paypal",
-                    "google pay"
-                  ]
-                }
-              }
             }
           }
         },
-        "artistName": {
-          "type": "string",
-          "example": "Britney Spears"
+        "creditCardInfo": {
+          "type": "object",
+          "properties": {
+            "hashedNumber": {
+              "type": "string",
+              "example": "1234567890"
+            },
+            "expiry": {
+              "type": "string",
+              "example": "12/24"
+            },
+            "preferredPaymentOption": {
+              "type": "string",
+              "enum": [
+                "credit card",
+                "paypal",
+                "google pay"
+              ]
+            }
+          }
         },
-        "albumName": {
-          "type": "string",
-          "example": "...Baby one more time"
-        },
-        "price": {
-          "type": "number",
-          "example": 20
-        },
-        "image": {
-          "type": "string",
-          "example": "/uploads/example.jpg"
-        },
-        "releaseDate": {
-          "type": "string",
-          "example": "2023-07-28 T00:00:00.000+00:00"
-        },
-        "category": {
-          "type": "string",
-          "example": "pop"
-        },
-        "spotifyUrl": {
-          "type": "string",
-          "example": "https://api.spotify.com/v1/albums/6r1lh7fHMB499vGKtIyJLy"
-        },
-        "averageRating": {
-          "type": "number",
-          "example": 4
-        },
-        "numOfReviews": {
-          "type": "number",
-          "example": 2
+        "purchasedAlbums": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "64ef50c8c5551074444547bc"
+              },
+              "user": {
+                "type": "string",
+                "example": "64d6ca92a15d2e18ab96a2a3"
+              },
+              "album": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "example": "64d2a94c793389a43fc5a8d6"
+                  },
+                  "albumName": {
+                    "type": "string",
+                    "example": "...Baby one more time"
+                  },
+                  "artistName": {
+                    "type": "string",
+                    "example": "Britney Spears"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "example": "2023-08-08T20:45:00.942Z"
+                  },
+                  "updatedAt": {
+                    "type": "string",
+                    "example": "2023-08-17T10:10:42.861Z"
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 20.99
+                  },
+                  "image": {
+                    "type": "string",
+                    "example": "https://i.scdn.co/image/ab67616d0000b27371cae34ad5a39bdab78af13e"
+                  },
+                  "spotifyUrl": {
+                    "type": "string",
+                    "example": "https://api.spotify.com/v1/albums/6r1lh7fHMB499vGKtIyJLy"
+                  },
+                  "releaseDate": {
+                    "type": "string",
+                    "example": "2023-07-28T00:00:00.000Z"
+                  },
+                  "averageRating": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "numOfReviews": {
+                    "type": "number",
+                    "example": 0
+                  }
+                },
+                "required": [
+                  "id",
+                  "albumName",
+                  "artistName",
+                  "createdAt",
+                  "updatedAt",
+                  "price"
+                ]
+              }
+            },
+            "required": [
+              "_id",
+              "user",
+              "album"
+            ]
+          }
         }
       },
       "required": [
+        "id",
         "name",
         "username",
         "email",
         "role",
-        "artistName",
-        "albumName"
+        "purchasedAlbums"
       ]
     }
   }
