@@ -13,21 +13,18 @@ const getAllUsers = async (req, res) => {
   // Find all users with the role 'user' in the database and exclude the 'password' field
   const users = await User.find({ role: 'user' }).select('-password');
   res.status(StatusCodes.OK).json({ users }); // Send a JSON response with the status code 200 OK and the users
+  /*
+     #swagger.summary = 'Fetch all registered users in a database whose role is user (exclude admins)'
+     #swagger.description = '**ROLE REQUIRED:** admin'
+     #swagger.responses[200] = {
+				description: 'Users successfully fetched.',
+        schema: { users: [{ $ref: '#/definitions/PasswordlessUser' }] }
+		 }
+		 
+  */
 };
 
 const getSingleUser = async (req, res) => {
-  /*
-     #swagger.summary = 'Fetch a user by id'
-     #swagger.parameters['id'] = {
-        description: 'Mongo ObjectID of the user to fetch',
-     }
-     #swagger.responses[200] = {
-				description: 'User successfully fetched.',
-				schema: { $ref: '#/definitions/PasswordlessUser' }
-		 }
-		 #swagger.responses[404] = { description: 'No user with id found.' }
-		 #swagger.responses[403] = { description: 'Requester forbidden to fetch this user.' }
-  */
   // Find the user in the database based on the provided user ID and exclude the 'password' field
   const user = await User.findOne({ _id: req.params.id }).select('-password');
   if (!user) {
@@ -36,6 +33,18 @@ const getSingleUser = async (req, res) => {
   }
   checkPermissions(req.user, user._id); // Check if the user has permission to access the user's information
   res.status(StatusCodes.OK).json({ user }); // Send a JSON response with the status code 200 OK and the user
+  /*
+     #swagger.summary = 'Fetch a user by id'
+     #swagger.parameters['id'] = {
+        description: 'Mongo ObjectID of the user to fetch',
+     }
+     #swagger.responses[200] = {
+				description: 'User successfully fetched.',
+				schema: { user: { $ref: '#/definitions/PasswordlessUser' } }
+		 }
+		 #swagger.responses[404] = { description: 'No user with id found.' }
+    #swagger.responses[403] = { description: 'Requester forbidden to fetch this user.' }
+  */
 };
 
 const showCurrentUser = async (req, res) => {
@@ -46,6 +55,14 @@ const showCurrentUser = async (req, res) => {
   }
 
   res.status(StatusCodes.OK).json({ user });
+  /*
+     #swagger.summary = 'Returns information about the requesting user based on cookie session'
+     #swagger.responses[200] = {
+				description: 'User successfully fetched.',
+				schema: { user: { $ref: '#/definitions/PasswordlessUser' } }
+		 }
+		 #swagger.responses[404] = { description: 'No user with id found.' }
+  */
 };
 
 // Update the information of the current user
@@ -64,6 +81,14 @@ const updateCurrentUser = async (req, res) => {
   attachCookiesToResponse({ res, user: tokenUser });
   // Send a JSON response with the status code 200 OK and the updated user
   res.status(StatusCodes.OK).json({ user });
+  /*
+     #swagger.summary = 'Fetch the requesting user, update their data and return the updated user.'
+     #swagger.responses[200] = {
+				description: 'User successfully fetched and updated.',
+				schema: { user: { $ref: '#/definitions/PasswordlessUser' } }
+		 }
+		 #swagger.responses[400] = { description: 'Error. Need to provide both name and email values.' }
+  */
 };
 
 const updateUserPassword = async (req, res) => {
@@ -85,13 +110,35 @@ const updateUserPassword = async (req, res) => {
   await user.save(); // Save the updated user to the database
   // Send a JSON response with the status code 200 OK and a success message
   res.status(StatusCodes.OK).json({ msg: 'Success! Password Updated.' });
-};
 
+  /*
+     #swagger.summary = 'Fetch the current requesting user by id, update their password and save it to the database.'
+     #swagger.responses[200] = {
+				description: 'User successfully fetched and password updated.',
+				schema: { msg: 'Success! Password Updated.' }
+		 }
+		 #swagger.responses[400] = { description: 'Error. Need to provide both new and old password values' }
+     #swagger.responses[401] = { description: 'Error. Invalid credentials.' }
+  */
+};
 const deleteSingleUser = async (req, res) => {
   const userId = req.params.id;
+  if (!userId) {
+    // Throw a NotFoundError if the user is not found
+    throw new CustomError.NotFoundError(`No user with id: ${req.params.id}`);
+  }
   // Find the user by ID and delete
   await User.findByIdAndDelete(userId);
   res.status(StatusCodes.OK).json({ message: 'User deleted successfully' });
+  /*
+     #swagger.summary = 'Fetch a user by id and delete user.'
+     #swagger.description = '**ROLE REQUIRED:** admin'
+     #swagger.responses[200] = {
+				description: 'User successfully fetched and deleted.'
+				
+		 }
+		  #swagger.responses[404] = { description: 'No user with id found.' }
+  */
 };
 
 //Fetching a user from the database, including all the albums they've purchased
@@ -111,6 +158,14 @@ const getCurrentUserWithPurchasedAlbums = async (req, res) => {
     user: userWithAlbums,
     purchasedAlbumCount: userWithAlbums.purchasedAlbums.length,
   });
+  /*
+     #swagger.summary = 'Fetch a user by id and all albums they purchased.'
+     #swagger.responses[200] = {
+				description: 'User and their albums purchased fetched successfully.',
+				schema: { user: { $ref: '#/definitions/UserWithAlbums' }, purchasedAlbumCount: 1}
+		 }
+		  #swagger.responses[404] = { description: 'No user with id found.' }
+  */
 };
 
 module.exports = {
