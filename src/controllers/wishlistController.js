@@ -66,7 +66,7 @@ async function removeAlbumFromWishlist(req, res) {
   if (!wishlist) {
     return res.status(404).json({ error: 'Wishlist not found' });
   }
-  console.log('Album added to wishlist successfully');
+  console.log('Album removed from wishlist successfully');
   res.json(wishlist);
 }
 
