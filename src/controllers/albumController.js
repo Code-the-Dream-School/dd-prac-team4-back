@@ -6,10 +6,16 @@ const logger = require('../../logs/logger');
 const createAlbum = async (req, res) => {
   /*
      #swagger.summary = 'Create new album and save it to the database'
-    
+            #swagger.parameters['newAlbum'] = {
+        in: 'body',
+        description: 'Album information to use for creation.',
+        required: true,
+        type: 'object',
+        schema: { $ref: '#/definitions/NewAlbum' }
+     } 
      #swagger.responses[201] = {
 				description: 'Albums was successfully created.',
-        schema: [{ $ref: '#/definitions/Album'' }]
+        schema: [{ $ref: '#/definitions/Album' }]
 		 }
 		 
   */
@@ -18,14 +24,13 @@ const createAlbum = async (req, res) => {
   res.status(StatusCodes.CREATED).json({ album });
 };
 
-// question for Akos - what does minimin means on line 20?
 const getAllAlbums = async (req, res) => {
   /*
-     #swagger.summary = 'Fetch all albums in a database'
-    
+     #swagger.summary = 'Fetch all albums in a database (with price > $0)'
+
      #swagger.responses[200] = {
 				description: 'Albums  successfully fetched.',
-        schema: { albums: [{ $ref: '#/definitions/Album' }] }
+         schema: { albums: [{ $ref: '#/definitions/Album' }], count: 1 }
 		 }
 		 
   */
@@ -41,9 +46,9 @@ const getSingleAlbum = async (req, res) => {
      }
      #swagger.responses[200] = {
 				description: 'Album successfully fetched.',
-				schema: { $ref: '#/definitions/Album' }
+				schema: { album: { $ref: '#/definitions/Album' } }
 		 }
-		 #swagger.responses[404] = { description: 'No album with this id wasfound.' }
+		 #swagger.responses[404] = { description: 'No album with this id was found.' }
 
   */
   const { id: albumId } = req.params;
@@ -60,11 +65,19 @@ const updateAlbum = async (req, res) => {
      #swagger.parameters['id'] = {
         description: 'Mongo ObjectID of the album to fetch',
      }
+          #swagger.parameters['album properties to update'] = {
+      in: 'body',
+      description: 'Album information to use for update',
+      required: true,
+      type: 'object',
+      schema: { $ref: '#/definitions/NewAlbum' }
+     }
      #swagger.responses[200] = {
 				description: 'Album successfully fetched and updated.',
 				schema: { $ref: '#/definitions/Album' }
 		 }
-		 #swagger.responses[404] = { description: 'No album with this id wasfound.' }
+     #swagger.responses[400] = { description: 'validation error' }
+		 #swagger.responses[404] = { description: 'No album with this id was found.' }
 
   */
   const { id: albumId } = req.params;
@@ -83,10 +96,16 @@ const updateAlbum = async (req, res) => {
 const updatePriceOfAlbums = async (req, res) => {
   /*
      #swagger.summary = 'Update prices of albums passed in req.body'
-
+	#swagger.parameters['albums to update prices'] = {
+		in: 'body',
+		description: 'Array of information to use to update album prices',
+		required: true,
+		type: 'array',
+		schema: [{ id: "5f9d7b3b9d9d9d9d9d9d9d9d", price: 9.99 }]
+ }
      #swagger.responses[200] = {
 				description: 'Albums prices  were successfully updated.',
-				chema: { albums: [{ $ref: '#/definitions/Album' }] }
+				schema: { albums: [{ $ref: '#/definitions/Album' }] }
 		 }
   */
   const bulkUpdateOps = req.body.map((update) => ({
@@ -111,9 +130,10 @@ const getAlbumWithAllUsersWhoPurchasedIt = async (req, res) => {
 
      #swagger.responses[200] = {
 				description: 'Album with users who purchased it was fetched  successfully ',
-				chema: { albums: [{ $ref: '#/definitions/Album' }] }
+				schema: { albums: [{ $ref: '#/definitions/AlbumWithUsers' }], purchasingUsersCount: 1 }
 		 }
      #swagger.responses[404] = { description: 'No album with this id wasfound.' }
+
   */
   // Show current user by id with all the albums they've purchased
   let usersThatPurchasedThisAlbum = await Album.findOne({
@@ -135,14 +155,42 @@ const getAlbumWithAllUsersWhoPurchasedIt = async (req, res) => {
   });
 };
 
-// question for Akos: how can we test this route in postman? it is set to show 10 results per page and don't know how to see ne 2nd the 3d pages..etcпш
+
 const getFilteredAlbums = async (req, res) => {
   /*
-     #swagger.summary = 'Fetch first 10 albums in a database with price more than 0'
+     #swagger.summary = 'Fetch paginated list of albums with price > 0, with query parameters for sorting and filtering'
+     #swagger.autoQuery = false
+     #swagger.parameters['limit'] = {
+        description: 'Number of albums to fetch',
+        default: 10,
+        in: 'query'
+     }
+     #swagger.parameters['offset'] = {
+        description: 'Number of albums to skip (use with limit to page through results)',
+        default: 0,
+        in: 'query'
+     }
 
+     #swagger.parameters['order'] = {
+        description: 'Order of results',
+        in: 'query',
+        schema: {
+          '@enum': ['asc', 'desc']
+        }
+     }
+
+     #swagger.parameters['albumName'] = {
+        description: 'String to filter results by matching any part of album name (case-insensitive)',
+        in: 'query'
+     }
+
+     #swagger.parameters['artistName'] = {
+        description: 'String to filter results by matching any part of artist name (case-insensitive)',
+        in: 'query'
+     }
      #swagger.responses[200] = {
-				description: 'Filtered by price more than 0 albums were successfully fetched.',
-        schema: { albums: [{ $ref: '#/definitions/Album' }] }
+				description: 'Filtered by query parameters and with price more than 0 albums were successfully fetched.',
+         schema: { albums: [{ $ref: '#/definitions/Album' }], count: 1 }
 		 }
 		 
   */

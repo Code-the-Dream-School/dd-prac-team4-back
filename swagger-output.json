@@ -7,10 +7,15 @@
   },
   "host": "localhost:8000",
   "basePath": "/",
-  "schemes": ["http"],
+  "schemes": [
+    "http"
+  ],
   "paths": {
     "/api/v1/auth/register": {
       "post": {
+        "tags": [
+          "Authentication"
+        ],
         "description": "",
         "parameters": [
           {
@@ -44,6 +49,9 @@
     },
     "/api/v1/auth/login": {
       "post": {
+        "tags": [
+          "Authentication"
+        ],
         "description": "",
         "parameters": [
           {
@@ -71,6 +79,9 @@
     },
     "/api/v1/auth/logout": {
       "post": {
+        "tags": [
+          "Authentication"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -81,40 +92,98 @@
     },
     "/api/v1/users/": {
       "get": {
-        "tags": ["Users"],
-        "description": "",
+        "tags": [
+          "Users"
+        ],
+        "summary": "Fetch all registered users in a database whose role is user (exclude admins)",
+        "description": "**ROLE REQUIRED:** admin",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Users successfully fetched.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "users": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/PasswordlessUser"
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           }
         }
       }
     },
     "/api/v1/users/showMe": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Returns information about the requesting user based on cookie session",
         "description": "",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "User successfully fetched.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user": {
+                  "$ref": "#/definitions/PasswordlessUser"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "No user with id found."
           }
         }
       }
     },
     "/api/v1/users/showMe/withAlbums": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Fetch a user by id and all albums they purchased.",
         "description": "",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "User and their albums purchased fetched successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user": {
+                  "$ref": "#/definitions/UserWithAlbums"
+                },
+                "purchasedAlbumCount": {
+                  "type": "number",
+                  "example": 1
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "No user with id found."
           }
         }
       }
     },
     "/api/v1/users/updateCurrentUser": {
       "patch": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Fetch the requesting user, update their data and return the updated user.",
         "description": "",
         "parameters": [
           {
@@ -134,15 +203,32 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "User successfully fetched and updated.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user": {
+                  "$ref": "#/definitions/PasswordlessUser"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Error. Need to provide both name and email values."
           }
         }
       }
     },
     "/api/v1/users/updateUserPasssword": {
       "patch": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Fetch the current requesting user by id, update their password and save it to the database.",
         "description": "",
         "parameters": [
           {
@@ -162,15 +248,35 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "User successfully fetched and password updated.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Success! Password Updated."
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Error. Need to provide both new and old password values"
+          },
+          "401": {
+            "description": "Error. Invalid credentials."
           }
         }
       }
     },
     "/api/v1/users/{id}": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Fetch a user by id",
         "description": "",
         "parameters": [
@@ -186,7 +292,15 @@
           "200": {
             "description": "User successfully fetched.",
             "schema": {
-              "$ref": "#/definitions/PasswordlessUser"
+              "type": "object",
+              "properties": {
+                "user": {
+                  "$ref": "#/definitions/PasswordlessUser"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
             }
           },
           "403": {
@@ -198,8 +312,11 @@
         }
       },
       "delete": {
-        "tags": ["Users"],
-        "description": "",
+        "tags": [
+          "Users"
+        ],
+        "summary": "Fetch a user by id and delete user.",
+        "description": "**ROLE REQUIRED:** admin",
         "parameters": [
           {
             "name": "id",
@@ -209,14 +326,20 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "User successfully fetched and deleted."
+          },
+          "404": {
+            "description": "No user with id found."
           }
         }
       }
     },
     "/api/v1/albums/": {
       "get": {
+        "tags": [
+          "Albums"
+        ],
         "summary": "Fetch all albums in a database",
         "description": "",
         "responses": {
@@ -240,6 +363,9 @@
         }
       },
       "post": {
+        "tags": [
+          "Albums"
+        ],
         "summary": "Create new album and save it to the database",
         "description": "",
         "parameters": [
@@ -257,6 +383,9 @@
         }
       },
       "patch": {
+        "tags": [
+          "Albums"
+        ],
         "summary": "Update prices of albums passed in req.body",
         "description": "",
         "parameters": [
@@ -289,6 +418,9 @@
     },
     "/api/v1/albums/filter": {
       "get": {
+        "tags": [
+          "Albums"
+        ],
         "summary": "Fetch first 10 albums in a database with price more than 0",
         "description": "",
         "parameters": [
@@ -326,6 +458,9 @@
     },
     "/api/v1/albums/{id}": {
       "get": {
+        "tags": [
+          "Albums"
+        ],
         "summary": "Fetch an album by id",
         "description": "",
         "parameters": [
@@ -350,6 +485,9 @@
         }
       },
       "patch": {
+        "tags": [
+          "Albums"
+        ],
         "summary": "Fetch an album by id and update it",
         "description": "",
         "parameters": [
@@ -376,6 +514,9 @@
     },
     "/api/v1/albums/{id}/listOfUsersWhoPurchasedThisAlbum": {
       "get": {
+        "tags": [
+          "Albums"
+        ],
         "summary": "Show all users that purchased this particular album",
         "description": "",
         "parameters": [
@@ -404,7 +545,21 @@
       }
     },
     "/api/v1/orders/": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
       "post": {
+        "tags": [
+          "Orders"
+        ],
         "description": "",
         "parameters": [
           {
@@ -436,8 +591,51 @@
         }
       }
     },
+    "/api/v1/orders/{id}": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Orders"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/v1/reviews/": {
       "get": {
+        "tags": [
+          "Reviews"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -448,6 +646,9 @@
     },
     "/api/v1/reviews/album/{albumId}": {
       "get": {
+        "tags": [
+          "Reviews"
+        ],
         "description": "",
         "parameters": [
           {
@@ -464,6 +665,9 @@
         }
       },
       "post": {
+        "tags": [
+          "Reviews"
+        ],
         "description": "",
         "parameters": [
           {
@@ -497,6 +701,9 @@
     },
     "/api/v1/reviews/{id}": {
       "get": {
+        "tags": [
+          "Reviews"
+        ],
         "description": "",
         "parameters": [
           {
@@ -513,6 +720,9 @@
         }
       },
       "delete": {
+        "tags": [
+          "Reviews"
+        ],
         "description": "",
         "parameters": [
           {
@@ -529,6 +739,9 @@
         }
       },
       "patch": {
+        "tags": [
+          "Reviews"
+        ],
         "description": "",
         "parameters": [
           {
@@ -565,6 +778,9 @@
     },
     "/api/v1/wishlist/wishlist/{wishlist_id}/add_album/{album_id}": {
       "patch": {
+        "tags": [
+          "Wishlist"
+        ],
         "description": "",
         "parameters": [
           {
@@ -595,6 +811,9 @@
     },
     "/api/v1/wishlist/wishlist/{wishlist_id}/remove_album/{album_id}": {
       "patch": {
+        "tags": [
+          "Wishlist"
+        ],
         "description": "",
         "parameters": [
           {
@@ -648,6 +867,10 @@
     "PasswordlessUser": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string",
+          "example": "64d6ca92a15d2e18ab96a2a3"
+        },
         "name": {
           "type": "string",
           "example": "John Doe"
@@ -662,7 +885,10 @@
         },
         "role": {
           "type": "string",
-          "enum": ["user", "admin"]
+          "enum": [
+            "user",
+            "admin"
+          ]
         },
         "profileImage": {
           "type": "object",
@@ -686,11 +912,166 @@
             },
             "preferredPaymentOption": {
               "type": "string",
-              "enum": ["credit card", "paypal", "google pay"]
+              "enum": [
+                "credit card",
+                "paypal",
+                "google pay"
+              ]
             }
           }
         }
-      }
+      },
+      "required": [
+        "id",
+        "name",
+        "username",
+        "email",
+        "role"
+      ]
+    },
+    "UserWithAlbums": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "64d6ca92a15d2e18ab96a2a3"
+        },
+        "name": {
+          "type": "string",
+          "example": "John Doe"
+        },
+        "username": {
+          "type": "string",
+          "example": "johndoe"
+        },
+        "email": {
+          "type": "string",
+          "example": "john@example.com"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "user",
+            "admin"
+          ]
+        },
+        "profileImage": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "example": "https://example.com/profile-image.jpg"
+            }
+          }
+        },
+        "creditCardInfo": {
+          "type": "object",
+          "properties": {
+            "hashedNumber": {
+              "type": "string",
+              "example": "1234567890"
+            },
+            "expiry": {
+              "type": "string",
+              "example": "12/24"
+            },
+            "preferredPaymentOption": {
+              "type": "string",
+              "enum": [
+                "credit card",
+                "paypal",
+                "google pay"
+              ]
+            }
+          }
+        },
+        "purchasedAlbums": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "64ef50c8c5551074444547bc"
+              },
+              "user": {
+                "type": "string",
+                "example": "64d6ca92a15d2e18ab96a2a3"
+              },
+              "album": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "example": "64d2a94c793389a43fc5a8d6"
+                  },
+                  "albumName": {
+                    "type": "string",
+                    "example": "...Baby one more time"
+                  },
+                  "artistName": {
+                    "type": "string",
+                    "example": "Britney Spears"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "example": "2023-08-08T20:45:00.942Z"
+                  },
+                  "updatedAt": {
+                    "type": "string",
+                    "example": "2023-08-17T10:10:42.861Z"
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 20.99
+                  },
+                  "image": {
+                    "type": "string",
+                    "example": "https://i.scdn.co/image/ab67616d0000b27371cae34ad5a39bdab78af13e"
+                  },
+                  "spotifyUrl": {
+                    "type": "string",
+                    "example": "https://api.spotify.com/v1/albums/6r1lh7fHMB499vGKtIyJLy"
+                  },
+                  "releaseDate": {
+                    "type": "string",
+                    "example": "2023-07-28T00:00:00.000Z"
+                  },
+                  "averageRating": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "numOfReviews": {
+                    "type": "number",
+                    "example": 0
+                  }
+                },
+                "required": [
+                  "id",
+                  "albumName",
+                  "artistName",
+                  "createdAt",
+                  "updatedAt",
+                  "price"
+                ]
+              }
+            },
+            "required": [
+              "_id",
+              "user",
+              "album"
+            ]
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "username",
+        "email",
+        "role",
+        "purchasedAlbums"
+      ]
     }
   }
 }
