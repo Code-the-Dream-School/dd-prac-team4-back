@@ -15,6 +15,7 @@ const getAllUsers = async (req, res) => {
   res.status(StatusCodes.OK).json({ users }); // Send a JSON response with the status code 200 OK and the users
   /*
      #swagger.summary = 'Fetch all registered users in a database whose role is user (exclude admins)'
+     #swagger.description = '**ROLE REQUIRED:** admin'
      #swagger.responses[200] = {
 				description: 'Users successfully fetched.',
         schema: { users: [{ $ref: '#/definitions/PasswordlessUser' }] }
