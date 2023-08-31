@@ -115,10 +115,7 @@ const updateUserPassword = async (req, res) => {
      #swagger.summary = 'Fetch the current requesting user by id, update their password and save it to the database.'
      #swagger.responses[200] = {
 				description: 'User successfully fetched and password updated.',
-				type: 'object'
-				properties: {
-				  msg: { type: 'string' }
-				}
+				schema: { msg: 'Success! Password Updated.' }
 		 }
 		 #swagger.responses[400] = { description: 'Error. Need to provide both new and old password values' }
      #swagger.responses[401] = { description: 'Error. Invalid credentials.' }
