@@ -33,7 +33,7 @@ const doc = {
       },
     },
     UserWithAlbums: {
-      
+      $id: '64d6ca92a15d2e18ab96a2a3',
         $name: 'John Doe',
         $username: 'johndoe',
         $email: 'john@example.com',
