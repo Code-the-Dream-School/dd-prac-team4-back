@@ -41,7 +41,12 @@ const limiter = rateLimit({
 app.use(helmet());
 app.use(limiter);
 app.use(xss());
-app.use(cors({ origin: [/localhost:3000$/], credentials: true }));
+app.use(
+  cors({
+    origin: [/localhost:3000$/, /beatbazaar\.onrender\.com$/],
+    credentials: true,
+  })
+);
 
 //Logging middleware (using morgan to log each HTTP request)
 app.use(
