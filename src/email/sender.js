@@ -1,13 +1,14 @@
 const nodemailer = require('nodemailer');
 const path = require('path');
 const ejs = require('ejs');
+require('dotenv').config();
 
 async function sendForgotPasswordEmail(toEmail, resetToken) {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'your.email@gmail.com',
-      pass: 'your-email-password',
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
     },
   });
 
