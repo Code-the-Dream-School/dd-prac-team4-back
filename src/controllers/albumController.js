@@ -110,6 +110,7 @@ const updatePriceOfAlbums = async (req, res) => {
   res.status(StatusCodes.OK).json({ albums: updatedAlbums });
   /*
      #swagger.summary = 'Update prices of albums passed in req.body'
+	#swagger.autoBody = false
 	#swagger.parameters['albums to update prices'] = {
 		in: 'body',
 		description: 'Array of information to use to update album prices',
