@@ -115,7 +115,7 @@ const getAllOrders = async (req, res) => {
      #swagger.description = '**ROLE REQUIRED:** admin'
      #swagger.responses[200] = {
 				description: 'Orders successfully fetched.',
-        schema: { $ref: '#/definitions/Oder' }
+        schema: { $ref: '#/definitions/Order' }
 		 }
 		 
   */
