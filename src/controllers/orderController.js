@@ -57,11 +57,68 @@ const createOrder = async (req, res) => {
   res
     .status(StatusCodes.CREATED)
     .json({ clientSecret: paymentIntent.client_secret, order });
+  /*
+#swagger.summary = 'Create a new order and process payment'
+#swagger.description = 'Creates a new order and processes payment using Stripe.'
+#swagger.tags = ['Orders']
+#swagger.parameters['body'] = {
+  in: 'body',
+  description: 'Order information including order items, subtotal, tax, and total',
+  required: true,
+  schema: {
+    type: 'object',
+    properties: {
+      orderItems: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            album: {
+              type: 'string',
+              description: 'ID of the album',
+            },
+            quantity: {
+              type: 'integer',
+              description: 'Quantity of the album',
+            },
+          },
+        },
+      },
+      subtotal: {
+        type: 'number',
+        description: 'Subtotal amount',
+      },
+      tax: {
+        type: 'number',
+        description: 'Tax amount',
+      },
+      total: {
+        type: 'number',
+        description: 'Total amount',
+      },
+    },
+  },
+}
+#swagger.responses[201] = {
+  description: 'Order created successfully',
+  schema: { $ref: '#/definitions/Order' }
+}
+
+*/
 };
 
 const getAllOrders = async (req, res) => {
   const orders = await Order.find({});
   res.status(StatusCodes.OK).json({ orders, count: orders.length });
+  /*
+     #swagger.summary = 'Fetch all orders in a database'
+     #swagger.description = '**ROLE REQUIRED:** admin'
+     #swagger.responses[200] = {
+				description: 'Orders successfully fetched.',
+        schema: { $ref: '#/definitions/Oder' }
+		 }
+		 
+  */
 };
 
 const getSingleOrder = async (req, res) => {
@@ -79,6 +136,18 @@ const getSingleOrder = async (req, res) => {
   checkPermissions(req.user, order.user);
 
   res.status(StatusCodes.OK).json({ order });
+  /*
+     #swagger.summary = 'Fetch an order by id'
+     #swagger.parameters['id'] = {
+        description: 'Mongo ObjectID of the order to fetch',
+     }
+     #swagger.responses[200] = {
+				description: 'Order successfully fetched.',
+				schema: { order: { $ref: '#/definitions/Order' } }
+		 }
+		 #swagger.responses[404] = { description: 'No order with id found.' }
+
+  */
 };
 
 const deleteOrder = async (req, res) => {
@@ -92,6 +161,17 @@ const deleteOrder = async (req, res) => {
   await Order.findByIdAndDelete(orderId); // or more simply can just call delete on the documnent we've already fetched:  await order.remove()
 
   res.status(StatusCodes.OK).json({ msg: 'Success! Order was deleted' });
+  /*
+#swagger.summary = 'Delete an order by id'
+#swagger.description = '**ROLE REQUIRED:** user'
+#swagger.parameters['id'] = {
+  description: 'Mongo ObjectID of the order to delete',
+}
+#swagger.responses[200] = {
+  description: 'The order was successfully deleted.',
+}
+#swagger.responses[404] = { description: 'No order with id found.' }
+*/
 };
 
 module.exports = { createOrder, getAllOrders, getSingleOrder, deleteOrder };
