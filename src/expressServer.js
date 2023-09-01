@@ -41,7 +41,12 @@ const limiter = rateLimit({
 app.use(helmet());
 app.use(limiter);
 app.use(xss());
-app.use(cors({ origin: [/localhost:3000$/], credentials: true }));
+app.use(
+  cors({
+    origin: [/localhost:3000$/, /beatbazaar\.onrender\.com$/],
+    credentials: true,
+  })
+);
 
 //Logging middleware (using morgan to log each HTTP request)
 app.use(
@@ -113,10 +118,10 @@ const errorHandlerMiddleware = require('./middleware/error-handler');
 
 app.use('/api/v1/auth', authRouter /* #swagger.tags = ['Authentication'] */);
 app.use('/api/v1/users', userRouter /* #swagger.tags = ['Users'] */);
-app.use('/api/v1/albums', albumRouter);
-app.use('/api/v1/orders', orderRouter);
-app.use('/api/v1/reviews', reviewRouter);
-app.use('/api/v1/wishlist', wishlistRoutes);
+app.use('/api/v1/albums', albumRouter /* #swagger.tags = ['Albums'] */);
+app.use('/api/v1/orders', orderRouter /* #swagger.tags = ['Orders'] */);
+app.use('/api/v1/reviews', reviewRouter /* #swagger.tags = ['Reviews'] */);
+app.use('/api/v1/wishlist', wishlistRoutes /* #swagger.tags = ['Wishlist'] */);
 
 // Serve static files from the 'public' folder
 app.use('/admin', require('./routes/adminRoutes'));
@@ -126,4 +131,26 @@ app.use(express.static(__dirname + '/public'));
 app.use(notFoundMiddleware); // Not found middleware to handle invalid routes
 app.use(errorHandlerMiddleware); // Error handler middleware
 
-module.exports = { app, connectDB };
+// Setup websocket
+// put the express server definitions inside a more generic Node server so that we can reuse it for Socket.io
+const { Server } = require('socket.io');
+const http = require('http');
+const server = http.createServer(app);
+const socketServer = new Server(server);
+const setupSocket = require('./live');
+const io = socketServer.of('/'); // Create an instance of Socket.io
+
+// Set up Socket.io connection event
+io.on('connection', (socket) => {
+  console.log('Connected');
+  setupSocket(io, socket); // Call your setupSocket function
+
+  socket.on('msg_from_client', function (from, msg) {
+    console.log('Message is ' + from, msg);
+  });
+  socket.on('disconnect', function () {
+    console.log('Disconnected');
+  });
+});
+
+module.exports = { app: server, connectDB };

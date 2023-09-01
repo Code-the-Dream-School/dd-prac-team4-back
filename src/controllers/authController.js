@@ -109,7 +109,7 @@ const logout = async (req, res) => {
     #swagger.description = 'This endpoint checks for a signed JWT token in an HTTP-only cookie and clears it. It checks the `token` field in the cookie.'
     #swagger.responses[200] = {
         description: 'User logged out successfully',
-        schema: { type: 'object', properties: { msg: { type: 'string' } } }
+        schema: { msg: 'user logged out!' }
     }
     #swagger.security = [{ "JWT": [] }]
   */
