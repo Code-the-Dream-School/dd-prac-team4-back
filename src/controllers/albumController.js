@@ -18,7 +18,7 @@ const createAlbum = async (req, res) => {
      } 
      #swagger.responses[201] = {
 				description: 'Albums was successfully created.',
-        schema: [{ $ref: '#/definitions/Album' }]
+        schema: { album: { $ref: '#/definitions/Album' } }
 		 }
 		 
   */
