@@ -70,3 +70,5 @@ AlbumSchema.virtual('purchasedByUsers', {
 const Album = mongoose.model('Album', AlbumSchema);
 
 module.exports = Album;
+
+// need to modify release date to a common  format
