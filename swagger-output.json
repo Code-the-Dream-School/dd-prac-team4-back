@@ -13,9 +13,7 @@
   "paths": {
     "/api/v1/auth/register": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "description": "",
         "responses": {
           "default": {
@@ -49,9 +47,7 @@
     },
     "/api/v1/auth/login": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "description": "",
         "responses": {
           "default": {
@@ -79,9 +75,7 @@
     },
     "/api/v1/auth/logout": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "description": "",
         "responses": {
           "default": {
@@ -92,9 +86,7 @@
     },
     "/api/v1/users/": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Fetch all registered users in a database whose role is user (exclude admins)",
         "description": "**ROLE REQUIRED:** admin",
         "responses": {
@@ -140,9 +132,7 @@
     },
     "/api/v1/users/showMe": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Returns information about the requesting user based on cookie session",
         "description": "",
         "responses": {
@@ -185,9 +175,7 @@
     },
     "/api/v1/users/showMe/withAlbums": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Fetch a user by id and all albums they purchased.",
         "description": "",
         "responses": {
@@ -238,9 +226,7 @@
     },
     "/api/v1/users/updateCurrentUser": {
       "patch": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Fetch the requesting user, update their data and return the updated user.",
         "description": "",
         "responses": {
@@ -300,9 +286,7 @@
     },
     "/api/v1/users/updateUserPasssword": {
       "patch": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Fetch the current requesting user by id, update their password and save it to the database.",
         "description": "",
         "responses": {
@@ -367,9 +351,7 @@
     },
     "/api/v1/users/{id}": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Fetch a user by id",
         "description": "",
         "parameters": [
@@ -424,9 +406,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Fetch a user by id and delete user.",
         "description": "**ROLE REQUIRED:** admin",
         "parameters": [
@@ -451,9 +431,7 @@
     },
     "/api/v1/albums/": {
       "get": {
-        "tags": [
-          "Albums"
-        ],
+        "tags": ["Albums"],
         "summary": "Fetch all albums in a database (with price > $0)",
         "description": "",
         "responses": {
@@ -505,9 +483,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Albums"
-        ],
+        "tags": ["Albums"],
         "summary": "Create new album and save it to the database",
         "description": "**ROLE REQUIRED:** admin",
         "parameters": [
@@ -559,9 +535,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "Albums"
-        ],
+        "tags": ["Albums"],
         "summary": "Update prices of albums passed in req.body",
         "description": "",
         "parameters": [
@@ -631,9 +605,7 @@
     },
     "/api/v1/albums/filter": {
       "get": {
-        "tags": [
-          "Albums"
-        ],
+        "tags": ["Albums"],
         "summary": "Fetch paginated list of albums with price > 0, with query parameters for sorting and filtering",
         "description": "",
         "parameters": [
@@ -661,10 +633,7 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ]
+              "enum": ["asc", "desc"]
             }
           },
           {
@@ -735,9 +704,7 @@
     },
     "/api/v1/albums/{id}": {
       "get": {
-        "tags": [
-          "Albums"
-        ],
+        "tags": ["Albums"],
         "summary": "Fetch an album by id",
         "description": "",
         "parameters": [
@@ -789,9 +756,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "Albums"
-        ],
+        "tags": ["Albums"],
         "summary": "Fetch an album by id and update it",
         "description": "",
         "parameters": [
@@ -857,9 +822,7 @@
     },
     "/api/v1/albums/{id}/listOfUsersWhoPurchasedThisAlbum": {
       "get": {
-        "tags": [
-          "Albums"
-        ],
+        "tags": ["Albums"],
         "summary": "Show all users that purchased this particular album",
         "description": "",
         "parameters": [
@@ -920,9 +883,7 @@
     },
     "/api/v1/orders/": {
       "get": {
-        "tags": [
-          "Orders"
-        ],
+        "tags": ["Orders"],
         "description": "",
         "responses": {
           "default": {
@@ -931,9 +892,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Orders"
-        ],
+        "tags": ["Orders"],
         "description": "",
         "responses": {
           "default": {
@@ -967,9 +926,7 @@
     },
     "/api/v1/orders/{id}": {
       "get": {
-        "tags": [
-          "Orders"
-        ],
+        "tags": ["Orders"],
         "description": "",
         "parameters": [
           {
@@ -988,9 +945,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Orders"
-        ],
+        "tags": ["Orders"],
         "description": "",
         "parameters": [
           {
@@ -1011,9 +966,7 @@
     },
     "/api/v1/reviews/": {
       "get": {
-        "tags": [
-          "Reviews"
-        ],
+        "tags": ["Reviews"],
         "description": "",
         "responses": {
           "default": {
@@ -1024,9 +977,7 @@
     },
     "/api/v1/reviews/album/{albumId}": {
       "get": {
-        "tags": [
-          "Reviews"
-        ],
+        "tags": ["Reviews"],
         "description": "",
         "parameters": [
           {
@@ -1045,9 +996,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Reviews"
-        ],
+        "tags": ["Reviews"],
         "description": "",
         "parameters": [
           {
@@ -1085,9 +1034,7 @@
     },
     "/api/v1/reviews/{id}": {
       "get": {
-        "tags": [
-          "Reviews"
-        ],
+        "tags": ["Reviews"],
         "description": "",
         "parameters": [
           {
@@ -1106,9 +1053,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Reviews"
-        ],
+        "tags": ["Reviews"],
         "description": "",
         "parameters": [
           {
@@ -1127,9 +1072,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "Reviews"
-        ],
+        "tags": ["Reviews"],
         "description": "",
         "parameters": [
           {
@@ -1170,9 +1113,7 @@
     },
     "/api/v1/wishlist/": {
       "post": {
-        "tags": [
-          "Wishlist"
-        ],
+        "tags": ["Wishlist"],
         "description": "",
         "responses": {
           "default": {
@@ -1183,9 +1124,7 @@
     },
     "/api/v1/wishlist/{wishlist_id}/add_album/{album_id}": {
       "patch": {
-        "tags": [
-          "Wishlist"
-        ],
+        "tags": ["Wishlist"],
         "description": "",
         "parameters": [
           {
@@ -1220,9 +1159,7 @@
     },
     "/api/v1/wishlist/{wishlist_id}/remove_album/{album_id}": {
       "patch": {
-        "tags": [
-          "Wishlist"
-        ],
+        "tags": ["Wishlist"],
         "description": "",
         "parameters": [
           {
@@ -1299,10 +1236,7 @@
           },
           "role": {
             "type": "string",
-            "enum": [
-              "user",
-              "admin"
-            ]
+            "enum": ["user", "admin"]
           },
           "profileImage": {
             "type": "object",
@@ -1326,22 +1260,12 @@
               },
               "preferredPaymentOption": {
                 "type": "string",
-                "enum": [
-                  "credit card",
-                  "paypal",
-                  "google pay"
-                ]
+                "enum": ["credit card", "paypal", "google pay"]
               }
             }
           }
         },
-        "required": [
-          "id",
-          "name",
-          "username",
-          "email",
-          "role"
-        ],
+        "required": ["id", "name", "username", "email", "role"],
         "xml": {
           "name": "PasswordlessUser"
         }
@@ -1367,10 +1291,7 @@
           },
           "role": {
             "type": "string",
-            "enum": [
-              "user",
-              "admin"
-            ]
+            "enum": ["user", "admin"]
           },
           "profileImage": {
             "type": "object",
@@ -1394,11 +1315,7 @@
               },
               "preferredPaymentOption": {
                 "type": "string",
-                "enum": [
-                  "credit card",
-                  "paypal",
-                  "google pay"
-                ]
+                "enum": ["credit card", "paypal", "google pay"]
               }
             }
           },
@@ -1473,11 +1390,7 @@
                   ]
                 }
               },
-              "required": [
-                "_id",
-                "user",
-                "album"
-              ]
+              "required": ["_id", "user", "album"]
             }
           }
         },
@@ -1541,11 +1454,7 @@
             "example": 2
           }
         },
-        "required": [
-          "albumName",
-          "artistName",
-          "spotifyUrl"
-        ],
+        "required": ["albumName", "artistName", "spotifyUrl"],
         "xml": {
           "name": "Album"
         }
@@ -1582,11 +1491,7 @@
             "example": "https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv"
           }
         },
-        "required": [
-          "albumName",
-          "artistName",
-          "spotifyUrl"
-        ],
+        "required": ["albumName", "artistName", "spotifyUrl"],
         "xml": {
           "name": "NewAlbum"
         }
@@ -1675,19 +1580,10 @@
                       "example": "akos92"
                     }
                   },
-                  "required": [
-                    "_id",
-                    "name",
-                    "email",
-                    "username"
-                  ]
+                  "required": ["_id", "name", "email", "username"]
                 }
               },
-              "required": [
-                "_id",
-                "album",
-                "user"
-              ]
+              "required": ["_id", "album", "user"]
             }
           },
           "purchasingUsersCount": {
