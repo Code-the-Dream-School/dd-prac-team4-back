@@ -153,4 +153,4 @@ io.on('connection', (socket) => {
   });
 });
 
-module.exports = { app: socketServer, connectDB };
+module.exports = { app: server, connectDB };
