@@ -152,7 +152,7 @@ const getAlbumWithAllUsersWhoPurchasedIt = async (req, res) => {
 
      #swagger.responses[200] = {
 				description: 'Album with users who purchased it was fetched  successfully ',
-				schema: { albums: [{ $ref: '#/definitions/AlbumWithUsers' }], purchasingUsersCount: 1 }
+				schema: { album: { $ref: '#/definitions/AlbumWithUsers' }, purchasingUsersCount: 1 }
 		 }
      #swagger.responses[404] = { description: 'No album with this id wasfound.' }
 

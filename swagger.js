@@ -71,7 +71,7 @@ const doc = {
       ],
     },
     Album: {
-      $id: '64d2ae2308a725b72bd5c0cf',
+    
       $albumName: 'The Dark Side of the Moon',
       $artistName: 'Pink Floyd',
       price: 9.99,
@@ -85,7 +85,7 @@ const doc = {
       numOfReviews: 2,
     },
     NewAlbum: {
-      $id: '64d2ae2308a725b72bd5c0cf',
+     
       $albumName: 'The Dark Side of the Moon',
       $artistName: 'Pink Floyd',
       price: 9.99,
@@ -94,45 +94,34 @@ const doc = {
       category: 'rock',
       $spotifyUrl: 'https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv',
     },
-    AlbumsWithUsers: {
-      $id: '64d6ca92a15d2e18ab96a2a3',
-      $name: 'John Doe',
-      $username: 'johndoe',
-      $email: 'john@example.com',
-      $role: { '@enum': ['user', 'admin'] },
-      profileImage: {
-        url: 'https://example.com/profile-image.jpg',
-      },
-      creditCardInfo: {
-        hashedNumber: '1234567890',
-        expiry: '12/24',
-        preferredPaymentOption: {
-          '@enum': ['credit card', 'paypal', 'google pay'],
-        },
-      },
-      $purchasedAlbums: [
-        {
-          $_id: '64ef50c8c5551074444547bc',
-          $user: '64d6ca92a15d2e18ab96a2a3',
-          $album: {
-            $id: '64d2a94c793389a43fc5a8d6',
-            $albumName: '...Baby one more time',
-            $artistName: 'Britney Spears',
-            $createdAt: '2023-08-08T20:45:00.942Z',
-            $updatedAt: '2023-08-17T10:10:42.861Z',
-            $price: 20.99,
-            image:
-              'https://i.scdn.co/image/ab67616d0000b27371cae34ad5a39bdab78af13e',
-            spotifyUrl:
-              'https://api.spotify.com/v1/albums/6r1lh7fHMB499vGKtIyJLy',
-            releaseDate: '2023-07-28T00:00:00.000Z',
-            averageRating: 0,
-            numOfReviews: 0,
+    AlbumWithUsers: {
+        $_id: "64d2a94c793389a43fc5a8d6",
+        $artistName: "F",
+        $albumName: "AUSTIN",
+        price: 0,
+        image: "https://i.scdn.co/image/ab67616d0000b27371cae34ad5a39bdab78af13e",
+        releaseDate: "2023-07-28T00:00:00.000Z",
+        $spotifyUrl: "https://api.spotify.com/v1/albums/6r1lh7fHMB499vGKtIyJLy",
+        averageRating: 0,
+        numOfReviews: 0,
+        $createdAt: '2023-08-08T20:45:00.942Z',
+        $updatedAt: '2023-08-17T10:10:42.861Z',
+        $purchasedByUsers: [
+          {
+            $_id: "64ef50c8c5551074444547bc",
+            $album: "64d2a94c793389a43fc5a8d6",
+            $user: {
+              $_id: "64d6ca92a15d2e18ab96a2a3",
+              $name: "Akos123123",
+              $email: "akos123@example.com",
+              role: "user",
+              $username: "akos92"
+            },
           },
-        },
-      ],
-    },
-  },
+        ],
+      purchasingUsersCount: 1,
+      },
+
 };
 
 const outputFile = './swagger-output.json';
