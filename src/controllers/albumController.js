@@ -84,7 +84,7 @@ const updateAlbum = async (req, res) => {
      }
      #swagger.responses[200] = {
 				description: 'Album successfully fetched and updated.',
-				schema: { $ref: '#/definitions/Album' }
+				schema: { album: { $ref: '#/definitions/Album' } }
 		 }
      #swagger.responses[400] = { description: 'validation error' }
 		 #swagger.responses[404] = { description: 'No album with this id was found.' }
