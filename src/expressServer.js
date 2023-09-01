@@ -41,7 +41,12 @@ const limiter = rateLimit({
 app.use(helmet());
 app.use(limiter);
 app.use(xss());
-app.use(cors({ origin: [/localhost:3000$/], credentials: true }));
+app.use(
+  cors({
+    origin: [/localhost:3000$/, /beatbazaar\.onrender\.com$/],
+    credentials: true,
+  })
+);
 
 //Logging middleware (using morgan to log each HTTP request)
 app.use(
@@ -111,12 +116,12 @@ const wishlistRoutes = require('./routes/wishlistRoutes');
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 
-app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/auth', authRouter /* #swagger.tags = ['Authentication'] */);
 app.use('/api/v1/users', userRouter /* #swagger.tags = ['Users'] */);
-app.use('/api/v1/albums', albumRouter);
-app.use('/api/v1/orders', orderRouter);
-app.use('/api/v1/reviews', reviewRouter);
-app.use('/api/v1/wishlist', wishlistRoutes);
+app.use('/api/v1/albums', albumRouter /* #swagger.tags = ['Albums'] */);
+app.use('/api/v1/orders', orderRouter /* #swagger.tags = ['Orders'] */);
+app.use('/api/v1/reviews', reviewRouter /* #swagger.tags = ['Reviews'] */);
+app.use('/api/v1/wishlist', wishlistRoutes /* #swagger.tags = ['Wishlist'] */);
 
 // Serve static files from the 'public' folder
 app.use('/admin', require('./routes/adminRoutes'));

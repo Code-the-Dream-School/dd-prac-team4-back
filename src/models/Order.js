@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // mongoose schema for the individual order items
-const orderItemSchema = new mongoose.Schema({
+const OrderItemSchema = new mongoose.Schema({
   // The album field references the Album model and is required
   album: {
     type: mongoose.Schema.Types.ObjectId,
@@ -17,7 +17,7 @@ const orderItemSchema = new mongoose.Schema({
 });
 
 // Schema for the main Order model
-const orderSchema = new mongoose.Schema(
+const OrderSchema = new mongoose.Schema(
   {
     // The user field references the User model and is required
     user: {
@@ -59,23 +59,29 @@ const orderSchema = new mongoose.Schema(
     },
     // The paymentIntentId field stores the Stripe state of the purchase
     paymentIntentId: String, // Payment intent ID is a string
-    orderItems: [orderItemSchema],
+    orderItems: [OrderItemSchema],
   },
   {
     timestamps: true, // Automatically add createdAt and updatedAt timestamps
   }
 );
 
+//defining time duration for prod and dev modes
+let isDevelopment = process.env.NODE_ENV !== 'production';
+const timeDuration = isDevelopment
+  ? parseInt(process.env.DEV_ORDER_EXPIRY_DURATION)
+  : parseInt(process.env.PROD_ORDER_EXPIRY_DURATION);
+
 // Create a function to update order statuses
 const updateOrderStatus = async () => {
   try {
-    // Get the current date and subtract 1 minute
-    const oneMinutesAgo = new Date(Date.now() - 1 * 60 * 1000);
+    // Get the current date and subtract __x   period of time
+    const expiryTimeSinceCreation = new Date(Date.now() - timeDuration);
 
-    // Update orders with a status of "pending" that were created 1 minute ago or earlier,
+    // Update orders with a status of "pending" that were created x time ago or earlier,
     // and set the order status to "cancelled"
     const result = await Order.updateMany(
-      { orderStatus: 'pending', createdAt: { $lte: oneMinutesAgo } },
+      { orderStatus: 'pending', createdAt: { $lte: expiryTimeSinceCreation } },
       { $set: { orderStatus: 'cancelled' } }
     );
     console.log('Update result:', result);
@@ -84,11 +90,16 @@ const updateOrderStatus = async () => {
   }
 };
 
-// Call the updateOrderStatus function every 1 minute (60 * 1000 milliseconds)
-const intervalId = setInterval(updateOrderStatus, 1 * 60 * 1000);
+// Call the updateOrderStatus function every .... x time
+
+//const intervalId = setInterval(updateOrderStatus, process.env.PROD_TIME_DURATION); //prod 1h
+const intervalId = setInterval(
+  updateOrderStatus,
+  timeDuration // in prod 1hr, in dev 20hrs
+);
 
 // Middleware: Update order statuses before executing a find operation
-orderSchema.pre('find', async function (next) {
+OrderSchema.pre('find', async function (next) {
   console.log('Pre-find started');
   // Call the updateOrderStatus function to update order statuses
   await updateOrderStatus();
@@ -97,23 +108,23 @@ orderSchema.pre('find', async function (next) {
 });
 
 // Middleware: Update order statuses before executing a findOne operation
-orderSchema.pre('findOne', async function (next) {
+OrderSchema.pre('findOne', async function (next) {
   console.log('Pre-findOne started');
   // Call the updateOrderStatus function to update order statuses
   await updateOrderStatus();
   console.log('Pre-findOne finished');
   next();
 });
-// TTL (Time To Live) index to automatically delete orders with "cancelled" status after 2 minutes
-orderSchema.index(
+// TTL (Time To Live) index to automatically delete orders with "cancelled" status after 2 hours
+OrderSchema.index(
   { expiresAt: 1 },
   {
-    expireAfterSeconds: 120,
+    expireAfterSeconds: 7200,
     partialFilterExpression: { orderStatus: 'cancelled' },
   }
 );
 
-const Order = mongoose.model('Order', orderSchema);
+const Order = mongoose.model('Order', OrderSchema);
 
 // Export intervalId as well, so that we can clear the interval when the server is stopped
 module.exports = { Order, intervalId };
