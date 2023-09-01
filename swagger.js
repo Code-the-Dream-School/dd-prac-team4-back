@@ -77,6 +77,8 @@ const doc = {
       price: 9.99,
       image: '/uploads/example.jpg',
       releaseDate: '2022-03-01T00:00:00.000Z',
+      createdAt: '2022-03-01T00:00:00.000Z',
+      updatedAt: '2022-03-01T00:00:00.000Z',
       category: 'rock',
       $spotifyUrl: 'https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv',
       averageRating: 4.5,
