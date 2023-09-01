@@ -9,6 +9,7 @@ const createAlbum = async (req, res) => {
   res.status(StatusCodes.CREATED).json({ album });
   /*
      #swagger.summary = 'Create new album and save it to the database'
+            #swagger.autoBody = false
             #swagger.parameters['newAlbum'] = {
         in: 'body',
         description: 'Album information to use for creation.',
