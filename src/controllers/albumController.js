@@ -17,10 +17,12 @@ const createAlbum = async (req, res) => {
         type: 'object',
         schema: { $ref: '#/definitions/NewAlbum' }
      } 
+     #swagger.description = '**ROLE REQUIRED:** admin'
      #swagger.responses[201] = {
 				description: 'Albums was successfully created.',
         schema: { album: { $ref: '#/definitions/Album' } }
 		 }
+     #swagger.responses[400] = { description: 'validation error' }
 		 
   */
 };
