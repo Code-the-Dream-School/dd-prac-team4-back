@@ -86,7 +86,7 @@ const updateAlbum = async (req, res) => {
      }
      #swagger.responses[200] = {
 				description: 'Album successfully fetched and updated.',
-				schema: { $ref: '#/definitions/Album' }
+				schema: { album: { $ref: '#/definitions/Album' } }
 		 }
      #swagger.responses[400] = { description: 'validation error' }
 		 #swagger.responses[404] = { description: 'No album with this id was found.' }
@@ -112,6 +112,7 @@ const updatePriceOfAlbums = async (req, res) => {
   res.status(StatusCodes.OK).json({ albums: updatedAlbums });
   /*
      #swagger.summary = 'Update prices of albums passed in req.body'
+	#swagger.autoBody = false
 	#swagger.parameters['albums to update prices'] = {
 		in: 'body',
 		description: 'Array of information to use to update album prices',
