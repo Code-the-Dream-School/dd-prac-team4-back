@@ -14,8 +14,8 @@ async function sendForgotPasswordEmail(toEmail, resetToken) {
 
   // Load and render the HTML template
   const htmlTemplate = await ejs.renderFile(
-    path.join(__dirname, '../email/templates/forgotPassword.html.ejs'), // Adjust the path
-    { resetLink: `http://localhost:8000/api/v1/reset-password/${resetToken}` } // Adjust the URL structure
+    path.join(__dirname, '../email/templates/html.ejs'),
+    { resetLink: `http://localhost:8000/api/v1/reset-password/${resetToken}` }
   );
 
   const mailOptions = {
