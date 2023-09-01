@@ -71,7 +71,6 @@ const doc = {
       ],
     },
     Album: {
-    
       $albumName: 'The Dark Side of the Moon',
       $artistName: 'Pink Floyd',
       price: 9.99,
@@ -85,7 +84,6 @@ const doc = {
       numOfReviews: 2,
     },
     NewAlbum: {
-     
       $albumName: 'The Dark Side of the Moon',
       $artistName: 'Pink Floyd',
       price: 9.99,
@@ -95,35 +93,34 @@ const doc = {
       $spotifyUrl: 'https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv',
     },
     AlbumWithUsers: {
-        $_id: "64d2a94c793389a43fc5a8d6",
-        $artistName: "F",
-        $albumName: "AUSTIN",
-        price: 0,
-        image: "https://i.scdn.co/image/ab67616d0000b27371cae34ad5a39bdab78af13e",
-        releaseDate: "2023-07-28T00:00:00.000Z",
-        $spotifyUrl: "https://api.spotify.com/v1/albums/6r1lh7fHMB499vGKtIyJLy",
-        averageRating: 0,
-        numOfReviews: 0,
-        $createdAt: '2023-08-08T20:45:00.942Z',
-        $updatedAt: '2023-08-17T10:10:42.861Z',
-        $purchasedByUsers: [
-          {
-            $_id: "64ef50c8c5551074444547bc",
-            $album: "64d2a94c793389a43fc5a8d6",
-            $user: {
-              $_id: "64d6ca92a15d2e18ab96a2a3",
-              $name: "Akos123123",
-              $email: "akos123@example.com",
-              role: "user",
-              $username: "akos92"
-            },
+      $_id: '64d2a94c793389a43fc5a8d6',
+      $artistName: 'F',
+      $albumName: 'AUSTIN',
+      price: 0,
+      image: 'https://i.scdn.co/image/ab67616d0000b27371cae34ad5a39bdab78af13e',
+      releaseDate: '2023-07-28T00:00:00.000Z',
+      $spotifyUrl: 'https://api.spotify.com/v1/albums/6r1lh7fHMB499vGKtIyJLy',
+      averageRating: 0,
+      numOfReviews: 0,
+      $createdAt: '2023-08-08T20:45:00.942Z',
+      $updatedAt: '2023-08-17T10:10:42.861Z',
+      $purchasedByUsers: [
+        {
+          $_id: '64ef50c8c5551074444547bc',
+          $album: '64d2a94c793389a43fc5a8d6',
+          $user: {
+            $_id: '64d6ca92a15d2e18ab96a2a3',
+            $name: 'Akos123123',
+            $email: 'akos123@example.com',
+            role: 'user',
+            $username: 'akos92',
           },
-        ],
+        },
+      ],
       purchasingUsersCount: 1,
-      },
-
+    },
+  },
 };
-
 const outputFile = './swagger-output.json';
 const routes = ['./src/expressServer.js'];
 
