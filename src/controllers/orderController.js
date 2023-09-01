@@ -66,37 +66,13 @@ const createOrder = async (req, res) => {
   description: 'Order information including order items, subtotal, tax, and total',
   required: true,
   schema: {
-    type: 'object',
-    properties: {
-      orderItems: {
-        type: 'array',
-        items: {
-          type: 'object',
-          properties: {
-            album: {
-              type: 'string',
-              description: 'ID of the album',
-            },
-            quantity: {
-              type: 'integer',
-              description: 'Quantity of the album',
-            },
-          },
-        },
-      },
-      subtotal: {
-        type: 'number',
-        description: 'Subtotal amount',
-      },
-      tax: {
-        type: 'number',
-        description: 'Tax amount',
-      },
-      total: {
-        type: 'number',
-        description: 'Total amount',
-      },
-    },
+    $orderItems: [{
+      album: "5f7f1f7a5c3f2b2d9c1b0b9d",
+      quantity: 2
+    }],
+    $subtotal: 9.99,
+    $tax: 0.75,
+    $total: 10.74
   },
 }
 #swagger.responses[201] = {
