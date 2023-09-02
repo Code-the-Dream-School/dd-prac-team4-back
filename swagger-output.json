@@ -5,6 +5,10 @@
     "description": "Description",
     "version": "1.0.0"
   },
+  "host": "localhost:8000",
+  "basePath": "/",
+  "schemes": [
+    "http",
   "servers": [
     {
       "url": "http://localhost:8000/"
@@ -13,11 +17,39 @@
   "paths": {
     "/api/v1/auth/register": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "summary": "Register a new user",
         "description": "",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User registration information",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "John Doe"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "jdoe@example.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "supersecretpassword"
+                },
+                "username": {
+                  "type": "string",
+                  "example": "jdoe99"
+                }
+              },
+              "required": ["name", "email", "password", "username"]
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "User registered successfully",
@@ -56,11 +88,31 @@
     },
     "/api/v1/auth/login": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "summary": "Login as a user",
         "description": "",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User email and password for login",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "jdoe@example.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "supersecretpassword"
+                }
+              },
+              "required": ["email", "password"]
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "User logged in successfully",
@@ -96,9 +148,7 @@
     },
     "/api/v1/auth/logout": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "summary": "Logout a user",
         "description": "This endpoint checks for a signed JWT token in an HTTP-only cookie and clears it. It checks the `token` field in the cookie.",
         "responses": {
@@ -127,9 +177,7 @@
     },
     "/api/v1/users/": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Fetch all registered users in a database whose role is user (exclude admins)",
         "description": "**ROLE REQUIRED:** admin",
         "responses": {
@@ -175,9 +223,7 @@
     },
     "/api/v1/users/showMe": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Returns information about the requesting user based on cookie session",
         "description": "",
         "responses": {
@@ -220,9 +266,7 @@
     },
     "/api/v1/users/showMe/withAlbums": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Fetch a user by id and all albums they purchased.",
         "description": "",
         "responses": {
@@ -273,9 +317,7 @@
     },
     "/api/v1/users/updateCurrentUser": {
       "patch": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Fetch the requesting user, update their data and return the updated user.",
         "description": "",
         "responses": {
@@ -335,9 +377,7 @@
     },
     "/api/v1/users/updateUserPasssword": {
       "patch": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Fetch the current requesting user by id, update their password and save it to the database.",
         "description": "",
         "responses": {
@@ -402,9 +442,7 @@
     },
     "/api/v1/users/{id}": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Fetch a user by id",
         "description": "",
         "parameters": [
@@ -459,9 +497,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Fetch a user by id and delete user.",
         "description": "**ROLE REQUIRED:** admin",
         "parameters": [
@@ -486,6 +522,9 @@
     },
     "/api/v1/albums/": {
       "get": {
+        "tags": [
+          "Albums"
+        ],
         "tags": ["Albums"],
         "summary": "Fetch all albums in a database (with price > $0)",
         "description": "",
@@ -538,6 +577,10 @@
         }
       },
       "post": {
+        "tags": [
+          "Albums"
+        ],
+        "description": "",
         "tags": ["Albums"],
         "summary": "Create new album and save it to the database",
         "description": "**ROLE REQUIRED:** admin",
@@ -590,6 +633,9 @@
         }
       },
       "patch": {
+        "tags": [
+          "Albums"
+        ],
         "tags": ["Albums"],
         "summary": "Update prices of albums passed in req.body",
         "description": "",
@@ -660,6 +706,9 @@
     },
     "/api/v1/albums/filter": {
       "get": {
+        "tags": [
+          "Albums"
+        ],
         "tags": ["Albums"],
         "summary": "Fetch paginated list of albums with price > 0, with query parameters for sorting and filtering",
         "description": "",
@@ -759,6 +808,9 @@
     },
     "/api/v1/albums/{id}": {
       "get": {
+        "tags": [
+          "Albums"
+        ],
         "tags": ["Albums"],
         "summary": "Fetch an album by id",
         "description": "",
@@ -811,6 +863,9 @@
         }
       },
       "patch": {
+        "tags": [
+          "Albums"
+        ],
         "tags": ["Albums"],
         "summary": "Fetch an album by id and update it",
         "description": "",
@@ -877,6 +932,9 @@
     },
     "/api/v1/albums/{id}/listOfUsersWhoPurchasedThisAlbum": {
       "get": {
+        "tags": [
+          "Albums"
+        ],
         "tags": ["Albums"],
         "summary": "Show all users that purchased this particular album",
         "description": "",
@@ -938,6 +996,9 @@
     },
     "/api/v1/orders/": {
       "get": {
+        "tags": [
+          "Orders"
+        ],
         "tags": ["Orders"],
         "description": "",
         "responses": {
@@ -947,7 +1008,9 @@
         }
       },
       "post": {
-        "tags": ["Orders"],
+        "tags": [
+          "Orders"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -1010,163 +1073,148 @@
             "schema": {
               "type": "string"
             }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/orders/{id}": {
-      "get": {
-        "tags": [
-          "Orders"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      },
+          ],
+          "responses": {
+            "default": {
+              "description": ""
       "delete": {
-        "tags": [
-          "Orders"
-        ],
+        "tags": ["Orders"],
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/reviews/": {
-      "get": {
-        "tags": [
-          "Reviews"
-        ],
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/reviews/album/{albumId}": {
-      "get": {
-        "tags": [
-          "Reviews"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "albumId",
-            "in": "path",
-            "required": true,
             "schema": {
               "type": "string"
             }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
           }
         }
       },
-      "post": {
-        "tags": [
-          "Reviews"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "albumId",
-            "in": "path",
-            "required": true,
-            "schema": {
+      "/api/v1/orders/{id}": {
+        "get": {
+          "tags": ["Orders"],
+          "description": "",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
               "type": "string"
             }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
+          ],
+          "responses": {
+            "default": {
+              "description": ""
+            }
           }
         },
-        "requestBody": {
-          "content": {
-            "application/json": {
+        "delete": {
+          "tags": ["Orders"],
+          "description": "",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "default": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/api/v1/reviews/": {
+        "get": {
+          "tags": ["Reviews"],
+          "description": "",
+          "responses": {
+            "default": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/api/v1/reviews/album/{albumId}": {
+        "get": {
+          "tags": ["Reviews"],
+          "description": "",
+          "parameters": [
+            {
+              "name": "albumId",
+              "in": "path",
+              "required": true,
               "schema": {
-                "type": "object",
-                "properties": {
-                  "album": {
-                    "example": "any"
-                  },
-                  "user": {
-                    "example": "any"
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "default": {
+              "description": ""
+            }
+          }
+        },
+        "post": {
+          "tags": ["Reviews"],
+          "description": "",
+          "parameters": [
+            {
+              "name": "albumId",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "default": {
+              "description": ""
+            }
+          },
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "album": {
+                      "example": "any"
+                    },
+                    "user": {
+                      "example": "any"
+                    }
                   }
                 }
               }
             }
           }
         }
-      }
-    },
-    "/api/v1/reviews/{id}": {
-      "get": {
-        "tags": [
-          "Reviews"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
       },
-      "delete": {
-        "tags": [
-          "Reviews"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
+      "/api/v1/reviews/{id}": {
+        "get": {
+          "tags": ["Reviews"],
+          "description": "",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "default": {
+              "description": ""
             }
           }
+          }
         ],
         "responses": {
           "default": {
@@ -1174,6 +1222,10 @@
           }
         }
       },
+      "patch": {
+        "tags": [
+          "Reviews"
+        ],
       "delete": {
         "tags": ["Reviews"],
         "description": "",
@@ -1194,9 +1246,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "Reviews"
-        ],
+        "tags": ["Reviews"],
         "description": "",
         "parameters": [
           {
@@ -1213,26 +1263,89 @@
             "description": ""
           }
         },
-        "requestBody": {
-          "content": {
-            "application/json": {
+        "delete": {
+          "tags": ["Reviews"],
+          "description": "",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
               "schema": {
-                "type": "object",
-                "properties": {
-                  "rating": {
-                    "example": "any"
-                  },
-                  "title": {
-                    "example": "any"
-                  },
-                  "comment": {
-                    "example": "any"
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "default": {
+              "description": ""
+            }
+          }
+        },
+        "delete": {
+          "tags": ["Reviews"],
+          "description": "",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "default": {
+              "description": ""
+            }
+          }
+        },
+        "patch": {
+          "tags": ["Reviews"],
+          "description": "",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "default": {
+              "description": ""
+            }
+          },
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "rating": {
+                      "example": "any"
+                    },
+                    "title": {
+                      "example": "any"
+                    },
+                    "comment": {
+                      "example": "any"
+                    }
                   }
                 }
               }
             }
           }
         }
+      },
+      "/api/v1/wishlist/": {
+        "post": {
+          "tags": ["Wishlist"],
+          "description": "",
+          "responses": {
+            "default": {
+              "description": ""
       }
     },
     "/api/v1/wishlist/": {
@@ -1269,57 +1382,100 @@
               "type": "string"
             }
           }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
+        }
+      },
+      "/api/v1/wishlist/{wishlist_id}/add_album/{album_id}": {
+        "patch": {
+          "tags": ["Wishlist"],
+          "description": "",
+          "parameters": [
+            {
+              "name": "wishlist_id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "album_id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK"
+            },
+            "400": {
+              "description": "Bad Request"
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          }
+        }
+      },
+      "/api/v1/wishlist/{wishlist_id}/remove_album/{album_id}": {
+        "patch": {
+          "tags": ["Wishlist"],
+          "description": "",
+          "parameters": [
+            {
+              "name": "wishlist_id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "album_id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK"
+            },
+            "400": {
+              "description": "Bad Request"
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          }
+        }
+      },
+      "/admin/": {
+        "get": {
+          "description": "",
+          "responses": {
+            "default": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/admin/api/albums": {
+        "patch": {
+          "description": "",
+          "responses": {
+            "default": {
+              "description": ""
+            }
           }
         }
       }
     },
-    "/api/v1/wishlist/{wishlist_id}/remove_album/{album_id}": {
-      "patch": {
-        "tags": [
-          "Wishlist"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "wishlist_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "album_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
+    "definitions": {
     "/admin/": {
       "get": {
         "description": "",
@@ -1445,69 +1601,197 @@
                 "type": "string",
                 "enum": ["credit card", "paypal", "google pay"]
               }
+            },
+            "required": [
+              "_id",
+              "user",
+              "album"
+            ]
             }
           },
           "purchasedAlbums": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "_id": {
-                  "type": "string",
-                  "example": "64ef50c8c5551074444547bc"
-                },
-                "user": {
-                  "type": "string",
-                  "example": "64d6ca92a15d2e18ab96a2a3"
-                },
-                "album": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "example": "64d2a94c793389a43fc5a8d6"
+              "components": {
+                "schemas": {
+                  "PasswordlessUser": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "example": "64d6ca92a15d2e18ab96a2a3"
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                      },
+                      "username": {
+                        "type": "string",
+                        "example": "johndoe"
+                      },
+                      "email": {
+                        "type": "string",
+                        "example": "john@example.com"
+                      },
+                      "role": {
+                        "type": "string",
+                        "enum": ["user", "admin"]
+                      },
+                      "profileImage": {
+                        "type": "object",
+                        "properties": {
+                          "url": {
+                            "type": "string",
+                            "example": "https://example.com/profile-image.jpg"
+                          }
+                        }
+                      },
+                      "creditCardInfo": {
+                        "type": "object",
+                        "properties": {
+                          "hashedNumber": {
+                            "type": "string",
+                            "example": "1234567890"
+                          },
+                          "expiry": {
+                            "type": "string",
+                            "example": "12/24"
+                          },
+                          "preferredPaymentOption": {
+                            "type": "string",
+                            "enum": ["credit card", "paypal", "google pay"]
+                          }
+                        }
+                      }
                     },
-                    "albumName": {
-                      "type": "string",
-                      "example": "...Baby one more time"
-                    },
-                    "artistName": {
-                      "type": "string",
-                      "example": "Britney Spears"
-                    },
-                    "createdAt": {
-                      "type": "string",
-                      "example": "2023-08-08T20:45:00.942Z"
-                    },
-                    "updatedAt": {
-                      "type": "string",
-                      "example": "2023-08-17T10:10:42.861Z"
-                    },
-                    "price": {
-                      "type": "number",
-                      "example": 20.99
-                    },
-                    "image": {
-                      "type": "string",
-                      "example": "https://i.scdn.co/image/ab67616d0000b27371cae34ad5a39bdab78af13e"
-                    },
-                    "spotifyUrl": {
-                      "type": "string",
-                      "example": "https://api.spotify.com/v1/albums/6r1lh7fHMB499vGKtIyJLy"
-                    },
-                    "releaseDate": {
-                      "type": "string",
-                      "example": "2023-07-28T00:00:00.000Z"
-                    },
-                    "averageRating": {
-                      "type": "number",
-                      "example": 0
-                    },
-                    "numOfReviews": {
-                      "type": "number",
-                      "example": 0
+                    "required": ["id", "name", "username", "email", "role"],
+                    "xml": {
+                      "name": "PasswordlessUser"
                     }
                   },
+                  "UserWithAlbums": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "example": "64d6ca92a15d2e18ab96a2a3"
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                      },
+                      "username": {
+                        "type": "string",
+                        "example": "johndoe"
+                      },
+                      "email": {
+                        "type": "string",
+                        "example": "john@example.com"
+                      },
+                      "role": {
+                        "type": "string",
+                        "enum": ["user", "admin"]
+                      },
+                      "profileImage": {
+                        "type": "object",
+                        "properties": {
+                          "url": {
+                            "type": "string",
+                            "example": "https://example.com/profile-image.jpg"
+                          }
+                        }
+                      },
+                      "creditCardInfo": {
+                        "type": "object",
+                        "properties": {
+                          "hashedNumber": {
+                            "type": "string",
+                            "example": "1234567890"
+                          },
+                          "expiry": {
+                            "type": "string",
+                            "example": "12/24"
+                          },
+                          "preferredPaymentOption": {
+                            "type": "string",
+                            "enum": ["credit card", "paypal", "google pay"]
+                          }
+                        }
+                      },
+                      "purchasedAlbums": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "_id": {
+                              "type": "string",
+                              "example": "64ef50c8c5551074444547bc"
+                            },
+                            "user": {
+                              "type": "string",
+                              "example": "64d6ca92a15d2e18ab96a2a3"
+                            },
+                            "album": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "example": "64d2a94c793389a43fc5a8d6"
+                                },
+                                "albumName": {
+                                  "type": "string",
+                                  "example": "...Baby one more time"
+                                },
+                                "artistName": {
+                                  "type": "string",
+                                  "example": "Britney Spears"
+                                },
+                                "createdAt": {
+                                  "type": "string",
+                                  "example": "2023-08-08T20:45:00.942Z"
+                                },
+                                "updatedAt": {
+                                  "type": "string",
+                                  "example": "2023-08-17T10:10:42.861Z"
+                                },
+                                "price": {
+                                  "type": "number",
+                                  "example": 20.99
+                                },
+                                "image": {
+                                  "type": "string",
+                                  "example": "https://i.scdn.co/image/ab67616d0000b27371cae34ad5a39bdab78af13e"
+                                },
+                                "spotifyUrl": {
+                                  "type": "string",
+                                  "example": "https://api.spotify.com/v1/albums/6r1lh7fHMB499vGKtIyJLy"
+                                },
+                                "releaseDate": {
+                                  "type": "string",
+                                  "example": "2023-07-28T00:00:00.000Z"
+                                },
+                                "averageRating": {
+                                  "type": "number",
+                                  "example": 0
+                                },
+                                "numOfReviews": {
+                                  "type": "number",
+                                  "example": 0
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "albumName",
+                                "artistName",
+                                "createdAt",
+                                "updatedAt",
+                                "price"
+                              ]
+                            }
+                          },
+                          "required": ["_id", "user", "album"]
+                        }
+                      },
                   "required": [
                     "id",
                     "albumName",
@@ -1624,6 +1908,14 @@
           "name": "NewAlbum"
         }
       },
+      "required": [
+        "id",
+        "name",
+        "username",
+        "email",
+        "role",
+        "purchasedAlbums"
+      ]
       "AlbumWithUsers": {
         "type": "object",
         "properties": {
@@ -1691,45 +1983,220 @@
                       "type": "string",
                       "example": "64d6ca92a15d2e18ab96a2a3"
                     },
-                    "name": {
-                      "type": "string",
-                      "example": "Akos123123"
-                    },
-                    "email": {
-                      "type": "string",
-                      "example": "akos123@example.com"
-                    },
-                    "role": {
-                      "type": "string",
-                      "example": "user"
-                    },
-                    "username": {
-                      "type": "string",
-                      "example": "akos92"
+                    "required": [
+                      "id",
+                      "name",
+                      "username",
+                      "email",
+                      "role",
+                      "purchasedAlbums"
+                    ],
+                    "xml": {
+                      "name": "UserWithAlbums"
                     }
                   },
-                  "required": ["_id", "name", "email", "username"]
+                  "Album": {
+                    "type": "object",
+                    "properties": {
+                      "albumName": {
+                        "type": "string",
+                        "example": "The Dark Side of the Moon"
+                      },
+                      "artistName": {
+                        "type": "string",
+                        "example": "Pink Floyd"
+                      },
+                      "price": {
+                        "type": "number",
+                        "example": 9.99
+                      },
+                      "image": {
+                        "type": "string",
+                        "example": "/uploads/example.jpg"
+                      },
+                      "releaseDate": {
+                        "type": "string",
+                        "example": "2022-03-01T00:00:00.000Z"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "example": "2022-03-01T00:00:00.000Z"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "example": "2022-03-01T00:00:00.000Z"
+                      },
+                      "category": {
+                        "type": "string",
+                        "example": "rock"
+                      },
+                      "spotifyUrl": {
+                        "type": "string",
+                        "example": "https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv"
+                      },
+                      "averageRating": {
+                        "type": "number",
+                        "example": 4.5
+                      },
+                      "numOfReviews": {
+                        "type": "number",
+                        "example": 2
+                      }
+                    },
+                    "required": ["albumName", "artistName", "spotifyUrl"],
+                    "xml": {
+                      "name": "Album"
+                    }
+                  },
+                  "NewAlbum": {
+                    "type": "object",
+                    "properties": {
+                      "albumName": {
+                        "type": "string",
+                        "example": "The Dark Side of the Moon"
+                      },
+                      "artistName": {
+                        "type": "string",
+                        "example": "Pink Floyd"
+                      },
+                      "price": {
+                        "type": "number",
+                        "example": 9.99
+                      },
+                      "image": {
+                        "type": "string",
+                        "example": "/uploads/example.jpg"
+                      },
+                      "releaseDate": {
+                        "type": "string",
+                        "example": "2022-03-01T00:00:00.000Z"
+                      },
+                      "category": {
+                        "type": "string",
+                        "example": "rock"
+                      },
+                      "spotifyUrl": {
+                        "type": "string",
+                        "example": "https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv"
+                      }
+                    },
+                    "required": ["albumName", "artistName", "spotifyUrl"],
+                    "xml": {
+                      "name": "NewAlbum"
+                    }
+                  },
+                  "AlbumWithUsers": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "example": "64d2a94c793389a43fc5a8d6"
+                      },
+                      "artistName": {
+                        "type": "string",
+                        "example": "F"
+                      },
+                      "albumName": {
+                        "type": "string",
+                        "example": "AUSTIN"
+                      },
+                      "price": {
+                        "type": "number",
+                        "example": 0
+                      },
+                      "image": {
+                        "type": "string",
+                        "example": "https://i.scdn.co/image/ab67616d0000b27371cae34ad5a39bdab78af13e"
+                      },
+                      "releaseDate": {
+                        "type": "string",
+                        "example": "2023-07-28T00:00:00.000Z"
+                      },
+                      "spotifyUrl": {
+                        "type": "string",
+                        "example": "https://api.spotify.com/v1/albums/6r1lh7fHMB499vGKtIyJLy"
+                      },
+                      "averageRating": {
+                        "type": "number",
+                        "example": 0
+                      },
+                      "numOfReviews": {
+                        "type": "number",
+                        "example": 0
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "example": "2023-08-08T20:45:00.942Z"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "example": "2023-08-17T10:10:42.861Z"
+                      },
+                      "purchasedByUsers": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "_id": {
+                              "type": "string",
+                              "example": "64ef50c8c5551074444547bc"
+                            },
+                            "album": {
+                              "type": "string",
+                              "example": "64d2a94c793389a43fc5a8d6"
+                            },
+                            "user": {
+                              "type": "object",
+                              "properties": {
+                                "_id": {
+                                  "type": "string",
+                                  "example": "64d6ca92a15d2e18ab96a2a3"
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "example": "Akos123123"
+                                },
+                                "email": {
+                                  "type": "string",
+                                  "example": "akos123@example.com"
+                                },
+                                "role": {
+                                  "type": "string",
+                                  "example": "user"
+                                },
+                                "username": {
+                                  "type": "string",
+                                  "example": "akos92"
+                                }
+                              },
+                              "required": ["_id", "name", "email", "username"]
+                            }
+                          },
+                          "required": ["_id", "album", "user"]
+                        }
+                      },
+                      "purchasingUsersCount": {
+                        "type": "number",
+                        "example": 1
+                      }
+                    },
+                    "required": [
+                      "_id",
+                      "artistName",
+                      "albumName",
+                      "spotifyUrl",
+                      "createdAt",
+                      "updatedAt",
+                      "purchasedByUsers"
+                    ],
+                    "xml": {
+                      "name": "AlbumWithUsers"
+                    }
+                  }
                 }
-              },
-              "required": ["_id", "album", "user"]
+              }
             }
-          },
-          "purchasingUsersCount": {
-            "type": "number",
-            "example": 1
           }
-        },
-        "required": [
-          "_id",
-          "artistName",
-          "albumName",
-          "spotifyUrl",
-          "createdAt",
-          "updatedAt",
-          "purchasedByUsers"
-        ],
-        "xml": {
-          "name": "AlbumWithUsers"
         }
       }
     }
