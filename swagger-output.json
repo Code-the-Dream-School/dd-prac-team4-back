@@ -14,10 +14,27 @@
     "/api/v1/auth/register": {
       "post": {
         "tags": ["Authentication"],
+        "summary": "Register a new user",
         "description": "",
+        "parameters": [],
         "responses": {
-          "default": {
-            "description": ""
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenizedUser"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenizedUser"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, missing email, name, password, or username"
           }
         },
         "requestBody": {
@@ -48,10 +65,30 @@
     "/api/v1/auth/login": {
       "post": {
         "tags": ["Authentication"],
+        "summary": "Login as a user",
         "description": "",
+        "parameters": [],
         "responses": {
-          "default": {
-            "description": ""
+          "201": {
+            "description": "User logged in successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenizedUser"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenizedUser"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, missing email or password"
+          },
+          "401": {
+            "description": "Unauthorized, invalid credentials"
           }
         },
         "requestBody": {
@@ -76,12 +113,48 @@
     "/api/v1/auth/logout": {
       "post": {
         "tags": ["Authentication"],
-        "description": "",
+        "summary": "Logout a user",
+        "description": "This endpoint checks for a signed JWT token in an HTTP-only cookie and clears it. It checks the `token` field in the cookie.",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "User logged out successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "example": "user logged out!"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "example": "user logged out!"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/v1/users/": {
@@ -1268,6 +1341,31 @@
         "required": ["id", "name", "username", "email", "role"],
         "xml": {
           "name": "PasswordlessUser"
+        }
+      },
+      "TokenizedUser": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "John Doe"
+              },
+              "userId": {
+                "type": "string",
+                "example": "64ef5885c2a489217c571253"
+              },
+              "role": {
+                "type": "string",
+                "enum": ["user", "admin"]
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "TokenizedUser"
         }
       },
       "UserWithAlbums": {
