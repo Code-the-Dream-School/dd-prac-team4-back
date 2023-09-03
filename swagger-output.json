@@ -43,16 +43,16 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "in": {
+                  "name": {
                     "example": "any"
                   },
-                  "description": {
+                  "email": {
                     "example": "any"
                   },
-                  "required": {
+                  "password": {
                     "example": "any"
                   },
-                  "schema": {
+                  "username": {
                     "example": "any"
                   }
                 }
@@ -97,16 +97,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "in": {
+                  "email": {
                     "example": "any"
                   },
-                  "description": {
-                    "example": "any"
-                  },
-                  "required": {
-                    "example": "any"
-                  },
-                  "schema": {
+                  "password": {
                     "example": "any"
                   }
                 }
