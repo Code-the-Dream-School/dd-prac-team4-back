@@ -12,9 +12,15 @@ afterAll(async () => {
   server.close();
 });
 
-test('test:echo socket event', (done) => {
+test('test:ping socket event', (done) => {
   jest.setTimeout(30000);
-  const client = io.connect(`http://localhost:${PORT}`, {
+  const senderClient = io.connect(`http://localhost:${PORT}`, {
+    transports: ['websocket'],
+    forceNew: true,
+    reconnection: false,
+  });
+
+  const recipientClient = io.connect(`http://localhost:${PORT}`, {
     transports: ['websocket'],
     forceNew: true,
     reconnection: false,
@@ -22,14 +28,19 @@ test('test:echo socket event', (done) => {
 
   const messageToSend = 'Hello, server!';
 
-  client.once('connect', () => {
-    client.emit('test:echo', messageToSend);
+  senderClient.once('connect', () => {
+    senderClient.emit('test:ping', messageToSend);
+  });
 
-    client.on('test:echo', (response) => {
-      expect(response).toBe(messageToSend);
+  recipientClient.once('connect', () => {
+    recipientClient.on('test:ping', (response) => {
+      expect(response).toBe(`user sent: ${messageToSend}`);
 
-      client.disconnect();
-      done();
+      senderClient.disconnect();
+      recipientClient.disconnect();
+
+      // Small timeout before calling "done()" to give time for the disconnect event to fire
+      setTimeout(() => done(), 1000);
     });
   });
 }, 60000);
