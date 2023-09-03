@@ -1,5 +1,6 @@
 const { app } = require('../src/expressServer');
 const io = require('socket.io-client');
+const { intervalId } = require('../src/models/Order');
 
 let server;
 const PORT = 8001;
@@ -9,11 +10,11 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  clearInterval(intervalId); // Clear the interval after tests are finished
   server.close();
 });
 
 test('test:ping socket event', (done) => {
-  jest.setTimeout(30000);
   // Socket.io client for sending a message
   const senderClient = io.connect(`http://localhost:${PORT}`, {
     transports: ['websocket'], // WebSocket transport
@@ -48,7 +49,7 @@ test('test:ping socket event', (done) => {
       recipientClient.disconnect();
 
       // Small timeout before calling "done()" to give time for the disconnect event to fire
-      setTimeout(() => done(), 1000);
+      done();
     });
   });
-}, 60000);
+});
