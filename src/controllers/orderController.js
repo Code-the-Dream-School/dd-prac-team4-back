@@ -30,6 +30,15 @@ const createOrder = async (req, res) => {
     amount: total * 100, // Stripe requires amount in cents
     currency: 'usd',
     description: `Order #${order._id}`,
+    metadata: {
+      userId: req.user.userId,
+      orderId: order._id, // key-values
+      totalQuantity: orderItems.reduce(
+        (total, item) => total + item.quantity,
+        0
+      ), // the total number of items in the order
+      totalAlbums: orderItems.length, // the total number of albums purchased in order
+    },
   });
 
   // Save the paymentIntent to the Order model
