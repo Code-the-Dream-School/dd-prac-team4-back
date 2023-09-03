@@ -32,6 +32,13 @@ const doc = {
         },
       },
     },
+    TokenizedUser: {
+      user: {
+        name: 'John Doe',
+        userId: '64ef5885c2a489217c571253',
+        role: { '@enum': ['user', 'admin'] },
+      },
+    },
     UserWithAlbums: {
       $id: '64d6ca92a15d2e18ab96a2a3',
       $name: 'John Doe',
