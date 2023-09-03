@@ -14,12 +14,14 @@ afterAll(async () => {
 
 test('test:ping socket event', (done) => {
   jest.setTimeout(30000);
+  // Socket.io client for sending a message
   const senderClient = io.connect(`http://localhost:${PORT}`, {
-    transports: ['websocket'],
-    forceNew: true,
-    reconnection: false,
+    transports: ['websocket'], // WebSocket transport
+    forceNew: true, // Create a new connection
+    reconnection: false, // Disable reconnection attempts
   });
 
+  // Second Socket.io client for receiving a message
   const recipientClient = io.connect(`http://localhost:${PORT}`, {
     transports: ['websocket'],
     forceNew: true,
@@ -28,14 +30,20 @@ test('test:ping socket event', (done) => {
 
   const messageToSend = 'Hello, server!';
 
+  // Wait for successful connection of the senderClient
   senderClient.once('connect', () => {
+    // Emit a 'test:ping' event message to the server
     senderClient.emit('test:ping', messageToSend);
   });
 
+  // Wait for successful connection of the recipientClient
   recipientClient.once('connect', () => {
+    // Listen for the 'test:ping' event to receive a response message
     recipientClient.on('test:ping', (response) => {
+      // Check if the received response matches the expected value
       expect(response).toBe(`user sent: ${messageToSend}`);
 
+      // Disconnect both clients
       senderClient.disconnect();
       recipientClient.disconnect();
 
