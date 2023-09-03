@@ -1,6 +1,8 @@
 const nodemailer = require('nodemailer');
+const Email = require('email-templates');
+const path = require('path');
 
-// transport using Nodemailer
+// Create a nodemailer transport
 const transport = nodemailer.createTransport({
   service: process.env.EMAIL_SERVICE,
   auth: {
@@ -9,26 +11,28 @@ const transport = nodemailer.createTransport({
   },
 });
 
-// Function to send a test email (promisified)
-async function sendTestEmail(recipient) {
-  return new Promise((resolve, reject) => {
-    transport.sendMail(
-      {
-        from: process.env.EMAIL_USERNAME,
-        to: recipient,
-        subject: 'Test Email',
-        text: 'Hello, this is a test email!',
-        html: '<p>Hello, this is a test email!</p>',
-      },
-      (err, res) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res);
-        }
-      }
-    );
+const baseEmail = new Email({
+  message: {
+    from: 'codethedream.practicum.team4@outlook.com',
+  },
+  transport: transport, // Use the transport you created
+  subjectPrefix: process.env.NODE_ENV === 'production' ? '' : '(TEST) ',
+  views: {
+    root: path.resolve('../templates/test'), // this tells email-templates to look for templates starting from this path
+    options: {
+      extension: 'ejs', // this tells email-templates that the file will end tith *.ejs
+    },
+  },
+});
+
+// Function to send a test email
+async function sendTestEmail(to, username) {
+  return baseEmail.send({
+    template: 'test',
+    message: { to },
+    locals: { name: username },
   });
 }
 
-module.exports = sendTestEmail;
+// Export the transport and the sendTestEmail function
+module.exports = { sendTestEmail };

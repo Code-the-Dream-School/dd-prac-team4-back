@@ -1,4 +1,4 @@
-const sendTestEmail = require('./sender');
+const { sendTestEmail } = require('./sender');
 const TEST_RECIPIENT_EMAIL = process.env.TEST_RECIPIENT_EMAIL;
 
 async function main() {

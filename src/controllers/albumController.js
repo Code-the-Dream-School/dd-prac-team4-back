@@ -7,11 +7,38 @@ const createAlbum = async (req, res) => {
   req.body.user = req.user.userId;
   const album = await Album.create(req.body);
   res.status(StatusCodes.CREATED).json({ album });
+  /*
+     #swagger.summary = 'Create new album and save it to the database'
+            #swagger.autoBody = false
+            #swagger.parameters['newAlbum'] = {
+        in: 'body',
+        description: 'Album information to use for creation.',
+        required: true,
+        type: 'object',
+        schema: { $ref: '#/definitions/NewAlbum' }
+     } 
+     #swagger.description = '**ROLE REQUIRED:** admin'
+     #swagger.responses[201] = {
+				description: 'Albums was successfully created.',
+        schema: { album: { $ref: '#/definitions/Album' } }
+		 }
+     #swagger.responses[400] = { description: 'validation error' }
+		 
+  */
 };
 
 const getAllAlbums = async (req, res) => {
   const albums = await Album.find({ price: { $gt: 0 } }); // Fetch albums with price greater than 0
   res.status(StatusCodes.OK).json({ albums, count: albums.length });
+  /*
+     #swagger.summary = 'Fetch all albums in a database (with price > $0)'
+
+     #swagger.responses[200] = {
+				description: 'Albums  successfully fetched.',
+         schema: { albums: [{ $ref: '#/definitions/Album' }], count: 1 }
+		 }
+		 
+  */
 };
 
 const getSingleAlbum = async (req, res) => {
@@ -21,6 +48,18 @@ const getSingleAlbum = async (req, res) => {
     throw new CustomError.NotFoundError(`No album with id ${albumId}`);
   }
   res.status(StatusCodes.OK).json({ album });
+  /*
+     #swagger.summary = 'Fetch an album  by id'
+     #swagger.parameters['id'] = {
+        description: 'Mongo ObjectID of the album to fetch',
+     }
+     #swagger.responses[200] = {
+				description: 'Album successfully fetched.',
+				schema: { album: { $ref: '#/definitions/Album' } }
+		 }
+		 #swagger.responses[404] = { description: 'No album with this id was found.' }
+
+  */
 };
 
 const updateAlbum = async (req, res) => {
@@ -33,6 +72,26 @@ const updateAlbum = async (req, res) => {
     throw new CustomError.NotFoundError(`No album with id ${albumId}`);
   }
   res.status(StatusCodes.OK).json({ album });
+  /*
+     #swagger.summary = 'Fetch an album  by id and update it'
+     #swagger.parameters['id'] = {
+        description: 'Mongo ObjectID of the album to fetch',
+     }
+          #swagger.parameters['album properties to update'] = {
+      in: 'body',
+      description: 'Album information to use for update',
+      required: true,
+      type: 'object',
+      schema: { $ref: '#/definitions/NewAlbum' }
+     }
+     #swagger.responses[200] = {
+				description: 'Album successfully fetched and updated.',
+				schema: { album: { $ref: '#/definitions/Album' } }
+		 }
+     #swagger.responses[400] = { description: 'validation error' }
+		 #swagger.responses[404] = { description: 'No album with this id was found.' }
+
+  */
 };
 
 //will be user to let admin update price of several albums on the frontend
@@ -51,6 +110,21 @@ const updatePriceOfAlbums = async (req, res) => {
   logger.info(`${bulkWriteResponse.modifiedCount} Albums updated successfully`);
   const updatedAlbums = await Album.find({ _id: { $in: ids } }); // Fetches the updated albums from the database using the _id values in the ids array. //see Implicit $in in mongoose docs
   res.status(StatusCodes.OK).json({ albums: updatedAlbums });
+  /*
+     #swagger.summary = 'Update prices of albums passed in req.body'
+	#swagger.autoBody = false
+	#swagger.parameters['albums to update prices'] = {
+		in: 'body',
+		description: 'Array of information to use to update album prices',
+		required: true,
+		type: 'array',
+		schema: [{ id: "5f9d7b3b9d9d9d9d9d9d9d9d", price: 9.99 }]
+ }
+     #swagger.responses[200] = {
+				description: 'Albums prices  were successfully updated.',
+				schema: { albums: [{ $ref: '#/definitions/Album' }] }
+		 }
+  */
 };
 
 //Fetching an album from the database, including all the users that have purchased it
@@ -73,9 +147,18 @@ const getAlbumWithAllUsersWhoPurchasedIt = async (req, res) => {
     album: usersThatPurchasedThisAlbum,
     purchasingUsersCount: usersThatPurchasedThisAlbum.purchasedByUsers.length,
   });
+  /*
+     #swagger.summary = 'Show all users that purchased this particular album'
+
+     #swagger.responses[200] = {
+				description: 'Album with users who purchased it was fetched  successfully ',
+				schema: { album: { $ref: '#/definitions/AlbumWithUsers' }, purchasingUsersCount: 1 }
+		 }
+     #swagger.responses[404] = { description: 'No album with this id wasfound.' }
+
+  */
 };
 
-// question for Akos: how can we test this route in postman? it is set to show 10 results per page and don't know how to see ne 2nd the 3d pages..etcпш
 const getFilteredAlbums = async (req, res) => {
   const { limit, order, offset, albumName, artistName } = req.query;
   // Create an empty query object to store filtering parameters
@@ -103,6 +186,43 @@ const getFilteredAlbums = async (req, res) => {
     .limit(parseInt(limit) || 10); // Limit the number of returned albums (pagination implementation)
 
   res.status(StatusCodes.OK).json({ albums, count: albums.length }); // Return the found albums and the count of albums
+  /*
+     #swagger.summary = 'Fetch paginated list of albums with price > 0, with query parameters for sorting and filtering'
+     #swagger.autoQuery = false
+     #swagger.parameters['limit'] = {
+        description: 'Number of albums to fetch',
+        default: 10,
+        in: 'query'
+     }
+     #swagger.parameters['offset'] = {
+        description: 'Number of albums to skip (use with limit to page through results)',
+        default: 0,
+        in: 'query'
+     }
+
+     #swagger.parameters['order'] = {
+        description: 'Order of results',
+        in: 'query',
+        schema: {
+          '@enum': ['asc', 'desc']
+        }
+     }
+
+     #swagger.parameters['albumName'] = {
+        description: 'String to filter results by matching any part of album name (case-insensitive)',
+        in: 'query'
+     }
+
+     #swagger.parameters['artistName'] = {
+        description: 'String to filter results by matching any part of artist name (case-insensitive)',
+        in: 'query'
+     }
+     #swagger.responses[200] = {
+				description: 'Filtered by query parameters and with price more than 0 albums were successfully fetched.',
+         schema: { albums: [{ $ref: '#/definitions/Album' }], count: 1 }
+		 }
+		 
+  */
 };
 
 module.exports = {
