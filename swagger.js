@@ -126,6 +126,10 @@ const doc = {
       ],
       purchasingUsersCount: 1,
     },
+    AdminCredentials: {
+      username: 'admin', 
+      password: 'adminPassword',
+    },
   },
 };
 const outputFile = './swagger-output.json';
