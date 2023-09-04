@@ -71,7 +71,7 @@ const createOrder = async (req, res) => {
   }
   #swagger.responses[201] = {
     description: 'Order created successfully',
-    schema: { $ref: '#/definitions/Order' } 
+    schema: { order: { $ref: '#/definitions/Order' } }
   }
   */
 };
