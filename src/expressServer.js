@@ -1,3 +1,4 @@
+const path = require('path');
 require('dotenv').config();
 
 const express = require('express');
@@ -151,6 +152,12 @@ io.on('connection', (socket) => {
   socket.on('disconnect', function () {
     console.log('Disconnected');
   });
+});
+
+// Serving the documentation page
+app.get('/tests', (req, res) => {
+  const documentationFilePath = path.join(__dirname, 'public', 'tests.html');
+  res.sendFile(documentationFilePath);
 });
 
 module.exports = { app: server, connectDB };
