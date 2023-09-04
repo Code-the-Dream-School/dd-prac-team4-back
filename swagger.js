@@ -32,6 +32,13 @@ const doc = {
         },
       },
     },
+    TokenizedUser: {
+      user: {
+        name: 'John Doe',
+        userId: '64ef5885c2a489217c571253',
+        role: { '@enum': ['user', 'admin'] },
+      },
+    },
     UserWithAlbums: {
       $id: '64d6ca92a15d2e18ab96a2a3',
       $name: 'John Doe',
@@ -70,13 +77,60 @@ const doc = {
         },
       ],
     },
+    Album: {
+      $albumName: 'The Dark Side of the Moon',
+      $artistName: 'Pink Floyd',
+      price: 9.99,
+      image: '/uploads/example.jpg',
+      releaseDate: '2022-03-01T00:00:00.000Z',
+      createdAt: '2022-03-01T00:00:00.000Z',
+      updatedAt: '2022-03-01T00:00:00.000Z',
+      category: 'rock',
+      $spotifyUrl: 'https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv',
+      averageRating: 4.5,
+      numOfReviews: 2,
+    },
+    NewAlbum: {
+      $albumName: 'The Dark Side of the Moon',
+      $artistName: 'Pink Floyd',
+      price: 9.99,
+      image: '/uploads/example.jpg',
+      releaseDate: '2022-03-01T00:00:00.000Z',
+      category: 'rock',
+      $spotifyUrl: 'https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv',
+    },
+    AlbumWithUsers: {
+      $_id: '64d2a94c793389a43fc5a8d6',
+      $artistName: 'F',
+      $albumName: 'AUSTIN',
+      price: 0,
+      image: 'https://i.scdn.co/image/ab67616d0000b27371cae34ad5a39bdab78af13e',
+      releaseDate: '2023-07-28T00:00:00.000Z',
+      $spotifyUrl: 'https://api.spotify.com/v1/albums/6r1lh7fHMB499vGKtIyJLy',
+      averageRating: 0,
+      numOfReviews: 0,
+      $createdAt: '2023-08-08T20:45:00.942Z',
+      $updatedAt: '2023-08-17T10:10:42.861Z',
+      $purchasedByUsers: [
+        {
+          $_id: '64ef50c8c5551074444547bc',
+          $album: '64d2a94c793389a43fc5a8d6',
+          $user: {
+            $_id: '64d6ca92a15d2e18ab96a2a3',
+            $name: 'Akos123123',
+            $email: 'akos123@example.com',
+            role: 'user',
+            $username: 'akos92',
+          },
+        },
+      ],
+      purchasingUsersCount: 1,
+    },
   },
 };
-
 const outputFile = './swagger-output.json';
 const routes = ['./src/expressServer.js'];
 
 /* NOTE: If you are using the express Router, you must pass in the 'routes' only the 
 root file where the route starts, such as index.js, app.js, routes.js, etc ... */
-
-swaggerAutogen(outputFile, routes, doc);
+swaggerAutogen({ openapi: '3.1.0' })(outputFile, routes, doc);
