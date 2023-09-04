@@ -127,6 +127,8 @@ The **bb-practicum-team-4-back** project utilizes a comprehensive technology sta
 - **eslint-config-prettier**: ESLint configuration for Prettier.
 - **eslint-plugin-jest**: ESLint plugin for Jest.
 - **prettier**: Code formatter for maintaining code style consistency.
+- [Testing Documentation](http://localhost:8000/tests.html)
+  <img src="images/test.png" alt="Test Documentation" style="float: left; margin-right: 10px;" />
 
 This diverse technology stack ensures robust, secure, and well-documented backend development for the **bb-practicum-team-4-back** project.
 

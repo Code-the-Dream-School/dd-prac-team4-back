@@ -87,9 +87,14 @@ input[type='checkbox'] {
   transform: scale(1.5);
 }
 
-
 /*Tests*/
-.body, h1, h2, h3, p, ul, li {
+.body,
+h1,
+h2,
+h3,
+p,
+ul,
+li {
   margin: 0;
   padding: 0;
   list-style: none;

@@ -1,45 +1,78 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Integration Testing Documentation: "Get User By Id" Endpoint</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body class="body">
-  <nav>
-    <ul>
-        <li><a href="#integration-testing">Integration Testing Documentation</a></li>
-        <li><a href="#socket-event-test">Socket Event Test Documentation</a></li>
-    </ul>
-</nav>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="body">
+    <nav>
+      <ul>
+        <li>
+          <a href="#integration-testing">Integration Testing Documentation</a>
+        </li>
+        <li>
+          <a href="#socket-event-test">Socket Event Test Documentation</a>
+        </li>
+      </ul>
+    </nav>
 
-<h2 id="integration-testing">Integration Testing Documentation: "Get User By Id" Endpoint</h2>
+    <h2 id="integration-testing">
+      Integration Testing Documentation: "Get User By Id" Endpoint
+    </h2>
 
     <h3>Introduction</h3>
-    <p>This documentation provides a step-by-step guide to creating integration tests for the "Get User By Id" endpoint in backend application.</p>
+    <p>
+      This documentation provides a step-by-step guide to creating integration
+      tests for the "Get User By Id" endpoint in backend application.
+    </p>
 
     <h3>Tools</h3>
     <ul>
-        <li><em>Jest</em> - a popular Javascript testing framework. This is the library that will look for all the files named **.test.js in the repo and run them. It also gives us a framework for defining test cases (describe, it blocks)</li>
-        <li><em>Supertest</em> - A popular library for testing HTTP backends, like an Express server</li>
-        <li><em>MongoDb-Memory-Server</em> - In order to make sure our tests don’t mess up our live production database, we can use this library to run mongodb in-memory locally, and have mongoose connect to that version of the db when running tests</li>
+      <li>
+        <em>Jest</em> - a popular Javascript testing framework. This is the
+        library that will look for all the files named **.test.js in the repo
+        and run them. It also gives us a framework for defining test cases
+        (describe, it blocks)
+      </li>
+      <li>
+        <em>Supertest</em> - A popular library for testing HTTP backends, like
+        an Express server
+      </li>
+      <li>
+        <em>MongoDb-Memory-Server</em> - In order to make sure our tests don’t
+        mess up our live production database, we can use this library to run
+        mongodb in-memory locally, and have mongoose connect to that version of
+        the db when running tests
+      </li>
     </ul>
 
     <h3>Steps to Create a Test</h3>
 
     <h4>Step 1: Setting Up package.json and Running Tests</h4>
-    <p>This process covers environment setup, test writing, and the utilization of necessary libraries(these have already been installed in the repo):</p>
+    <p>
+      This process covers environment setup, test writing, and the utilization
+      of necessary libraries(these have already been installed in the repo):
+    </p>
     <pre><code>npm install jest supertest mongodb-memory-server</code></pre>
-    <p>Add a script to run tests in the "scripts" section of your package.json:</p>
+    <p>
+      Add a script to run tests in the "scripts" section of your package.json:
+    </p>
     <pre><code>// package.json
 "scripts": {
   "test": "jest"
 },
 </code></pre>
-    <p>Now you have a configured package.json with installed dependencies and a script to run tests using the command <code>npm test</code>.</p>
+    <p>
+      Now you have a configured package.json with installed dependencies and a
+      script to run tests using the command <code>npm test</code>.
+    </p>
 
     <h4>Step 2: Code Separation in the Application</h4>
-    <p>Extract the code from <code>app.js</code> into a new file, such as <code>expressServer.js</code>:</p>
+    <p>
+      Extract the code from <code>app.js</code> into a new file, such as
+      <code>expressServer.js</code>:
+    </p>
     <pre><code>// expressServer.js
 const express = require('express');
 const app = express();
@@ -48,7 +81,10 @@ module.exports = { app, connectDB };
 </code></pre>
 
     <h4>Step 3: Start the Server</h4>
-    <p>Now, in your <code>app.js</code> file, retain only the code necessary for launching the server:</p>
+    <p>
+      Now, in your <code>app.js</code> file, retain only the code necessary for
+      launching the server:
+    </p>
     <pre><code>// app.js
 const { app, connectDB } = require('./expressServer');
 const logger = require('../logs/logger');
@@ -70,7 +106,11 @@ start();
 </code></pre>
 
     <h4>Step 4: Test Setup</h4>
-    <p>Create a new file specifically for your tests, such as <code>userController.test.js</code>. This file will house the integration tests for the "Get User By Id" endpoint:</p>
+    <p>
+      Create a new file specifically for your tests, such as
+      <code>userController.test.js</code>. This file will house the integration
+      tests for the "Get User By Id" endpoint:
+    </p>
     <pre><code>// userController.test.js
 const { app, connectDB } = require('../src/expressServer.js');
 const { MongoMemoryServer } = require('mongodb-memory-server');
@@ -79,8 +119,17 @@ const User = require('../src/models/User');
 </code></pre>
 
     <h4>Step 5: Environment Setup for Tests</h4>
-    <p>Before running all your tests, you need to configure the testing environment. This step involves creating an in-memory MongoDB instance and starting the server to ensure a controlled environment for your integration tests.</p>
-    <p>In your <code>userController.test.js</code> file, set up the environment using the <code>beforeAll()</code> and <code>afterAll()</code> hooks provided by Jest:</p>
+    <p>
+      Before running all your tests, you need to configure the testing
+      environment. This step involves creating an in-memory MongoDB instance and
+      starting the server to ensure a controlled environment for your
+      integration tests.
+    </p>
+    <p>
+      In your <code>userController.test.js</code> file, set up the environment
+      using the <code>beforeAll()</code> and <code>afterAll()</code> hooks
+      provided by Jest:
+    </p>
     <pre><code>// userController.test.js
 // Declare variables for the server, database connection, and in-memory MongoDB instance
 let server;
@@ -107,7 +156,13 @@ afterAll(async () => {
 </code></pre>
 
     <h4>Step 6: Writing Tests</h4>
-    <p>Now that you've set up the environment, it's time to write the actual tests for the "Get User By Id" endpoint. In your <code>userController.test.js</code> file, create a test suite using the <code>describe()</code> function and add the test cases using the <code>it()</code> function:</p>
+    <p>
+      Now that you've set up the environment, it's time to write the actual
+      tests for the "Get User By Id" endpoint. In your
+      <code>userController.test.js</code> file, create a test suite using the
+      <code>describe()</code> function and add the test cases using the
+      <code>it()</code> function:
+    </p>
     <pre><code>// userController.test.js
 describe('GET /api/v1/users/:user_id endpoint', () => {
   it('should return a valid user without the password field if found', async () => {
@@ -153,11 +208,29 @@ describe('GET /api/v1/users/:user_id endpoint', () => {
     <h3>Testing Structure Using Jest</h3>
 
     <h4>Test Suites and Test Cases</h4>
-    <p>In Jest, tests are organized into <strong>test suites</strong> and <strong>test cases</strong>. A test suite is created using the <code>describe()</code> function, and test cases are defined using the <code>it()</code> function.</p>
-    <p>In the provided example, the test suite is defined for the "/api/v1/users/:user_id endpoint". Within this suite, there are two test cases:</p>
+    <p>
+      In Jest, tests are organized into <strong>test suites</strong> and
+      <strong>test cases</strong>. A test suite is created using the
+      <code>describe()</code> function, and test cases are defined using the
+      <code>it()</code> function.
+    </p>
+    <p>
+      In the provided example, the test suite is defined for the
+      "/api/v1/users/:user_id endpoint". Within this suite, there are two test
+      cases:
+    </p>
     <ol>
-        <li><strong>Testing the Successful Retrieval of a Valid User:</strong> This test case validates the response when a valid user is found. It includes the ARRANGE, ACT, and ASSERT sections.</li>
-        <li><strong>Testing the Response When a User is Not Found:</strong> This test case verifies the response status when attempting to retrieve a user that doesn't exist. It also includes the ARRANGE, ACT, and ASSERT sections.</li>
+      <li>
+        <strong>Testing the Successful Retrieval of a Valid User:</strong> This
+        test case validates the response when a valid user is found. It includes
+        the ARRANGE, ACT, and ASSERT sections.
+      </li>
+      <li>
+        <strong>Testing the Response When a User is Not Found:</strong> This
+        test case verifies the response status when attempting to retrieve a
+        user that doesn't exist. It also includes the ARRANGE, ACT, and ASSERT
+        sections.
+      </li>
     </ol>
     <pre><code>describe('/api/v1/users/:user_id endpoint', () => {
   it('should return a valid user without the password field if found', async () => {
@@ -170,17 +243,39 @@ describe('GET /api/v1/users/:user_id endpoint', () => {
 });
 </code></pre>
 
-    <h4>The pattern for crafting effective tests - <strong>ARRANGE-ACT-ASSERT:</strong></h4>
-    <p>Effective tests typically adhere to the "ARRANGE-ACT-ASSERT" pattern, which entails:</p>
+    <h4>
+      The pattern for crafting effective tests -
+      <strong>ARRANGE-ACT-ASSERT:</strong>
+    </h4>
+    <p>
+      Effective tests typically adhere to the "ARRANGE-ACT-ASSERT" pattern,
+      which entails:
+    </p>
     <ul>
-        <li><strong>ARRANGE:</strong> Setting up data and configuring the environment before executing the test case.</li>
-        <li><strong>ACT:</strong> Executing the test case, which is the action you intend to assess.</li>
-        <li><strong>ASSERT:</strong> Verifying the test case's outcome to ensure it aligns with expectations.</li>
+      <li>
+        <strong>ARRANGE:</strong> Setting up data and configuring the
+        environment before executing the test case.
+      </li>
+      <li>
+        <strong>ACT:</strong> Executing the test case, which is the action you
+        intend to assess.
+      </li>
+      <li>
+        <strong>ASSERT:</strong> Verifying the test case's outcome to ensure it
+        aligns with expectations.
+      </li>
     </ul>
     <p>This pattern enhances test structure and readability.</p>
 
     <h4>Expect Assertions</h4>
-    <p>In Jest, expectations (assertions) are defined using the <code>expect()</code> function. You can utilize various matchers provided by Jest to verify the conditions you expect in your tests. In the example, matchers such as <code>.toBe()</code>, <code>.toHaveProperty()</code>, <code>.toMatchObject()</code>, and <code>.not.toHaveProperty()</code> are used to validate the response data:</p>
+    <p>
+      In Jest, expectations (assertions) are defined using the
+      <code>expect()</code> function. You can utilize various matchers provided
+      by Jest to verify the conditions you expect in your tests. In the example,
+      matchers such as <code>.toBe()</code>, <code>.toHaveProperty()</code>,
+      <code>.toMatchObject()</code>, and <code>.not.toHaveProperty()</code> are
+      used to validate the response data:
+    </p>
     <pre><code>expect(response.status).toBe(200);
 expect(response.body).toHaveProperty('user');
 expect(response.body.user).toMatchObject({
@@ -190,54 +285,130 @@ expect(response.body.user).not.toHaveProperty('password');
 </code></pre>
 
     <h3>Additional Resources</h3>
-    <p>For more in-depth insights into Jest, Supertest, MongoDb-Memory-Server, and best practices in testing, explore the following resources:</p>
+    <p>
+      For more in-depth insights into Jest, Supertest, MongoDb-Memory-Server,
+      and best practices in testing, explore the following resources:
+    </p>
     <ul>
-        <li><a href="https://jestjs.io/docs/getting-started">Jest Docs: Getting Started</a></li>
-        <li><a href="https://dev.to/nedsoft/testing-nodejs-express-api-with-jest-and-supertest-1km6">Supertest: How to Test APIs Like a Pro</a></li>
-        <li><a href="https://nodkz.github.io/mongodb-memory-server/docs/">MongoDb-Memory-Server Documentation</a></li>
-        <li><a href="https://www.youtube.com/watch?v=7r4xVDI2vho">Jest Crash Course - Unit Testing in JavaScript</a></li>
-        <li><a href="https://www.smashingmagazine.com/2020/06/practical-introduction-ux-jest/">Introduction To Testing In JavaScript With Jest</a></li>
-        <li><a href="https://mherman.org/blog/testing-node-js-with-jest-and-supertest/">Testing Node Server with Jest and Supertest</a></li>
-        <li><a href="https://automationpanda.com/2020/07/07/arrange-act-assert-a-pattern-for-writing-good-tests/">A PATTERN FOR WRITING GOOD TESTS</a></li>
+      <li>
+        <a href="https://jestjs.io/docs/getting-started"
+          >Jest Docs: Getting Started</a
+        >
+      </li>
+      <li>
+        <a
+          href="https://dev.to/nedsoft/testing-nodejs-express-api-with-jest-and-supertest-1km6"
+          >Supertest: How to Test APIs Like a Pro</a
+        >
+      </li>
+      <li>
+        <a href="https://nodkz.github.io/mongodb-memory-server/docs/"
+          >MongoDb-Memory-Server Documentation</a
+        >
+      </li>
+      <li>
+        <a href="https://www.youtube.com/watch?v=7r4xVDI2vho"
+          >Jest Crash Course - Unit Testing in JavaScript</a
+        >
+      </li>
+      <li>
+        <a
+          href="https://www.smashingmagazine.com/2020/06/practical-introduction-ux-jest/"
+          >Introduction To Testing In JavaScript With Jest</a
+        >
+      </li>
+      <li>
+        <a
+          href="https://mherman.org/blog/testing-node-js-with-jest-and-supertest/"
+          >Testing Node Server with Jest and Supertest</a
+        >
+      </li>
+      <li>
+        <a
+          href="https://automationpanda.com/2020/07/07/arrange-act-assert-a-pattern-for-writing-good-tests/"
+          >A PATTERN FOR WRITING GOOD TESTS</a
+        >
+      </li>
     </ul>
 
     <h3>Jest Documentation</h3>
-    <p>For a deeper dive into Jest's capabilities, explore the following sections of the <a href="https://jestjs.io/docs/">Jest Documentation</a>:</p>
+    <p>
+      For a deeper dive into Jest's capabilities, explore the following sections
+      of the <a href="https://jestjs.io/docs/">Jest Documentation</a>:
+    </p>
     <ul>
-        <li><a href="https://jestjs.io/docs/expect">Jest Matchers Documentation</a></li>
-        <li><a href="https://jestjs.io/docs/api">Jest Global Object</a></li>
-        <li><a href="https://jestjs.io/docs/cli">Jest CLI Options</a></li>
-        <li><a href="https://jestjs.io/docs/configuration">Jest Configuration</a></li>
-        <li><a href="https://jestjs.io/docs/setup-teardown">Jest Setup and Teardown</a></li>
-        <li><a href="https://jestjs.io/docs/mock-functions">Jest Mock Functions</a></li>
-        <li><a href="https://jestjs.io/docs/asynchronous">Jest Asynchronous Tests</a></li>
-        <li><a href="https://jestjs.io/docs/snapshot-testing">Jest Snapshot Testing</a></li>
-        <li><a href="https://jestjs.io/docs/testing-frameworks">Jest Testing Framework Overview</a></li>
+      <li>
+        <a href="https://jestjs.io/docs/expect">Jest Matchers Documentation</a>
+      </li>
+      <li><a href="https://jestjs.io/docs/api">Jest Global Object</a></li>
+      <li><a href="https://jestjs.io/docs/cli">Jest CLI Options</a></li>
+      <li>
+        <a href="https://jestjs.io/docs/configuration">Jest Configuration</a>
+      </li>
+      <li>
+        <a href="https://jestjs.io/docs/setup-teardown"
+          >Jest Setup and Teardown</a
+        >
+      </li>
+      <li>
+        <a href="https://jestjs.io/docs/mock-functions">Jest Mock Functions</a>
+      </li>
+      <li>
+        <a href="https://jestjs.io/docs/asynchronous"
+          >Jest Asynchronous Tests</a
+        >
+      </li>
+      <li>
+        <a href="https://jestjs.io/docs/snapshot-testing"
+          >Jest Snapshot Testing</a
+        >
+      </li>
+      <li>
+        <a href="https://jestjs.io/docs/testing-frameworks"
+          >Jest Testing Framework Overview</a
+        >
+      </li>
     </ul>
 
     <h2 id="socket-event-test">Documentation: "test:ping" Socket Event Test</h2>
-    
+
     <h3>Introduction</h3>
-    <p>This documentation outlines the integration test for the "test:ping" socket event in your backend application.</p>
+    <p>
+      This documentation outlines the integration test for the "test:ping"
+      socket event in your backend application.
+    </p>
 
     <h3>Tools Used</h3>
     <ul>
-        <li><em>Jest</em> - a popular JavaScript testing framework.</li>
-        <li><em>Socket.io-client</em> - a client library for establishing WebSocket connections.</li>
-        <li><em>expressServer</em> - your Express server that handles WebSocket connections.</li>
+      <li><em>Jest</em> - a popular JavaScript testing framework.</li>
+      <li>
+        <em>Socket.io-client</em> - a client library for establishing WebSocket
+        connections.
+      </li>
+      <li>
+        <em>expressServer</em> - your Express server that handles WebSocket
+        connections.
+      </li>
     </ul>
 
     <h3>Test Steps</h3>
 
     <h4>Step 1: Start the Server</h4>
-    <p>Before running the test, you need to start your Express server. This is achieved using the <code>beforeAll()</code> function:</p>
+    <p>
+      Before running the test, you need to start your Express server. This is
+      achieved using the <code>beforeAll()</code> function:
+    </p>
     <pre><code>beforeAll(async () => {
   server = await app.listen(PORT);
 });
 </code></pre>
 
     <h4>Step 2: Configure Clients</h4>
-    <p>Next, you'll need to configure two clients for sending and receiving messages via WebSocket. This is done using the Socket.io-client library. The clients are set up and configured within the test:</p>
+    <p>
+      Next, you'll need to configure two clients for sending and receiving
+      messages via WebSocket. This is done using the Socket.io-client library.
+      The clients are set up and configured within the test:
+    </p>
     <pre><code>test('test:ping socket event', (done) => {
   // Socket.io client for sending a message
   const senderClient = io.connect(`http://localhost:${PORT}`, {
@@ -259,7 +430,11 @@ expect(response.body.user).not.toHaveProperty('password');
 </code></pre>
 
     <h4>Step 3: Send and Receive Messages</h4>
-    <p>Once the clients are configured, you can send a message from one client to the server and verify that the other client successfully receives a response message:</p>
+    <p>
+      Once the clients are configured, you can send a message from one client to
+      the server and verify that the other client successfully receives a
+      response message:
+    </p>
     <pre><code>// Wait for successful connection of the senderClient
 senderClient.once('connect', () => {
   // Emit a 'test:ping' event message to the server
@@ -284,11 +459,14 @@ recipientClient.once('connect', () => {
 </code></pre>
 
     <h3>Test Cleanup</h3>
-    <p>After completing the test, don't forget to close the connections and the server using the <code>afterAll()</code> function:</p>
+    <p>
+      After completing the test, don't forget to close the connections and the
+      server using the <code>afterAll()</code> function:
+    </p>
     <pre><code>afterAll(async () => {
   clearInterval(intervalId);
   server.close();
 });
 </code></pre>
-</body>
+  </body>
 </html>
