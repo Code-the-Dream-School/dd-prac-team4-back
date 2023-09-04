@@ -4,19 +4,24 @@ const adminHomePage = async (req, res) => {
   const allAlbums = await Album.find({}).sort({ price: 1 }); // Fetch all albums from the database and sort them by price in ascending order
   res.render('adminPage', { albums: allAlbums });
   /*
-  #swagger.tags = ['Admin']
-
-  #swagger.summary = 'Admin Home Page'
-  #swagger.description = 'Fetch all albums and render the admin home page.'
-
-  #swagger.responses[200] = {
-    description: 'Admin home page fetched successfully.',
-    schema: { $ref: '#/definitions/Album' }
-  }
-*/
+   #swagger.tags = ['Admin']
+   #swagger.summary = 'Admin Home Page'
+   #swagger.description = 'Fetch and render the admin home page.'
+   #swagger.responses[200] = {
+     description: 'Admin home page fetched successfully.',
+     content: { 'text/html': {} }
+   }
+   */
 };
 
-const { updatePriceOfAlbums } = require('../controllers/albumController');
+const {
+  updatePriceOfAlbums: originalUpdatePrice,
+} = require('../controllers/albumController');
+const updatePriceOfAlbums = async (req, res) => {
+  /* #swagger.tags = ['Admin'] */
+  //etc any other swagger infor
+  await originalUpdatePrice(req, res);
+};
 
 module.exports = {
   adminHomePage,

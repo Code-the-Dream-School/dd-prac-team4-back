@@ -127,7 +127,7 @@ const doc = {
       purchasingUsersCount: 1,
     },
     AdminCredentials: {
-      username: 'admin', 
+      username: 'admin',
       password: 'adminPassword',
     },
   },
