@@ -19,6 +19,29 @@ const createWishlist = async (req, res) => {
   return res.status(StatusCodes.OK).json({ wishlist: existingWishlist });
 };
 
+//for admin - ability to get all wishlists
+const getAllWishlists = async (req, res) => {
+  const wishlists = await Wishlist.find({});
+  res.status(StatusCodes.OK).json({ wishlists, count: wishlists.length });
+};
+
+//get single wishlist
+const getSingleWishlist = async (req, res) => {
+  const { id: wishlistId } = req.params;
+  // Fetch the wishlist using the provided wishlistId and populate ALBUM information
+  const wishlist = await Wishlist.findById(wishlistId).populate({
+    path: 'albums',
+  });
+
+  if (!wishlist) {
+    throw new CustomError.NotFoundError(`No wishlist with id ${wishlistId}`);
+  }
+  //uncoment LATER
+  // checkPermissions(req.user, wishlist.user);
+
+  res.status(StatusCodes.OK).json({ wishlist });
+};
+
 // Add an album to a wishlist
 async function addAlbumToWishlist(req, res) {
   const { wishlist_id, album_id } = req.params;
@@ -66,4 +89,6 @@ module.exports = {
   addAlbumToWishlist,
   removeAlbumFromWishlist,
   createWishlist,
+  getAllWishlists,
+  getSingleWishlist,
 };

@@ -3,11 +3,16 @@ const { authenticateUser } = require('../middleware/authentication');
 const {
   addAlbumToWishlist,
   removeAlbumFromWishlist,
-  createWishlist, // Import the createWishlist function
+  createWishlist,
+  getAllWishlists,
+  getSingleWishlist, // Import the createWishlist function
 } = require('../controllers/wishlistController');
 
 const router = express.Router();
-router.post('/', authenticateUser, createWishlist); // Create wishlist route
+router
+  .route('/')
+  .post(authenticateUser, createWishlist) // Create wishlist route
+  .get(getAllWishlists);
 
 router.patch(
   '/:wishlist_id/add_album/:album_id',
@@ -20,5 +25,7 @@ router.patch(
   authenticateUser,
   removeAlbumFromWishlist
 );
+
+router.route('/:id').get(getSingleWishlist);
 
 module.exports = router;
