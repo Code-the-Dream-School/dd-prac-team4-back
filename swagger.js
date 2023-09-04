@@ -34,17 +34,28 @@ const doc = {
     },
     definitions: {
       Order: {
-        $id: '123456',
-        user: 'John Doe',
+        $_id: 'idabc123456',
+        $user: {
+          $id: 'idabc123456',
+          $name: 'John Doe',
+          $username: 'johndoe',
+          $email: 'john@example.com',
+          $role: { '@enum': ['user', 'admin'] }
+        },
+        $orderStatus: { '@enum': ['pending', 'payment_successful', 'payment_failed', 'cancelled', 'complete'], default: 'pending' },
         orderItems: [
           {
-            album: '5f7f1f7a5c3f2b2d9c1b0b9d',
-            quantity: 2,
+            $album: '5f7f1f7a5c3f2b2d9c1b0b9d',
+            $quantity: 2,
+            $_id: 'idabc12345'
           },
         ],
-        subtotal: 9.99,
-        tax: 0.75,
-        total: 10.74,
+        $subtotal: 9.99,
+        $tax: 0.75,
+        $total: 10.74,
+        $createdAt: '2023-08-08T20:45:00.942Z',
+        $updatedAt: '2023-08-08T20:45:00.942Z',
+        paymentIntentId: 'pi_abc123456'
       },
     },
 
