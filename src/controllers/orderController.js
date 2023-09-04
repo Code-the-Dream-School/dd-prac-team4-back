@@ -130,7 +130,7 @@ const deleteOrder = async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: 'Success! Order was deleted' });
   /*
   #swagger.summary = 'Delete an order by id'
-  #swagger.description = '**ROLE REQUIRED:** user'
+  #swagger.description = '**ROLE REQUIRED:** user or admin'
   #swagger.parameters['id'] = {
     description: 'Mongo ObjectID of the order to delete',
   }
