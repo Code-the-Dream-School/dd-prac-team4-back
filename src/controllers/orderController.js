@@ -136,6 +136,7 @@ const deleteOrder = async (req, res) => {
   }
   #swagger.responses[200] = {
     description: 'The order was successfully deleted.',
+    schema: { msg: 'Success! Order was deleted' }
   }
   #swagger.responses[404] = { description: 'No order with id found.' }
   */
