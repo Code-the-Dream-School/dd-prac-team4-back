@@ -13,24 +13,29 @@ const transport = nodemailer.createTransport({
 
 const baseEmail = new Email({
   message: {
-    from: 'codethedream.practicum.team4@outlook.com',
+    from: process.env.EMAIL_USERNAME,
   },
   transport: transport, // Use the transport you created
   subjectPrefix: process.env.NODE_ENV === 'production' ? '' : '(TEST) ',
   views: {
-    root: path.resolve('../templates/test'), // this tells email-templates to look for templates starting from this path
+    root: path.resolve('src/mailing/templates'),// this tells email-templates to look for templates starting from this path
     options: {
       extension: 'ejs', // this tells email-templates that the file will end tith *.ejs
     },
   },
 });
+console.log(path.resolve("../templates"));
+console.log(process.cwd())
+
+
+const subject = 'First Subject of the first email to be sent'; 
 
 // Function to send a test email
 async function sendTestEmail(to, username) {
   return baseEmail.send({
     template: 'test',
     message: { to },
-    locals: { name: username },
+    locals: {   username , subject},
   });
 }
 
