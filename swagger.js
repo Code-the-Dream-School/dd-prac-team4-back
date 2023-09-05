@@ -82,7 +82,6 @@ const doc = {
     },
 
     OrderList: {
-      $id: '789012',
       orders: [
         {
           user: 'Jane Smith',
