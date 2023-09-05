@@ -18,8 +18,27 @@ const {
   updatePriceOfAlbums: originalUpdatePrice,
 } = require('../controllers/albumController');
 const updatePriceOfAlbums = async (req, res) => {
-  /* #swagger.tags = ['Admin'] */
-  //etc any other swagger infor
+  /*#swagger.summary = 'Update prices of albums passed in req.body'
+#swagger.parameters['albums to update prices'] = {
+  in: 'body',
+  description: 'Array of information to use to update album prices',
+  required: true,
+  type: 'array',
+  schema: [
+  {
+    "id": "64d2ae2308a725b72bd5c0dc",
+    "price": 9.99
+  },
+  {
+    "id": "another_album_id",
+    "price": 19.99
+  }
+]
+}
+#swagger.responses[200] = {
+  description: 'Album prices were successfully updated.',
+  content: { 'text/html': {} }
+}*/
   await originalUpdatePrice(req, res);
 };
 

@@ -1282,11 +1282,38 @@
     },
     "/admin/api/albums": {
       "patch": {
-        "tags": ["Admin"],
+        "summary": "Update prices of albums passed in req.body",
         "description": "",
+        "parameters": [
+          {
+            "name": "albums to update prices",
+            "in": "body",
+            "description": "Array of information to use to update album prices",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "example": "another_album_id"
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 19.99
+                  }
+                }
+              }
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Album prices were successfully updated.",
+            "content": {
+              "text/html": {}
+            }
           }
         }
       }
