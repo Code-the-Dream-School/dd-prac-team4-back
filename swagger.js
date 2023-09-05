@@ -40,14 +40,23 @@ const doc = {
           $name: 'John Doe',
           $username: 'johndoe',
           $email: 'john@example.com',
-          $role: { '@enum': ['user', 'admin'] }
+          $role: { '@enum': ['user', 'admin'] },
         },
-        $orderStatus: { '@enum': ['pending', 'payment_successful', 'payment_failed', 'cancelled', 'complete'], default: 'pending' },
+        $orderStatus: {
+          '@enum': [
+            'pending',
+            'payment_successful',
+            'payment_failed',
+            'cancelled',
+            'complete',
+          ],
+          default: 'pending',
+        },
         orderItems: [
           {
             $album: '5f7f1f7a5c3f2b2d9c1b0b9d',
             $quantity: 2,
-            $_id: 'idabc12345'
+            $_id: 'idabc12345',
           },
         ],
         $subtotal: 9.99,
@@ -55,7 +64,20 @@ const doc = {
         $total: 10.74,
         $createdAt: '2023-08-08T20:45:00.942Z',
         $updatedAt: '2023-08-08T20:45:00.942Z',
-        paymentIntentId: 'pi_abc123456'
+        paymentIntentId: 'pi_abc123456',
+      },
+      NewOrder: {
+        type: 'object',
+        properties: {
+          album: {
+            type: 'string',
+            example: 'Album ID or Name',
+          },
+          quantity: {
+            type: 'integer',
+            example: 2,
+          },
+        },
       },
     },
 
