@@ -28,32 +28,7 @@ Note: In the below example, the group's front-end repository was named `bb-pract
 ![browser server](images/back-end-running-browser.png)
 
 > Update the .node-version file to match the version of Node.js the **team** is using. This is used by Render.com to [deploy the app](https://render.com/docs/node-version).
-
-### Generating and Using API Documentation
-
-To generate and access the API documentation on backend, follow these steps:
-
-1. Generate the API documentation using the provided script:
-
-   ** `npm run generate-api-docs`**
-
-   This command will generate the API documentation files in a suitable format.You should see an outcome similar to the one shown below:
-
-   Outcome of the command
-   ![Outcome of the command](swagger-autogen-success.png)
-
-2. Run the application using the following command:
-
-   **`npm run dev`**
-
-   This will start the server, and you can access the application by navigating to `http://localhost:8000` in your web browser.
-
-3. Once the documentation is generated, you can access it by opening the `api-docs` folder in your project's root directory.Open the following URL in your web browser to view the API documentation:
-   `http://localhost:8000/api-docs/`
-
-   You will see a page similar to the one shown below:
-
-![Api documentation](api-documentation.png)--->
+--->
 
 # Music Store API
 
@@ -111,6 +86,31 @@ The **bb-practicum-team-4-back** project utilizes a comprehensive technology sta
 - **swagger-ui-dist**: UI component for rendering Swagger documentation.
 - **swagger-autogen**: Library for auto-generating Swagger documentation based on JSDoc comments.
 - **swagger-jsdoc**: Library for generating Swagger documentation from JSDoc comments.
+
+#### Generating and Using API Documentation
+
+To generate and access the API documentation on backend, follow these steps:
+
+1. Generate the API documentation using the provided script:
+
+   ** `npm run generate-api-docs`**
+
+   This command will generate the API documentation files in a suitable format.You should see an outcome similar to the one shown below:
+
+   Outcome of the command
+   ![Outcome of the command](swagger-autogen-success.png)
+
+2. Run the application using the following command:
+
+   **`npm run dev`**
+
+   This will start the server, and you can access the application by navigating to `http://localhost:8000` in your web browser.
+
+3. Once the documentation is generated, you can access it by opening the `api-docs` folder in your project's root directory.Open the following URL in your web browser to view the API documentation:
+   `http://localhost:8000/api-docs/`
+
+   You will see a page similar to the one shown below:
+
   ![Swagger Documentation]
   <img src="images/swagger1.png" alt="Swagger Documentation 1" style="float: left; margin-right: 10px;" />
   <img src="images/swagger2.png" alt="Swagger Documentation 2" style="float: left; margin-right: 10px;" />
@@ -200,15 +200,20 @@ Follow these steps to set up and run the Music Store API on your local machine:
 
 Navigate to the project directory:
 
+```bash
 cd dd-prac-team4-back
+```
 
 Install the project dependencies:
 
+```bash
 npm install
+```
+
 Create a .env file in the project root directory and add the following environment variables:
 
+```bash
 .env
-
 # MongoDB Connection URL (Insert your MongoDB connection URL here)
 
 MONGO_URL=your-mongodb-connection-url
@@ -253,6 +258,7 @@ NODE_ENV=development
 EMAIL_SERVICE=email-service-provider
 EMAIL_USERNAME=email-username
 EMAIL_PASSWORD=email-password
+```
 
 # Test Recipient Email Address (Insert a test recipient email address here)
 
