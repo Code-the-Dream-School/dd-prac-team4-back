@@ -94,6 +94,10 @@ const doc = {
           subtotal: 14.99,
           tax: 1.25,
           total: 16.24,
+          orderStatus: { '@enum': ['pending', 'payment_successful', 'payment_failed', 'cancelled', 'complete'] },
+          createdAt: '2023-08-08T20:45:00.942Z',
+          updatedAt: '2023-08-08T20:45:00.942Z',
+          paymentIntentId: 'pi_12345abcdef'
         },
         {
           user: 'Bob Johnson',
@@ -106,6 +110,10 @@ const doc = {
           subtotal: 29.97,
           tax: 2.5,
           total: 32.47,
+          orderStatus: { '@enum': ['pending', 'payment_successful', 'payment_failed', 'cancelled', 'complete'] },
+          createdAt: '2023-08-08T20:45:00.942Z',
+          updatedAt: '2023-08-08T20:45:00.942Z',
+          paymentIntentId: 'pi_12345abcdef'
         },
       ],
       count: 2,
