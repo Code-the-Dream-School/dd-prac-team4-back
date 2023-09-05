@@ -69,11 +69,11 @@ const doc = {
       NewOrder: {
         type: 'object',
         properties: {
-          album: {
+          $album: {
             type: 'string',
             example: 'Album ID or Name',
           },
-          quantity: {
+          $quantity: {
             type: 'integer',
             example: 2,
           },
