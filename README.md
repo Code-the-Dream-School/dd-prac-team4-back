@@ -1,38 +1,6 @@
-<!---# Back-End Repo for Node/React Practicum
-
-This will be the API for the front-end React app part of your practicum project.
-
-These instructions are for the **front-end team** so they can setup their local development environment to run
-both the back-end server and their front-end app. You can go through these steps during your first group meeting
-in case you need assistance from your mentors.
-
-> The back-end server will be running on port 8000. The front-end app will be running on port 3000. You will need to run both the back-end server and the front-end app at the same time to test your app.
-
-### Setting up local development environment
-
-1. Create a folder to contain both the front-end and back-end repos
-2. Clone this repository to that folder
-3. Run `npm install` to install dependencies
-4. Pull the latest version of the `main` branch (when needed)
-5. Run `npm run dev` to start the development server
-6. Open http://localhost:8000/api/v1/ with your browser to test.
-7. Your back-end server is now running. You can now run the front-end app.
-
-#### Running the back-end server in Visual Studio Code
-
-Note: In the below example, the group's front-end repository was named `bb-practicum-team1-front` and the back-end repository was named `bb-practicum-team-1-back`. Your repository will have a different name, but the rest should look the same.
-![vsc running](images/back-end-running-vsc.png)
-
-#### Testing the back-end server API in the browser
-
-![browser server](images/back-end-running-browser.png)
-
-> Update the .node-version file to match the version of Node.js the **team** is using. This is used by Render.com to [deploy the app](https://render.com/docs/node-version).
---->
-
 # Music Store API
 
-The Music Store API is a Node.js-based RESTful API for managing music albums, user accounts, reviews, wishlists, and orders for an online music store. It's designed with security and scalability in mind, utilizing various middleware and libraries to ensure a robust and secure backend for your music store application.
+The Music Store API is a Node.js-based RESTful API for managing music albums, user accounts, reviews, wishlists, and orders for an online music store. It's designed with security and scalability in mind, utilizing various middleware and libraries to ensure a robust and secure backend for music store application.
 
 ## Technology Stack
 
@@ -81,6 +49,11 @@ The **bb-practicum-team-4-back** project utilizes a comprehensive technology sta
 - **spotify-web-api-node**: Node.js wrapper for the Spotify Web API.
 - **stripe**: Library for processing payments, including credit card transactions.
 
+### Real-Time Communication:
+
+- **socket.io**: A library for real-time, bidirectional communication between clients and the server.
+- **socket.io-client**: The client-side library for Socket.IO.
+
 ### API Documentation:
 
 - **swagger-ui-dist**: UI component for rendering Swagger documentation.
@@ -111,9 +84,9 @@ To generate and access the API documentation on backend, follow these steps:
 
    You will see a page similar to the one shown below:
 
-  ![Swagger Documentation]
-  <img src="images/swagger1.png" alt="Swagger Documentation 1" style="float: left; margin-right: 10px;" />
-  <img src="images/swagger2.png" alt="Swagger Documentation 2" style="float: left; margin-right: 10px;" />
+![Swagger Documentation]
+<img src="images/swagger1.png" alt="Swagger Documentation 1" style="float: left; margin-right: 10px;" />
+<img src="images/swagger2.png" alt="Swagger Documentation 2" style="float: left; margin-right: 10px;" />
 
 ### DevOps and CI/CD:
 
@@ -139,38 +112,58 @@ You can explore a live demo of the Music Store application hosted on Render.com:
 - **Frontend - Beat Bazaar:** [https://beatbazaar.onrender.com/](https://beatbazaar.onrender.com/)
 - **Backend - Music Store API:** [https://musicstore.onrender.com/](https://musicstore.onrender.com/)
 
+## Frontend Repository
+
+You can find the frontend source code in our [Frontend Repository](https://github.com/Code-the-Dream-School/dd-prac-team4-front).
+
 ## Features
 
 The Music Store API provides the following key features:
 
 ### User Management:
 
-- User registration with roles (admin and user).
-- User login and logout.
-- User profile management, including updating user information and password.
-- Retrieving a user's purchased albums and wishlists.
+- **User Creation**: Efficiently create new users with validated information, including name, username, email, and password, using CRUD operations for effective user management and data security.
+- **User Retrieval**: Access specific user data for effective tracking and management.
+- **User Information Update**: Modify user information, including name, email address, and more.
+- **User Deletion**: Remove users when necessary for efficient database management.
+- **Profile Image Management**: Store profile image URLs and alternative text for enhanced user profiles.
+- **Credit Card Data Management**: Securely store hashed credit card numbers, expiration dates, and preferred payment methods for user convenience and security.
+- **Tracking Purchased Albums**: Keep a record of albums purchased by users to provide them with the best experience.
+- **Password Comparison**: Ensure the correctness of entered passwords for account security.
+- **Current User Password Update**: Allow users to safely update their passwords after verifying their old password.
+- **Retrieving List of Purchased Albums**: Track albums that users have purchased to grant them access to their purchases.
 
 ### Album Management:
 
-- Creating, updating, and deleting albums (admin only).
-- Fetching all albums, a single album, or albums filtered by various criteria.
-- Retrieving all users who purchased a specific album.
+- **Creating Albums**: Effortlessly generate new album entries with artist name, album name, pricing, and other details. Utilizes CRUD operations for efficient album management.
+- **Album Retrieval**: Access and retrieve specific album details for effective tracking and management.
+- **Updating Album Information**: Modify album details, including artist name, album name, price, and more.
+- **Bulk Price Update**: Update the prices of multiple albums at once, optimizing administrative tasks.
+- **Album Filtering**: Filter albums based on criteria such as album name and artist name.
+- **Spotify URL Validation**: Ensure the validity of Spotify URLs associated with albums.
+- **Virtual Fields**: Utilize virtual fields to track users who have purchased specific albums.
+- **Automatic Album Updates**: Automatically update album information and manage cancellations.
+- **Tax Management**: Simplify tax calculations and management to ensure accurate album pricing.
 
 ### Review Management:
 
-- Creating, updating, and deleting reviews.
-- Fetching all reviews, reviews for a specific product, or a single review.
-- Preventing users from submitting multiple reviews for the same product.
+- **Creating, updating, and deleting reviews**: Easily create new reviews, update existing ones, and delete them using CRUD operations for efficient review management.
+- **Fetching all reviews, reviews for a specific product, or a single review**: Access the complete list of all reviews, reviews for a specific product, or a selected review for effective tracking and management.
+- **Preventing users from submitting multiple reviews for the same product**: Ensure that users cannot submit multiple reviews for the same product.
 
 ### Wishlist Management:
 
-- Adding and removing albums from a user's wishlist.
-- Fetching a user's wishlist.
+- **Creating a Wishlist**: Create a user's wishlist, or retrieve an existing one if it already exists.
+- **Adding and Removing Albums**: Add albums to a user's wishlist or remove them as needed.
+- **Fetching a User's Wishlist**: Retrieve a user's wishlist to view the albums they've added.
 
 ### Order Management:
 
-- Creating orders for albums.
-- Fetching all orders and a single order.
+- **Creating Album Orders**: Easily generate album orders with detailed pricing, utilizing CRUD operations for efficient management.
+- **Order Retrieval**: Access and retrieve specific order details for effective tracking and management.
+- **Stripe Integration**: Securely process album order payments via Stripe, ensuring a safe and convenient checkout.
+- **Automatic Order Updates and TTL Functionality**: Automatically update orders, cancel unpaid ones after a defined time for accurate statuses, and remove canceled orders after a set duration for streamlined data management.
+- **Tax Management**: Simplify tax calculations and management for precise order pricing.
 
 ### Admin Dashboard:
 
@@ -248,10 +241,10 @@ NODE_ENV=development
 EMAIL_SERVICE=email-service-provider
 EMAIL_USERNAME=email-username
 EMAIL_PASSWORD=email-password
-```
 # Test Recipient Email Address (Insert a test recipient email address here)
-
 TEST_RECIPIENT_EMAIL=test-recipient-email
+```
+
 Please replace your-mongodb-connection-url, your-jwt-secret, and other values with real data needed for your application.
 
 5. Start the API server:
@@ -262,62 +255,4 @@ npm run dev
 
 6. The API should now be running locally at http://localhost:8000:
 
-7. Using Postman
-You can use Postman to interact with the API endpoints. Below are some example requests:
-
-```bash
-User Registration:
-
-POST http://localhost:8000/api/auth/register
-Content-Type: application/json
-
-{
-"name": "John Doe",
-"email": "johndoe@example.com",
-"password": "securepassword",
-"username": "johndoe"
-}
-User Login:
-
-POST http://localhost:8000/api/auth/login
-Content-Type: application/json
-
-{
-"email": "johndoe@example.com",
-"password": "securepassword"
-}
-Create Album (Admin):
-
-POST http://localhost:8000/api/albums
-Content-Type: application/json
-Authorization: Bearer your_access_token
-
-{
-"albumName": "Album Name",
-"artistName": "Artist Name",
-"price": 9.99,
-"image": "album-image.jpg"
-}
-Fetch Albums:
-
-GET http://localhost:8000/api/albums
-Add Album to Wishlist:
-
-POST http://localhost:8000/api/wishlist/add
-Content-Type: application/json
-Authorization: Bearer your_access_token
-
-{
-"albumId": "album_id_to_add_to_wishlist"
-}
-Create Order:
-
-POST http://localhost:8000/api/orders
-Content-Type: application/json
-Authorization: Bearer your_access_token
-
-{
-"albumId": "album_id_to_purchase",
-"quantity": 1
-}
-```
+7. You can use Postman to interact with the API endpoints.
