@@ -198,81 +198,74 @@ Follow these steps to set up and run the Music Store API on your local machine:
    git clone git@github.com:Code-the-Dream-School/dd-prac-team4-back.git
    ```
 
-Navigate to the project directory:
+2. Navigate to the project directory:
 
 ```bash
 cd dd-prac-team4-back
 ```
 
-Install the project dependencies:
+3. Install the project dependencies:
 
 ```bash
 npm install
 ```
 
-Create a .env file in the project root directory and add the following environment variables:
+4. Create a .env file in the project root directory and add the following environment variables:
 
 ```bash
 .env
 # MongoDB Connection URL (Insert your MongoDB connection URL here)
-
 MONGO_URL=your-mongodb-connection-url
 
 # JWT Secret Key (for token generation) (Insert your JWT secret here)
-
 JWT_SECRET=your-jwt-secret
 
 # JWT Lifetime (1 day) (Specify the JWT token lifetime, e.g., 1 day)
-
 JWT_LIFETIME=1d
 
 # Session Secret (for session management) (Insert your session secret here)
-
 SESSION_SECRET=your-session-secret
 
 # Spotify API Credentials (Insert your Spotify API credentials here)
-
 SPOTIFY_CLIENT_ID=your-spotify-client-id
 SPOTIFY_CLIENT_SECRET=your-spotify-client-secret
 
 # Stripe API Secret Key (Insert your Stripe API secret key here)
-
 STRIPE_SECRET_KEY=your-stripe-secret-key
 
 # Admin Credentials (Insert your admin credentials here)
-
 ADMIN_USERNAME=admin-username
 ADMIN_PASSWORD=admin-password
 
 # Order Expiry Durations (for local development and production) (Specify order expiry durations)
-
 DEV_ORDER_EXPIRY_DURATION=72000000
 PROD_ORDER_EXPIRY_DURATION=3600000
 
 # Node Environment (development or production) (Specify the execution environment, e.g., development or production)
-
 NODE_ENV=development
 
 # Email Service and Credentials (Insert your email service and credentials here)
-
 EMAIL_SERVICE=email-service-provider
 EMAIL_USERNAME=email-username
 EMAIL_PASSWORD=email-password
 ```
-
 # Test Recipient Email Address (Insert a test recipient email address here)
 
 TEST_RECIPIENT_EMAIL=test-recipient-email
 Please replace your-mongodb-connection-url, your-jwt-secret, and other values with real data needed for your application.
 
-Start the API server:
+5. Start the API server:
 
+```bash
 npm run dev
-The API should now be running locally at http://localhost:8000.
+```
 
-Using Postman
+6. The API should now be running locally at http://localhost:8000:
+
+7. Using Postman
 You can use Postman to interact with the API endpoints. Below are some example requests:
 
+```bash
 User Registration:
 
 POST http://localhost:8000/api/auth/register
@@ -327,3 +320,4 @@ Authorization: Bearer your_access_token
 "albumId": "album_id_to_purchase",
 "quantity": 1
 }
+```
