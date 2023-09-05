@@ -111,7 +111,7 @@ const getSingleOrder = async (req, res) => {
   }
   #swagger.responses[200] = {
     description: 'Order successfully fetched.',
-    schema: { $ref: '#/definitions/Order' } 
+    schema: { order: { $ref: '#/definitions/Order' } }
   }
   #swagger.responses[404] = { description: 'No order with id found.' }
   */
