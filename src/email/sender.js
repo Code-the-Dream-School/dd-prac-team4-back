@@ -33,4 +33,4 @@ async function sendForgotPasswordEmail(toEmail, resetToken) {
   }
 }
 
-module.exports = sendForgotPasswordEmail;
+module.exports = { sendForgotPasswordEmail };
