@@ -12,52 +12,22 @@ router.use(
   })
 );
 /*
-   #swagger.tags = ['Admin'] 
-   #swagger.summary = 'Admin Login'
-   #swagger.description = 'Authenticate as an admin to access the admin page.'
-   #swagger.responses[200] = {
-     description: 'Admin authenticated successfully.',
-   }
-   #swagger.responses[401] = {
-     description: 'Authentication failed.',
-   }
+  #swagger.tags = ['Admin'] 
+  #swagger.summary = 'Admin Login'
+  #swagger.description = 'Authenticate as an admin to access the admin page.'
+  #swagger.responses[200] = {
+    description: 'Admin authenticated successfully.',
+  }
+  #swagger.responses[401] = {
+    description: 'Authentication failed.',
+  }
    */
 
 router.get('/', adminController.adminHomePage);
 
 router.route('/api/albums').patch(adminController.updatePriceOfAlbums);
 /*
-#swagger.tags = ['Admin']
-#swagger.summary = 'Update prices of albums'
-#swagger.description = 'Update prices of selected albums as an admin.'
-#swagger.method = 'patch'
-#swagger.path = '/admin/api/albums'
-#swagger.parameters.albums = {
-  in: 'body',
-  description: 'Array of album updates',
-  required: true,
-  type: 'array',
-  items: {
-    type: 'object',
-    id: { type: 'string', description: 'ID of the album to update' },
-    price: { type: 'number', description: 'New price for the album' }
-  }
-  }
-}
-#swagger.responses[200] = {
-  description: 'Albums prices were successfully updated.',
-  schema: {
-    type: 'object',
-    albums: {
-      type: 'array',
-      description: 'Updated albums',
-      items: { $ref: '#/definitions/Album' }
-    }
-  }
-}
-#swagger.responses[500] = {
-  description: 'Internal server error.',
-}
-   */
+  #swagger.tags = ['Admin']
+*/
 
 module.exports = router;
