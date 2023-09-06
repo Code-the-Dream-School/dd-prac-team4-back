@@ -4,7 +4,7 @@ const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const { attachCookiesToResponse, createTokenUser } = require('../utils');
 const crypto = require('crypto');
-const emailSender = require('../email/sender');
+const emailSender = require('../mailing/sender');
 
 const register = async (req, res) => {
   const { name, email, password, username } = req.body;
