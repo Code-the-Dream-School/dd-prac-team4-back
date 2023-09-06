@@ -12,7 +12,7 @@ const router = express.Router();
 router
   .route('/')
   .post(authenticateUser, createWishlist) // Create wishlist route
-  .get(authenticateUser,  authorizePermissions('admin'), getAllWishlists);
+  .get(authenticateUser,  authorizePermissions('admin'), getAllWishlists);  //only admin can access this route
 
 router.patch(
   '/:wishlist_id/add_album/:album_id',
