@@ -5,8 +5,8 @@ const { StatusCodes } = require('http-status-codes');
 //Create wishlist
 const createWishlist = async (req, res) => {
   const existingWishlist = await Wishlist.findOne({ user: req.user.userId })
-  .populate('albums') // Populate the 'albums' field
-      .exec();
+    .populate('albums') // Populate the 'albums' field
+    .exec();
 
   if (!existingWishlist) {
     const newWishlist = new Wishlist({
@@ -17,12 +17,11 @@ const createWishlist = async (req, res) => {
     await newWishlist.save();
     await newWishlist.populate('albums');
     console.log(newWishlist);
-    
-    return res.status(StatusCodes.CREATED).json({  wishlist: newWishlist });
+
+    return res.status(StatusCodes.CREATED).json({ wishlist: newWishlist });
   }
 
-
-return res.status(StatusCodes.OK).json({  wishlist: existingWishlist });
+  return res.status(StatusCodes.OK).json({ wishlist: existingWishlist });
 };
 
 //for admin - ability to get all wishlists
