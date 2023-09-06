@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Wishlist = require('../models/Wishlist');
 const { StatusCodes } = require('http-status-codes');
+const CustomError = require('../errors');
 
 //Create wishlist
 const createWishlist = async (req, res) => {
