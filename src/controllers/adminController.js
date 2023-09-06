@@ -19,6 +19,7 @@ const {
 } = require('../controllers/albumController');
 const updatePriceOfAlbums = async (req, res) => {
   /*#swagger.summary = 'Update prices of albums passed in req.body'
+  #swagger.tags = ['Admin']
 	#swagger.requestBody = {
     required: true,
       "@content": {

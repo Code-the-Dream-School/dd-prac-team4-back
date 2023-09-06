@@ -1282,6 +1282,7 @@
     },
     "/admin/api/albums": {
       "patch": {
+        "tags": ["Admin"],
         "summary": "Update prices of albums passed in req.body",
         "description": "",
         "responses": {
