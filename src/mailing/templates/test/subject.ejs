@@ -1,18 +1,1 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title><%= subject %></title> <!-- Define the subject dynamically -->
-</head>
-<body>
-  <p>This is the content of BeatBazaar email.</p>
-  <script>
-    // Use JavaScript to extract the subject without tags and display it
-    //doesn´t help
-    document.addEventListener('DOMContentLoaded', function () {
-      const titleElement = document.querySelector('title');
-      const subject = titleElement.textContent;
-      document.body.innerHTML = `<h1>${subject}</h1>`;
-    });
-  </script>
-</body>
-</html>
+<%= subject %>
