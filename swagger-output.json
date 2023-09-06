@@ -1050,25 +1050,6 @@
             "description": ""
           }
         }
-      },
-      "delete": {
-        "tags": ["Orders"],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
       }
     },
     "/api/v1/reviews/": {
