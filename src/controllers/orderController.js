@@ -66,7 +66,7 @@ const createOrder = async (req, res) => {
     description: 'Order information including order items, subtotal, tax, and total',
     required: true,
     schema: {
-      $ref: '#/definitions/Order' 
+      $ref: '#/definitions/NewOrder' 
     },
   }
   #swagger.responses[201] = {
