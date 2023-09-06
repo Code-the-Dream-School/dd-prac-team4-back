@@ -1267,20 +1267,48 @@
     },
     "/admin/": {
       "get": {
-        "description": "",
+        "tags": ["Admin"],
+        "summary": "Admin Home Page",
+        "description": "Fetch and render the admin home page.",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Admin home page fetched successfully.",
+            "content": {
+              "text/html": {}
+            }
           }
         }
       }
     },
     "/admin/api/albums": {
       "patch": {
+        "tags": ["Admin"],
+        "summary": "Update prices of albums passed in req.body",
         "description": "",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Album prices were successfully updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "album": {
+                    "$ref": "#/components/schemas/Album"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": [
+                {
+                  "$ref": "#/components/schemas/UpdatePriceOfAlbums"
+                }
+              ]
+            }
           }
         }
       }
@@ -1700,6 +1728,22 @@
         ],
         "xml": {
           "name": "AlbumWithUsers"
+        }
+      },
+      "AdminCredentials": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "admin"
+          },
+          "password": {
+            "type": "string",
+            "example": "adminPassword"
+          }
+        },
+        "xml": {
+          "name": "AdminCredentials"
         }
       }
     }
