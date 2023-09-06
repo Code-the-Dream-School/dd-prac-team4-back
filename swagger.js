@@ -32,51 +32,50 @@ const doc = {
         },
       },
     },
-    definitions: {
-      Order: {
-        $_id: 'idabc123456',
-        $user: {
-          $id: 'idabc123456',
-          $name: 'John Doe',
-          $username: 'johndoe',
-          $email: 'john@example.com',
-          $role: { '@enum': ['user', 'admin'] },
-        },
-        $orderStatus: {
-          '@enum': [
-            'pending',
-            'payment_successful',
-            'payment_failed',
-            'cancelled',
-            'complete',
-          ],
-          default: 'pending',
-        },
-        orderItems: [
-          {
-            $album: '5f7f1f7a5c3f2b2d9c1b0b9d',
-            $quantity: 2,
-            $_id: 'idabc12345',
-          },
-        ],
-        $subtotal: 9.99,
-        $tax: 0.75,
-        $total: 10.74,
-        $createdAt: '2023-08-08T20:45:00.942Z',
-        $updatedAt: '2023-08-08T20:45:00.942Z',
-        paymentIntentId: 'pi_abc123456',
+
+    Order: {
+      $_id: 'idabc123456',
+      $user: {
+        $id: 'idabc123456',
+        $name: 'John Doe',
+        $username: 'johndoe',
+        $email: 'john@example.com',
+        $role: { '@enum': ['user', 'admin'] },
       },
-      NewOrder: {
-        type: 'object',
-        properties: {
-          $album: {
-            type: 'string',
-            example: 'Album ID or Name',
-          },
-          $quantity: {
-            type: 'integer',
-            example: 2,
-          },
+      $orderStatus: {
+        '@enum': [
+          'pending',
+          'payment_successful',
+          'payment_failed',
+          'cancelled',
+          'complete',
+        ],
+        default: 'pending',
+      },
+      orderItems: [
+        {
+          $album: '5f7f1f7a5c3f2b2d9c1b0b9d',
+          $quantity: 2,
+          $_id: 'idabc12345',
+        },
+      ],
+      $subtotal: 9.99,
+      $tax: 0.75,
+      $total: 10.74,
+      $createdAt: '2023-08-08T20:45:00.942Z',
+      $updatedAt: '2023-08-08T20:45:00.942Z',
+      paymentIntentId: 'pi_abc123456',
+    },
+    NewOrder: {
+      type: 'object',
+      properties: {
+        $album: {
+          type: 'string',
+          example: 'Album ID or Name',
+        },
+        $quantity: {
+          type: 'integer',
+          example: 2,
         },
       },
     },
@@ -94,10 +93,18 @@ const doc = {
           subtotal: 14.99,
           tax: 1.25,
           total: 16.24,
-          orderStatus: { '@enum': ['pending', 'payment_successful', 'payment_failed', 'cancelled', 'complete'] },
+          orderStatus: {
+            '@enum': [
+              'pending',
+              'payment_successful',
+              'payment_failed',
+              'cancelled',
+              'complete',
+            ],
+          },
           createdAt: '2023-08-08T20:45:00.942Z',
           updatedAt: '2023-08-08T20:45:00.942Z',
-          paymentIntentId: 'pi_12345abcdef'
+          paymentIntentId: 'pi_12345abcdef',
         },
         {
           user: 'Bob Johnson',
@@ -110,10 +117,18 @@ const doc = {
           subtotal: 29.97,
           tax: 2.5,
           total: 32.47,
-          orderStatus: { '@enum': ['pending', 'payment_successful', 'payment_failed', 'cancelled', 'complete'] },
+          orderStatus: {
+            '@enum': [
+              'pending',
+              'payment_successful',
+              'payment_failed',
+              'cancelled',
+              'complete',
+            ],
+          },
           createdAt: '2023-08-08T20:45:00.942Z',
           updatedAt: '2023-08-08T20:45:00.942Z',
-          paymentIntentId: 'pi_12345abcdef'
+          paymentIntentId: 'pi_12345abcdef',
         },
       ],
       count: 2,
