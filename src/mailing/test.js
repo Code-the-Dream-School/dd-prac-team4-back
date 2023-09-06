@@ -18,10 +18,11 @@ async function connectToDatabase() {
     console.error('Error connecting to MongoDB:', error.message);
   }
 }
-// Call the async function to connect to the database
+
+// // Call the async function to connect to the database
 connectToDatabase();
 
-//send to all users in a db
+// //send to all users in a db
 // async function sendEmailToAllUsers() {
 //   try {
 //     // Find all users in the database
@@ -43,7 +44,7 @@ connectToDatabase();
 //   }
 // }
 
-// // Call the function to send emails to all users
+// //Call the function to send emails to all users
 // sendEmailToAllUsers();
 
 async function main() {
