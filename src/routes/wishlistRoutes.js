@@ -1,5 +1,5 @@
 const express = require('express');
-const { authenticateUser } = require('../middleware/authentication');
+const { authenticateUser, authorizePermissions } = require('../middleware/authentication');
 const {
   addAlbumToWishlist,
   removeAlbumFromWishlist,
@@ -12,7 +12,7 @@ const router = express.Router();
 router
   .route('/')
   .post(authenticateUser, createWishlist) // Create wishlist route
-  .get(getAllWishlists);
+  .get(authenticateUser,  authorizePermissions('admin'), getAllWishlists);
 
 router.patch(
   '/:wishlist_id/add_album/:album_id',
