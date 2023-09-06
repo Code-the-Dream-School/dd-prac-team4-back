@@ -131,4 +131,26 @@ app.use(express.static(__dirname + '/public'));
 app.use(notFoundMiddleware); // Not found middleware to handle invalid routes
 app.use(errorHandlerMiddleware); // Error handler middleware
 
-module.exports = { app, connectDB };
+// Setup websocket
+// put the express server definitions inside a more generic Node server so that we can reuse it for Socket.io
+const { Server } = require('socket.io');
+const http = require('http');
+const server = http.createServer(app);
+const socketServer = new Server(server);
+const setupSocket = require('./live');
+const io = socketServer.of('/'); // Create an instance of Socket.io
+
+// Set up Socket.io connection event
+io.on('connection', (socket) => {
+  console.log('Connected');
+  setupSocket(io, socket); // Call your setupSocket function
+
+  socket.on('msg_from_client', function (from, msg) {
+    console.log('Message is ' + from, msg);
+  });
+  socket.on('disconnect', function () {
+    console.log('Disconnected');
+  });
+});
+
+module.exports = { app: server, connectDB };
