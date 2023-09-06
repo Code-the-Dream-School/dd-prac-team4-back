@@ -15,6 +15,7 @@ const createWishlist = async (req, res) => {
     });
 
     await newWishlist.save();
+    await newWishlist.populate('albums');
     console.log(newWishlist);
     
     return res.status(StatusCodes.CREATED).json({  wishlist: newWishlist });
