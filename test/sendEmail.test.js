@@ -1,4 +1,4 @@
-const sendTestEmail = require('../mailing/sender.js');
+const sendTestEmail = require('../src/mailing/sender.js');
 
 describe('sendTestEmail function', () => {
   it('sends a test email with expected content', async () => {
