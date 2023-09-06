@@ -4,7 +4,8 @@ const sendTestEmail = require('../src/mailing/sender.js');
 describe('sendTestEmail function', () => {
   it('sends a test email with expected content', async () => {
     // Define the recipient's email address
-    const recipientEmail = 'codethedream.practicum.team4+testrecipient@outlook.com';
+    const recipientEmail =
+      'codethedream.practicum.team4+testrecipient@outlook.com';
 
     // Send the test email
     const result = await sendTestEmail(recipientEmail);
