@@ -1,3 +1,4 @@
+require('dotenv').config();
 const sendTestEmail = require('../src/mailing/sender.js');
 
 describe('sendTestEmail function', () => {
