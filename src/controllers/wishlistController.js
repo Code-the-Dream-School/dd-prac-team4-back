@@ -11,7 +11,7 @@ const createWishlist = async (req, res) => {
   if (!existingWishlist) {
     const newWishlist = new Wishlist({
       user: req.user.userId,
-      albums: req.body.albums || [], // start with an empty wishlist
+      albums: req.body.albums || [], // start with an empty wishlist or with albums passed in from request
     });
 
     await newWishlist.save();
