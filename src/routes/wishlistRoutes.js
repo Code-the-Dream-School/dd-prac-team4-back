@@ -5,7 +5,7 @@ const {
   removeAlbumFromWishlist,
   createWishlist,
   getAllWishlists,
-  getSingleWishlist, // Import the createWishlist function
+  getSingleWishlist,
 } = require('../controllers/wishlistController');
 
 const router = express.Router();
