@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 const Email = require('email-templates');
 const path = require('path');
-
+const ejs = require('ejs');
 // Create a nodemailer transport
 const transport = nodemailer.createTransport({
   service: process.env.EMAIL_SERVICE,
@@ -28,8 +28,8 @@ const baseEmail = new Email({
   preview: true,
   juice: true,
   juiceResources: {
-    webResources: { relativeTo: path.resolve('src/mailing/templates/test') },
-  },
+    webResources: { relativeTo: path.resolve('src/mailing/templates') },
+  }
 });
 console.log(path.resolve('../templates'));
 console.log(process.cwd());
@@ -45,5 +45,26 @@ async function sendTestEmail(to, username) {
   });
 }
 
-// Export the transport and the sendTestEmail function
-module.exports = { sendTestEmail };
+// Function to send the order completion email
+async function sendOrderCompletedEmail(to, username) {
+  const html = await ejs.renderFile(
+    path.join(__dirname, 'templates', 'orderCompleted', 'html.ejs'),
+    { username: username } // Make sure username is defined
+  );
+
+  const subject = await ejs.renderFile(
+    path.join(__dirname, 'templates', 'orderCompleted', 'subject.ejs'),
+    { username: username } // Make sure username is defined
+  );
+  console.log('HTML Content:', html);
+  console.log('Subject:', subject);
+
+  return baseEmail.send({
+    template: 'orderCompleted',
+    message: { to },
+    locals: { username, subject },
+
+  });
+}
+
+module.exports = { sendOrderCompletedEmail, sendTestEmail };
