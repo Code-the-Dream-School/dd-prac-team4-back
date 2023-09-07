@@ -41,28 +41,17 @@ async function sendTestEmail(to, username) {
   return baseEmail.send({
     template: 'test',
     message: { to },
-    locals: { username, subject },
+    locals: { username },
   });
 }
 
 // Function to send the order completion email
 async function sendOrderCompletedEmail(to, username) {
-  const html = await ejs.renderFile(
-    path.join(__dirname, 'templates', 'orderCompleted', 'html.ejs'),
-    { username: username } // Make sure username is defined
-  );
-
-  const subject = await ejs.renderFile(
-    path.join(__dirname, 'templates', 'orderCompleted', 'subject.ejs'),
-    { username: username } // Make sure username is defined
-  );
-  console.log('HTML Content:', html);
-  console.log('Subject:', subject);
 
   return baseEmail.send({
     template: 'orderCompleted',
     message: { to },
-    locals: { username, subject },
+    locals: { username },
 
   });
 }

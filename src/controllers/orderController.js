@@ -8,20 +8,6 @@ const { checkPermissions } = require('../utils');
 const { sendOrderCompletedEmail } = require('../mailing/sender');
 const mongoose = require('mongoose');
 
-// Connect to the MongoDB database
-mongoose.connect(process.env.MONGO_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-const db = mongoose.connection;
-
-db.on('error', (error) => {
-  console.error('Database connection error:', error);
-});
-
-db.once('open', () => {
-  console.log('Connected to the database');
-});
 
 const createOrder = async (req, res) => {
   try {
@@ -61,7 +47,7 @@ const createOrder = async (req, res) => {
 
     // Save the paymentIntent to the Order model
     order.paymentIntentId = paymentIntent.id;
-    await order.save();
+    
 
     // Create PurchasedAlbum entries for each album in orderItems
     for (const orderItem of orderItems) {
@@ -73,8 +59,8 @@ const createOrder = async (req, res) => {
 
 
 
-    // Start a database transaction
-    await db.startTransaction();
+    // Start a database transaction Using Mongoose's default connection
+const session = await mongoose.startSession(); 
 
     // Save the order to the database
     const savedOrder = await db.saveOrder(orderData);
@@ -83,7 +69,7 @@ const createOrder = async (req, res) => {
     await sendOrderCompletedEmail(user.email, user.name);
 
     // Commit the database transaction
-    await db.commitTransaction();
+/////////////////////////////////////////
 
     // Send the payment intent client secret and order information to the client
     res
@@ -91,7 +77,7 @@ const createOrder = async (req, res) => {
       .json({ clientSecret: paymentIntent.client_secret, order });
   } catch (error) {
     // Handle errors and rollback the transaction if it fails
-    await db.rollbackTransaction();
+ //////////////////////////////
 
     // Handle and log the error
     console.error('Error while processing order:', error);
