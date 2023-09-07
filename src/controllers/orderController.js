@@ -8,20 +8,23 @@ const { checkPermissions } = require('../utils');
 const { sendOrderCompletedEmail } = require('../mailing/sender');
 const mongoose = require('mongoose');
 
-
 const createOrder = async (req, res) => {
+  const session = await mongoose.startSession();
+
   try {
+    session.startTransaction();
+
     const { orderItems, subtotal, tax, total } = req.body;
 
-    // Perform necessary checks and validations
     if (!orderItems?.length) {
       throw new BadRequestError(
-        'Unable to create order because the order items are missing.'
+        'Unable to create an order because the order items are missing.'
       );
     }
+    // Fetch user information from the request object
+    const user = req.user;
 
-    // Create an Order document in the database
-    const order = await Order.create({
+    const order = new Order({
       user: req.user.userId,
       orderItems,
       subtotal,
@@ -29,61 +32,51 @@ const createOrder = async (req, res) => {
       total,
     });
 
-    // Create a payment intent with Stripe
+    await order.save({ session });
+
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: total * 100, // Stripe requires amount in cents
+      amount: total * 100,
       currency: 'usd',
       description: `Order #${order._id}`,
       metadata: {
         userId: req.user.userId,
-        orderId: order._id, // key-values
+        orderId: order._id,
         totalQuantity: orderItems.reduce(
           (total, item) => total + item.quantity,
           0
-        ), // the total number of items in the order
-        totalAlbums: orderItems.length, // the total number of albums purchased in order
+        ),
+        totalAlbums: orderItems.length,
       },
     });
 
-    // Save the paymentIntent to the Order model
     order.paymentIntentId = paymentIntent.id;
-    
 
-    // Create PurchasedAlbum entries for each album in orderItems
     for (const orderItem of orderItems) {
-      await PurchasedAlbum.create({
-        album: orderItem.album, // album ID from orderItem
-        user: req.user.userId, // user ID from the request
+      const purchasedAlbum = new PurchasedAlbum({
+        album: orderItem.album,
+        user: req.user.userId,
       });
+
+      await purchasedAlbum.save({ session });
     }
 
+    await session.commitTransaction();
 
-
-    // Start a database transaction Using Mongoose's default connection
-const session = await mongoose.startSession(); 
-
-    // Save the order to the database
-    const savedOrder = await db.saveOrder(orderData);
-
-    // Send the order completion email
+    // Send the order completion email after THE ORDER HAS STATUS COMPLETE
     await sendOrderCompletedEmail(user.email, user.name);
 
-    // Commit the database transaction
-/////////////////////////////////////////
-
-    // Send the payment intent client secret and order information to the client
     res
       .status(StatusCodes.CREATED)
       .json({ clientSecret: paymentIntent.client_secret, order });
   } catch (error) {
     // Handle errors and rollback the transaction if it fails
- //////////////////////////////
+    await session.abortTransaction();
 
-    // Handle and log the error
-    console.error('Error while processing order:', error);
+    console.error('Error while processing the order:', error);
 
-    // Return an error response to the frontend
     res.status(500).json({ error: 'Internal server error' });
+  } finally {
+    session.endSession();
   }
 };
 

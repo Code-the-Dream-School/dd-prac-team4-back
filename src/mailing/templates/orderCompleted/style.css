@@ -14,7 +14,6 @@ td {
   padding: 20px;
 }
 
-
 h1 {
   font-size: 18px;
   margin-bottom: 10px;
@@ -24,7 +23,7 @@ h1 {
 p {
   font-size: 16px;
   line-height: 1.5;
-  color:green;
+  color: green;
 }
 
 ul {

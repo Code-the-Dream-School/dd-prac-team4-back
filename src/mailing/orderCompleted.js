@@ -5,8 +5,6 @@ const User = require('../models/User');
 const Order = require('../models/Order');
 const CustomError = require('../errors');
 
-const TEST_RECIPIENT_EMAIL = process.env.TEST_RECIPIENT_EMAIL;
-
 // Connect to the MongoDB database
 async function connectToDatabase() {
   try {
@@ -22,6 +20,8 @@ async function connectToDatabase() {
 
 connectToDatabase();
 
+
+//not sure how this fn is triggered- here it is because  we pass userId but in production it should listen to changes in mongo for order to have status: complete and send it automatically?
 async function sendOrderCompletedEmailToUser(userId) {
   try {
     // Find the user by their user ID

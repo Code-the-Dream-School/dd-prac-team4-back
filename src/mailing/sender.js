@@ -29,7 +29,7 @@ const baseEmail = new Email({
   juice: true,
   juiceResources: {
     webResources: { relativeTo: path.resolve('src/mailing/templates') },
-  }
+  },
 });
 console.log(path.resolve('../templates'));
 console.log(process.cwd());
@@ -47,12 +47,10 @@ async function sendTestEmail(to, username) {
 
 // Function to send the order completion email
 async function sendOrderCompletedEmail(to, username) {
-
   return baseEmail.send({
     template: 'orderCompleted',
     message: { to },
     locals: { username },
-
   });
 }
 
