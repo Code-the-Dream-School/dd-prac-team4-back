@@ -54,7 +54,7 @@ ReviewSchema.statics.calculateAverageRating = async function (albumId) {
       {
         // Update the 'averageRating' field of the album document with the rounded
         // value from the aggregation result. If 'averageRating' is undefined, it defaults to 0.
-        averageRating: Math.ceil(result[0]?.averageRating || 0),
+        averageRating: Math.round(result[0]?.averageRating || 0),
         // Update the 'numOfReviews' field of the album document with the value from the
         // aggregation result. If 'numOfReviews' is undefined, it defaults to 0.
         numOfReviews: result[0]?.numOfReviews || 0,
