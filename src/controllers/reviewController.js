@@ -125,14 +125,14 @@ const getSingleReview = async (req, res) => {
 
 // delete review
 const deleteReview = async (req, res) => {
-  const { reviewId } = req.params; // take the id of the review from req.params
+  const { id } = req.params; // take the id of the review from req.params
 
   // Fetch the existing review
-  const review = await Review.findOne({ _id: reviewId });
+  const review = await Review.findOne({ _id: id });
 
   // Check if the review exists
   if (!review) {
-    throw new CustomError.NotFoundError(`No review with id ${reviewId}`);
+    throw new CustomError.NotFoundError(`No review with id ${id}`);
   }
 
   // Check if the requesting user is the author of the review
@@ -143,7 +143,7 @@ const deleteReview = async (req, res) => {
   }
 
   // Delete the review
-  await review.remove();
+  await Review.findByIdAndDelete(id);
 
   res.status(StatusCodes.OK).json({ message: 'Review deleted successfully' });
 };
