@@ -27,7 +27,9 @@ const createWishlist = async (req, res) => {
 
 //for admin - ability to get all wishlists
 const getAllWishlists = async (req, res) => {
-  const wishlists = await Wishlist.find({});
+  const wishlists = await Wishlist.find({}).populate({
+    path: 'albums',
+  });
   res.status(StatusCodes.OK).json({ wishlists, count: wishlists.length });
 };
 
