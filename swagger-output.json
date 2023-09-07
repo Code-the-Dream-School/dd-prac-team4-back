@@ -7,7 +7,12 @@
   },
   "servers": [
     {
-      "url": "http://localhost:8000/"
+      "url": "http://localhost:8000/",
+      "description": "local server"
+    },
+    {
+      "url": "https://musicstore.onrender.com/",
+      "description": "production server"
     }
   ],
   "paths": {
@@ -1185,12 +1190,35 @@
       }
     },
     "/api/v1/wishlist/": {
+      "get": {
+        "tags": ["Wishlist"],
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
       "post": {
         "tags": ["Wishlist"],
         "description": "",
         "responses": {
           "default": {
             "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "albums": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1261,6 +1289,27 @@
           },
           "404": {
             "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/wishlist/{id}": {
+      "get": {
+        "tags": ["Wishlist"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
           }
         }
       }

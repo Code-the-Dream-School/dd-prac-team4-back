@@ -11,7 +11,16 @@ const doc = {
     title: 'My API',
     description: 'Description',
   },
-  host: 'localhost:8000',
+  servers: [
+    {
+      url: 'http://localhost:8000/',
+      description: 'local server',
+    },
+    {
+      url: 'https://musicstore.onrender.com/',
+      description: 'production server',
+    },
+  ],
   definitions: {
     // Here we can define objects to use in our swagger documentation
     // These can be used as examples for request bodies, response bodies, etc
