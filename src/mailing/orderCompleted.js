@@ -2,6 +2,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const { sendOrderCompletedEmail } = require('./sender');
 const User = require('../models/User');
+const Order = require('../models/Order');
 const CustomError = require('../errors');
 
 const TEST_RECIPIENT_EMAIL = process.env.TEST_RECIPIENT_EMAIL;
@@ -21,25 +22,36 @@ async function connectToDatabase() {
 
 connectToDatabase();
 
-async function main() {
+async function sendOrderCompletedEmailToUser(userId) {
   try {
-    const user = await User.findOne({
-      email: process.env.TEST_RECIPIENT_EMAIL,
-    });
-    console.log(user);
+    // Find the user by their user ID
+    const user = await User.findById(userId);
 
     if (!user) {
       // Throw a NotFoundError if the user is not found
       throw new CustomError.NotFoundError(`No user was found`);
     }
-    const response = await sendOrderCompletedEmail(
-      TEST_RECIPIENT_EMAIL,
-      user.name
-    );
+
+    // Check if the user has an order with the 'complete' status
+    const order = await Order.findOne({
+      userId: user._id,
+      orderStatus: 'complete',
+    });
+
+    if (!order) {
+      // If no 'complete' order is found for the user, do nothing
+      console.log(`No 'complete' order found for user: ${user.name}`);
+      return;
+    }
+
+    // Send the order completed email to the user
+    const response = await sendOrderCompletedEmail(user.email, user.name);
+
     console.log('Order completed email sent successfully:', response);
   } catch (error) {
     console.error('Error sending order completed email:', error);
   }
 }
 
-main();
+// Call the function with the user's ID as an argument
+sendOrderCompletedEmailToUser(process.env.TEST_USER_ID);
