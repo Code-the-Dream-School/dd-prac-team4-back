@@ -142,7 +142,7 @@ const io = socketServer.of('/'); // Create an instance of Socket.io
 
 // Add this route to serve the order notifications page
 app.get('/order-notifications', (req, res) => {
-  res.render('temp_views/orderNotifications'); // Render the EJS template
+  res.render('orderNotifications'); // Render the EJS template
 });
 
 // Set up Socket.io connection event
