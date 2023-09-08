@@ -56,9 +56,7 @@ The **bb-practicum-team-4-back** project utilizes a comprehensive technology sta
 
 ### API Documentation:
 
-- **swagger-ui-dist**: UI component for rendering Swagger documentation.
 - **swagger-autogen**: Library for auto-generating Swagger documentation based on JSDoc comments.
-- **swagger-jsdoc**: Library for generating Swagger documentation from JSDoc comments.
 
 #### Generating and Using API Documentation
 
@@ -84,7 +82,7 @@ To generate and access the API documentation on backend, follow these steps:
 
    You will see a page similar to the one shown below:
 
-![Swagger Documentation]
+#### Swagger Documentation
 <img src="images/swagger1.png" alt="Swagger Documentation 1" style="float: left; margin-right: 10px;" />
 <img src="images/swagger2.png" alt="Swagger Documentation 2" style="float: left; margin-right: 10px;" />
 
@@ -181,6 +179,8 @@ Before running the Music Store API, ensure you have the following prerequisites 
 
 - **Stripe Account**: To enable payment processing, you'll need to sign up for a Stripe account and obtain the API secret key. Visit the Stripe website: [Stripe](https://stripe.com/).
 
+- **Spotify App Credentials**: Additionally, for certain functionalities, you'll need Spotify app credentials. These can be set up using the following instructions: [Spotify Developer Documentation](https://developer.spotify.com/documentation/web-api).
+
 ## Installation
 
 Follow these steps to set up and run the Music Store API on your local machine:
@@ -237,7 +237,7 @@ PROD_ORDER_EXPIRY_DURATION=3600000
 # Node Environment (development or production) (Specify the execution environment, e.g., development or production)
 NODE_ENV=development
 
-# Email Service and Credentials (Insert your email service and credentials here)
+# Email Service and Credentials (Insert your email service (eg: 'gmail', 'outlook', 'mailgun', etc) and credentials here)
 EMAIL_SERVICE=email-service-provider
 EMAIL_USERNAME=email-username
 EMAIL_PASSWORD=email-password
@@ -253,6 +253,6 @@ Please replace your-mongodb-connection-url, your-jwt-secret, and other values wi
 npm run dev
 ```
 
-6. The API should now be running locally at http://localhost:8000:
+6. The API should now be running locally at http://localhost:8000
 
 7. You can use Postman to interact with the API endpoints.
