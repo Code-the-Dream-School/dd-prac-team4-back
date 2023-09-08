@@ -47,6 +47,10 @@ async function sendOrderCompletedEmailToUser(userId) {
     //define order items
     const orderItems = order.orderItems;
 console.log(orderItems);
+
+
+
+
 const total = order.total;
 
 console.log('TOTAL OF ORDER:', total);
