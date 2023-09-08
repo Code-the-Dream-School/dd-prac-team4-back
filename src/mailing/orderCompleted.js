@@ -36,7 +36,9 @@ async function sendOrderCompletedEmailToUser(userId) {
     const order = await Order.findOne({
       user: user._id,
       orderStatus: 'complete',
-    })
+    }).populate('orderItems') //  Specify the path to the 'album' field in 'orderItems'
+    .exec();
+
     console.log('ORDER:', order._id);
 
     if (!order) {
