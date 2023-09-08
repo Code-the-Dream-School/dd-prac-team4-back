@@ -96,7 +96,7 @@ const forgotPassword = async (req, res) => {
   const localVariables = {
     resetToken,
   };
-  await emailSender(emailTemplate, recipient, localVariables);
+  await emailSender.sendForgotPasswordEmail(emailTemplate, recipient, localVariables);
 
   res.status(StatusCodes.OK).json({ message: 'Password reset email sent' });
 };
