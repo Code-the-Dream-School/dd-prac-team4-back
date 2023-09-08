@@ -24,7 +24,12 @@
                             <h1>Hello <%= username %>,</h1>
                             <p>Thank you for purchasing in our music store!!!</p>
                             <p>Here's a list of albums you bought:</p>
-                            
+                            <ul>
+                                <% orderItems.forEach(function(item) { %>
+                                    <li><%= item.albumName %> - <%= item.quantity %> x $<%= item.price %> </li>
+                                <% }); %>
+                                <li>Total amount: $<%= total %> </li>
+                            </ul>
                             <p>Thank you for using our services!</p>
                             <p>Best regards,<br>BeatBazaar</p>
                         </td>

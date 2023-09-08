@@ -46,11 +46,11 @@ async function sendTestEmail(to, username) {
 }
 
 // Function to send the order completion email
-async function sendOrderCompletedEmail(to, username) {
+async function sendOrderCompletedEmail(to, username, orderItems, total) {
   return baseEmail.send({
     template: 'orderCompleted',
     message: { to },
-    locals: { username },
+    locals: { username,  orderItems, total },
   });
 }
 

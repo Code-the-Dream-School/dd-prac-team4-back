@@ -63,7 +63,7 @@ const createOrder = async (req, res) => {
     await session.commitTransaction();
 
     // Send the order completion email after THE ORDER HAS STATUS COMPLETE
-    await sendOrderCompletedEmail(user.email, user.name);
+    await sendOrderCompletedEmail(user.email, user.name, orderItems);
 
     res
       .status(StatusCodes.CREATED)
