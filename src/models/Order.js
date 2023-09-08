@@ -16,6 +16,13 @@ const OrderItemSchema = new mongoose.Schema({
   },
 });
 
+// Add a virtual property to populate the album with all its properties
+OrderItemSchema.virtual('fullAlbum').get(function () {
+  return this.populate('album').execPopulate().then((doc) => {
+    return doc.album;
+  });
+});
+
 // Schema for the main Order model
 const OrderSchema = new mongoose.Schema(
   {

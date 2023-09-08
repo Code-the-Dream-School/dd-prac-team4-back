@@ -24,16 +24,36 @@ const createOrder = async (req, res) => {
     // Fetch user information from the request object
     const user = req.user;
 
+
+
+
+
+// Populate the orderItems with full album data
+const populatedOrderItems = await Promise.all(
+  orderItems.map(async (orderItem) => {
+    return await orderItem.populate('album').execPopulate();
+  })
+);
+  // Create an array to store the order items with full album data
+  const orderItemsWithFullAlbum = populatedOrderItems.map((orderItem) => ({
+    album: orderItem.album.toObject(), // Use toObject() to convert the full album to a plain JavaScript object
+    quantity: orderItem.quantity,
+  }));
+
+
+
+
     const order = new Order({
       user: req.user.userId,
-      orderItems,
+      orderItems: orderItemsWithFullAlbum,// Use the array with full album data
       subtotal,
       tax,
       total,
     });
 
-    await order.save({ session });
+     await order.save({ session });
 
+   
     const paymentIntent = await stripe.paymentIntents.create({
       amount: total * 100,
       currency: 'usd',
@@ -60,11 +80,14 @@ const createOrder = async (req, res) => {
       await purchasedAlbum.save({ session });
     }
 
+
+
+
     await session.commitTransaction();
 
     
     // Send the order completion email after THE ORDER HAS STATUS COMPLETE
-    await sendOrderCompletedEmail(user.email, user.name, orderItems);
+    await sendOrderCompletedEmail(user.email, user.name, orderItemsWithFullAlbum);
 
     res
       .status(StatusCodes.CREATED)
