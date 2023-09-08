@@ -123,49 +123,10 @@ const logout = async (req, res) => {
 };
 
 
-//reset password 
-const resetPassword = async (req, res) => {
-  // Check for validation errors
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const { token, newPassword } = req.body;
-
-  try {
-    // Find the user with the provided password reset token
-    const user = await User.findOne({
-      passwordResetToken: token,
-      passwordResetExpiresOn: { $gt: Date.now() }, // Check if the token is still valid
-    });
-
-    if (!user) {
-      // If no user is found, return a 404 error
-      return res.status(StatusCodes.NOT_FOUND).json({ message: 'User not found or token is invalid' });
-    }
-
-    // Hash the new password
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-
-    // Update the user's password, reset token, and reset expiration date
-    user.password = hashedPassword;
-    user.passwordResetToken = undefined;
-    user.passwordResetExpiresOn = undefined;
-
-    await user.save();
-
-    return res.status(StatusCodes.OK).json({ message: 'Password reset successful' });
-  } catch (error) {
-    console.error('Error resetting password:', error);
-    return res.status(500).json({ message: 'Internal server error' });
-  }
-};
 
 module.exports = {
   register,
   login,
-  logout,
-  resetPassword,
+  logout
+  
 };
