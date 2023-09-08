@@ -127,6 +127,11 @@ app.use('/api/v1/wishlist', wishlistRoutes /* #swagger.tags = ['Wishlist'] */);
 app.use('/admin', require('./routes/adminRoutes'));
 app.use(express.static(__dirname + '/public'));
 
+// Add this route to serve the order notifications page
+app.get('/order-notifications', (req, res) => {
+  res.render('orderNotifications'); // Render the EJS template
+});
+
 // Error handling middleware (must be defined after all other routes and middleware)
 app.use(notFoundMiddleware); // Not found middleware to handle invalid routes
 app.use(errorHandlerMiddleware); // Error handler middleware
@@ -139,11 +144,6 @@ const server = http.createServer(app);
 const socketServer = new Server(server);
 const setupSocket = require('./live');
 const io = socketServer.of('/'); // Create an instance of Socket.io
-
-// Add this route to serve the order notifications page
-app.get('/order-notifications', (req, res) => {
-  res.render('orderNotifications'); // Render the EJS template
-});
 
 // Set up Socket.io connection event
 io.on('connection', (socket) => {
@@ -158,4 +158,4 @@ io.on('connection', (socket) => {
   });
 });
 
-module.exports = { app: server, connectDB };
+module.exports = { app: server, connectDB, io };

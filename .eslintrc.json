@@ -17,5 +17,6 @@
     "node": true,
     "es2023": true,
     "jest/globals": true
-  }
+  },
+  "ignorePatterns": ["src/public/orderNotifications.js"]
 }

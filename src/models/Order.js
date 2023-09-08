@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const { sendOrderCancelledEvent } = require('../live/emitters');
+const io = require('../expressServer');
+const userId = '64d44c0e337399ccf9ad7e52';
 
 // mongoose schema for the individual order items
 const OrderItemSchema = new mongoose.Schema({
@@ -84,6 +87,10 @@ const updateOrderStatus = async () => {
       { orderStatus: 'pending', createdAt: { $lte: expiryTimeSinceCreation } },
       { $set: { orderStatus: 'cancelled' } }
     );
+    sendOrderCancelledEvent(io, {
+      userId: userId,
+      message: 'Your order has been cancelled.',
+    });
     console.log('Update result:', result);
   } catch (error) {
     console.error('Error updating orders:', error);
