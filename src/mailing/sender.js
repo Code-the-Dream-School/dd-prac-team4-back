@@ -50,7 +50,7 @@ async function sendOrderCompletedEmail(to, username, orderItems, total) {
   return baseEmail.send({
     template: 'orderCompleted',
     message: { to },
-    locals: { username,  orderItems, total },
+    locals: { username, orderItems, total },
   });
 }
 

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
-const { Order }  = require('./src/models/Order');
+const { Order } = require('./src/models/Order');
 //INSERT WHICHEVER COLLECTION IM MONGO DB YOU NEED TO DELETE
 
 // Connect to the MongoDB database
@@ -21,4 +21,3 @@ async function deleteCollection() {
 }
 
 deleteCollection();
-

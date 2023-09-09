@@ -2,7 +2,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const { sendOrderCompletedEmail } = require('./sender');
 const User = require('../models/User');
-const {Order} = require('../models/Order');
+const { Order } = require('../models/Order');
 const CustomError = require('../errors');
 
 // Connect to the MongoDB database
@@ -20,7 +20,6 @@ async function connectToDatabase() {
 
 connectToDatabase();
 
-
 //not sure how this fn is triggered- here it is because  we pass userId but in production it should listen to changes in mongo for order to have status: complete and send it automatically?
 async function sendOrderCompletedEmailToUser(userId) {
   try {
@@ -36,11 +35,11 @@ async function sendOrderCompletedEmailToUser(userId) {
     const order = await Order.findOne({
       user: user._id,
       orderStatus: 'complete',
-    }).populate('orderItems') //  Specify the path to the 'album' field in 'orderItems'
-    .exec();
+    })
+      .populate('orderItems') //  Specify the path to the 'album' field in 'orderItems'
+      .exec();
 
     console.log('ORDER:', order._id);
-
     if (!order) {
       // If no 'complete' order is found for the user, do nothing
       console.log(`No 'complete' order found for user: ${user.name}`);
@@ -48,22 +47,20 @@ async function sendOrderCompletedEmailToUser(userId) {
     }
     //define order items
     const orderItems = order.orderItems;
-console.log(orderItems);
-
-
-
-
-const total = order.total;
-
-console.log('TOTAL OF ORDER:', total);
+    console.log(orderItems);
+    const total = order.total;
+    console.log('TOTAL OF ORDER:', total);
     // Send the order completed email to the user
-    const response = await sendOrderCompletedEmail(user.email, user.name, orderItems, total);
-
+    const response = await sendOrderCompletedEmail(
+      user.email,
+      user.name,
+      orderItems,
+      total
+    );
     console.log('Order completed email sent successfully:', response);
   } catch (error) {
     console.error('Error sending order completed email:', error);
   }
 }
-
 // Call the function with the user's ID as an argument
 sendOrderCompletedEmailToUser(process.env.TEST_USER_ID);

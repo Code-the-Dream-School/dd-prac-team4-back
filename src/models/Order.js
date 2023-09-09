@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const { sendOrderCompletedEmail } = require('../mailing/sender');
+const User = require('../models/User');
 
 // mongoose schema for the individual order items
 const OrderItemSchema = new mongoose.Schema({
@@ -14,13 +16,6 @@ const OrderItemSchema = new mongoose.Schema({
     required: true, // Quantity is required
     min: 1, // Minimum quantity allowed is 1
   },
-});
-
-// Add a virtual property to populate the album with all its properties
-OrderItemSchema.virtual('fullAlbum').get(function () {
-  return this.populate('album').execPopulate().then((doc) => {
-    return doc.album;
-  });
 });
 
 // Schema for the main Order model
@@ -122,6 +117,30 @@ OrderSchema.pre('findOne', async function (next) {
   console.log('Pre-findOne finished');
   next();
 });
+
+// Middleware to send order completion email when the order status changes to "complete"
+OrderSchema.post('save', async function (doc) {
+  try {
+    if (doc.orderStatus === 'complete') {
+      const user = await User.findById(doc.user); // Assuming you have a User model
+
+      const orderItemsWithFullAlbum = await doc
+        .populate({ path: 'orderItems.album' })
+        .execPopulate();
+
+      // Send the order completion email
+      await sendOrderCompletedEmail(
+        user.email,
+        user.username, // Use the appropriate field for the username
+        orderItemsWithFullAlbum.orderItems,
+        orderItemsWithFullAlbum.total
+      );
+    }
+  } catch (error) {
+    console.error('Error sending order completion email:', error);
+  }
+});
+
 // TTL (Time To Live) index to automatically delete orders with "cancelled" status after 2 hours
 OrderSchema.index(
   { expiresAt: 1 },
