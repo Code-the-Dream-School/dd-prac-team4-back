@@ -19,9 +19,6 @@ async function connectToDatabase() {
   }
 }
 
-// // Call the async function to connect to the database
-connectToDatabase();
-
 // //send to all users in a db
 // async function sendEmailToAllUsers() {
 //   try {
@@ -49,6 +46,8 @@ connectToDatabase();
 
 async function main() {
   try {
+    // // Call the async function to connect to the database
+    await connectToDatabase();
     const user = await User.findOne({
       email: process.env.TEST_RECIPIENT_EMAIL,
     });

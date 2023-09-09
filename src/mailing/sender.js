@@ -28,11 +28,9 @@ const baseEmail = new Email({
   preview: true,
   juice: true,
   juiceResources: {
-    webResources: { relativeTo: path.resolve('src/mailing/templates/test') },
+    webResources: { relativeTo: path.resolve('src/mailing/templates') },
   },
 });
-console.log(path.resolve('../templates'));
-console.log(process.cwd());
 
 const subject = 'First Subject of the first email to be sent';
 
