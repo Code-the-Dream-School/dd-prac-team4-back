@@ -1,22 +1,53 @@
 const mongoose = require('mongoose');
 const Wishlist = require('../models/Wishlist');
 const { StatusCodes } = require('http-status-codes');
+const CustomError = require('../errors');
 
 //Create wishlist
 const createWishlist = async (req, res) => {
-  const existingWishlist = await Wishlist.findOne({ user: req.user.userId });
+  const existingWishlist = await Wishlist.findOne({ user: req.user.userId })
+    .populate('albums') // Populate the 'albums' field
+    .exec();
 
   if (!existingWishlist) {
     const newWishlist = new Wishlist({
       user: req.user.userId,
-      albums: [], // start with an empty wishlist
+      albums: req.body.albums || [], // start with an empty wishlist or with albums passed in from request
     });
 
     await newWishlist.save();
+    await newWishlist.populate('albums');
+    console.log(newWishlist);
+
     return res.status(StatusCodes.CREATED).json({ wishlist: newWishlist });
   }
 
   return res.status(StatusCodes.OK).json({ wishlist: existingWishlist });
+};
+
+//for admin - ability to get all wishlists
+const getAllWishlists = async (req, res) => {
+  const wishlists = await Wishlist.find({}).populate({
+    path: 'albums',
+  });
+  res.status(StatusCodes.OK).json({ wishlists, count: wishlists.length });
+};
+
+//get single wishlist
+const getSingleWishlist = async (req, res) => {
+  const { id: wishlistId } = req.params;
+  // Fetch the wishlist using the provided wishlistId and populate ALBUM information
+  const wishlist = await Wishlist.findById(wishlistId).populate({
+    path: 'albums',
+  });
+
+  if (!wishlist) {
+    throw new CustomError.NotFoundError(`No wishlist with id ${wishlistId}`);
+  }
+  //uncoment LATER
+  // checkPermissions(req.user, wishlist.user);
+
+  res.status(StatusCodes.OK).json({ wishlist });
 };
 
 // Add an album to a wishlist
@@ -66,4 +97,6 @@ module.exports = {
   addAlbumToWishlist,
   removeAlbumFromWishlist,
   createWishlist,
+  getAllWishlists,
+  getSingleWishlist,
 };

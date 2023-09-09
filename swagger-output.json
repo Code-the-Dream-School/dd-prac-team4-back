@@ -7,7 +7,12 @@
   },
   "servers": [
     {
-      "url": "http://localhost:8000/"
+      "url": "http://localhost:8000/",
+      "description": "local server"
+    },
+    {
+      "url": "https://musicstore.onrender.com/",
+      "description": "production server"
     }
   ],
   "paths": {
@@ -1185,12 +1190,35 @@
       }
     },
     "/api/v1/wishlist/": {
+      "get": {
+        "tags": ["Wishlist"],
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
       "post": {
         "tags": ["Wishlist"],
         "description": "",
         "responses": {
           "default": {
             "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "albums": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1265,9 +1293,20 @@
         }
       }
     },
-    "/admin/": {
+    "/api/v1/wishlist/{id}": {
       "get": {
+        "tags": ["Wishlist"],
         "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -1275,12 +1314,50 @@
         }
       }
     },
+    "/admin/": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Admin Home Page",
+        "description": "Fetch and render the admin home page.",
+        "responses": {
+          "200": {
+            "description": "Admin home page fetched successfully.",
+            "content": {
+              "text/html": {}
+            }
+          }
+        }
+      }
+    },
     "/admin/api/albums": {
       "patch": {
+        "tags": ["Admin"],
+        "summary": "Update prices of albums passed in req.body",
         "description": "",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Album prices were successfully updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "album": {
+                    "$ref": "#/components/schemas/Album"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": [
+                {
+                  "$ref": "#/components/schemas/UpdatePriceOfAlbums"
+                }
+              ]
+            }
           }
         }
       }
@@ -1700,6 +1777,22 @@
         ],
         "xml": {
           "name": "AlbumWithUsers"
+        }
+      },
+      "AdminCredentials": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "admin"
+          },
+          "password": {
+            "type": "string",
+            "example": "adminPassword"
+          }
+        },
+        "xml": {
+          "name": "AdminCredentials"
         }
       }
     }

@@ -11,9 +11,23 @@ router.use(
     realm: 'admin site', // Authentication realm for the challenge
   })
 );
+/*
+  #swagger.tags = ['Admin'] 
+  #swagger.summary = 'Admin Login'
+  #swagger.description = 'Authenticate as an admin to access the admin page.'
+  #swagger.responses[200] = {
+    description: 'Admin authenticated successfully.',
+  }
+  #swagger.responses[401] = {
+    description: 'Authentication failed.',
+  }
+   */
 
 router.get('/', adminController.adminHomePage);
 
 router.route('/api/albums').patch(adminController.updatePriceOfAlbums);
+/*
+  #swagger.tags = ['Admin']
+*/
 
 module.exports = router;
