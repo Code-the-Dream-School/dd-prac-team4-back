@@ -27,7 +27,7 @@ const createOrder = async (req, res) => {
 
   // Create a payment intent with Stripe
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: total * 100, // Stripe requires amount in cents
+    amount: Math.round(total * 100), // Stripe requires amount in integer cents
     currency: 'usd',
     description: `Order #${order._id}`,
     metadata: {
