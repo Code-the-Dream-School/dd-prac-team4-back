@@ -83,6 +83,7 @@ To generate and access the API documentation on backend, follow these steps:
    You will see a page similar to the one shown below:
 
 #### Swagger Documentation
+
 <img src="images/swagger1.png" alt="Swagger Documentation 1" style="float: left; margin-right: 10px;" />
 <img src="images/swagger2.png" alt="Swagger Documentation 2" style="float: left; margin-right: 10px;" />
 
