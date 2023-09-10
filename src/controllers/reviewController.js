@@ -143,7 +143,7 @@ const deleteReview = async (req, res) => {
   }
 
   // Delete the review
-  await Review.findByIdAndDelete(id);
+  await Review.findByIdAndDelete(reviewId);
 
   res.status(StatusCodes.OK).json({ message: 'Review deleted successfully' });
 };
