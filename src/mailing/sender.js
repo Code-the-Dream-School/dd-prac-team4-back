@@ -3,34 +3,44 @@ const path = require('path');
 const ejs = require('ejs');
 require('dotenv').config();
 
-// transport using Nodemailer
+// Create a nodemailer transport
 const transport = nodemailer.createTransport({
   service: process.env.EMAIL_SERVICE,
   auth: {
     user: process.env.EMAIL_USERNAME, // Your Outlook email address
     pass: process.env.EMAIL_PASSWORD, // Your Outlook password
   },
+  debug: true, // Enable debugging
 });
 
-// Function to send a test email (promisified)
-async function sendTestEmail(recipient) {
-  return new Promise((resolve, reject) => {
-    transport.sendMail(
-      {
-        from: process.env.EMAIL_USERNAME,
-        to: recipient,
-        subject: 'Test Email',
-        text: 'Hello, this is a test email!',
-        html: '<p>Hello, this is a test email!</p>',
-      },
-      (err, res) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res);
-        }
-      }
-    );
+const baseEmail = new Email({
+  message: {
+    from: process.env.EMAIL_USERNAME,
+  },
+  transport: transport, // Use the transport you created
+  subjectPrefix: process.env.NODE_ENV === 'production' ? '' : '(TEST) ',
+  views: {
+    root: path.resolve('src/mailing/templates'), // this tells email-templates to look for templates starting from this path
+    options: {
+      extension: 'ejs', // this tells email-templates that the file will end tith *.ejs
+    },
+  },
+  send: false,
+  preview: true,
+  juice: true,
+  juiceResources: {
+    webResources: { relativeTo: path.resolve('src/mailing/templates') },
+  },
+});
+
+const subject = 'First Subject of the first email to be sent';
+
+// Function to send a test email
+async function sendTestEmail(to, username) {
+  return baseEmail.send({
+    template: 'test',
+    message: { to },
+    locals: { username, subject },
   });
 }
 

@@ -9,10 +9,15 @@ const logger = winston.createLogger({
     // level: "debug",
     format: winston.format.combine(
         capitalizeLevel(),
+        winston.format.errors({ stack: true }),
         winston.format.colorize(),
         winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-        winston.format.printf(({ timestamp, level, message }) => {
-            return `${timestamp} [${level}]: ${message}`
+        winston.format.printf(({ timestamp, level, message, stack }) => {
+            if (stack) {
+                return `${timestamp} [${level}]: ${message} - ${stack}`
+            } else {
+                return `${timestamp} [${level}]: ${message}`
+            }
         })
     ),
     transports: [
