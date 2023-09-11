@@ -30,6 +30,29 @@ const register = async (req, res) => {
   attachCookiesToResponse({ res, user: tokenUser }); // Attach the token to cookies and send in the response
 
   res.status(StatusCodes.CREATED).json({ user: tokenUser }); // Send a successful response with user data
+  /* 
+    #swagger.summary = 'Register a new user'
+    #swagger.parameters['user'] = {
+      in: 'body',
+      description: 'User registration information',
+      required: true,
+      schema: {
+        $name: "John Doe",
+        $email: "jdoe@example.com",
+        $password: "supersecretpassword",
+        $username: "jdoe99"
+      }
+    }
+    #swagger.responses[201] = {
+      description: 'User registered successfully',
+      schema: {
+        $ref: '#/definitions/TokenizedUser'
+      }
+    }
+    #swagger.responses[400] = {
+      description: 'Bad request, missing email, name, password, or username'
+    }
+  */
 };
 
 const login = async (req, res) => {
@@ -52,10 +75,33 @@ const login = async (req, res) => {
   attachCookiesToResponse({ res, user: tokenUser });
 
   res.status(StatusCodes.CREATED).json({ user: tokenUser });
+  /* 
+    #swagger.summary = 'Login as a user'
+    #swagger.parameters['user'] = {
+      in: 'body',
+      description: 'User email and password for login',
+      required: true,
+      schema: {
+        $email: "jdoe@example.com",
+        $password: "supersecretpassword",
+      }
+    }
+    #swagger.responses[201] = {
+      description: 'User logged in successfully',
+      schema: {
+        $ref: '#/definitions/TokenizedUser' 
+      }
+    }
+    #swagger.responses[400] = {
+      description: 'Bad request, missing email or password'
+    }
+    #swagger.responses[401] = {
+      description: 'Unauthorized, invalid credentials'
+    }
+  */
 };
 
 //logout endpoint
-
 const logout = async (req, res) => {
   res.clearCookie('token', {
     httpOnly: true,
@@ -63,6 +109,15 @@ const logout = async (req, res) => {
   });
 
   res.status(StatusCodes.OK).json({ msg: 'user logged out!' });
+  /*
+    #swagger.summary = 'Logout a user'
+    #swagger.description = 'This endpoint checks for a signed JWT token in an HTTP-only cookie and clears it. It checks the `token` field in the cookie.'
+    #swagger.responses[200] = {
+        description: 'User logged out successfully',
+        schema: { msg: 'user logged out!' }
+    }
+    #swagger.security = [{ "JWT": [] }]
+  */
 };
 
 module.exports = {

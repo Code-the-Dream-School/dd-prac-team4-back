@@ -1,14 +1,14 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.1.0",
   "info": {
     "title": "My API",
     "description": "Description",
     "version": "1.0.0"
   },
-  "host": "localhost:8000",
-  "basePath": "/",
-  "schemes": [
-    "http"
+  "servers": [
+    {
+      "url": "http://localhost:8000/"
+    }
   ],
   "paths": {
     "/api/v1/auth/register": {
@@ -16,33 +16,50 @@
         "tags": [
           "Authentication"
         ],
+        "summary": "Register a new user",
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                },
-                "username": {
-                  "example": "any"
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenizedUser"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenizedUser"
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad request, missing email, name, password, or username"
           }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "example": "any"
+                  },
+                  "email": {
+                    "example": "any"
+                  },
+                  "password": {
+                    "example": "any"
+                  },
+                  "username": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -52,27 +69,47 @@
         "tags": [
           "Authentication"
         ],
+        "summary": "Login as a user",
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "User logged in successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenizedUser"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenizedUser"
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad request, missing email or password"
+          },
+          "401": {
+            "description": "Unauthorized, invalid credentials"
           }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "example": "any"
+                  },
+                  "password": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -82,12 +119,48 @@
         "tags": [
           "Authentication"
         ],
-        "description": "",
+        "summary": "Logout a user",
+        "description": "This endpoint checks for a signed JWT token in an HTTP-only cookie and clears it. It checks the `token` field in the cookie.",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "User logged out successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "example": "user logged out!"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "example": "user logged out!"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/v1/users/": {
@@ -100,18 +173,38 @@
         "responses": {
           "200": {
             "description": "Users successfully fetched.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "users": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/PasswordlessUser"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "users": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PasswordlessUser"
+                      }
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
                   }
                 }
               },
-              "xml": {
-                "name": "main"
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "users": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PasswordlessUser"
+                      }
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
               }
             }
           }
@@ -128,15 +221,32 @@
         "responses": {
           "200": {
             "description": "User successfully fetched.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "user": {
-                  "$ref": "#/definitions/PasswordlessUser"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/PasswordlessUser"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
                 }
               },
-              "xml": {
-                "name": "main"
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/PasswordlessUser"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
               }
             }
           },
@@ -156,19 +266,40 @@
         "responses": {
           "200": {
             "description": "User and their albums purchased fetched successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "user": {
-                  "$ref": "#/definitions/UserWithAlbums"
-                },
-                "purchasedAlbumCount": {
-                  "type": "number",
-                  "example": 1
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/UserWithAlbums"
+                    },
+                    "purchasedAlbumCount": {
+                      "type": "number",
+                      "example": 1
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
                 }
               },
-              "xml": {
-                "name": "main"
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/UserWithAlbums"
+                    },
+                    "purchasedAlbumCount": {
+                      "type": "number",
+                      "example": 1
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
               }
             }
           },
@@ -185,40 +316,57 @@
         ],
         "summary": "Fetch the requesting user, update their data and return the updated user.",
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
-                },
-                "name": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "User successfully fetched and updated.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "user": {
-                  "$ref": "#/definitions/PasswordlessUser"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/PasswordlessUser"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
                 }
               },
-              "xml": {
-                "name": "main"
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/PasswordlessUser"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
               }
             }
           },
           "400": {
             "description": "Error. Need to provide both name and email values."
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "example": "any"
+                  },
+                  "name": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -230,36 +378,37 @@
         ],
         "summary": "Fetch the current requesting user by id, update their password and save it to the database.",
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "oldPassword": {
-                  "example": "any"
-                },
-                "newPassword": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "User successfully fetched and password updated.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "msg": {
-                  "type": "string",
-                  "example": "Success! Password Updated."
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "example": "Success! Password Updated."
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
                 }
               },
-              "xml": {
-                "name": "main"
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "example": "Success! Password Updated."
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
               }
             }
           },
@@ -268,6 +417,23 @@
           },
           "401": {
             "description": "Error. Invalid credentials."
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "oldPassword": {
+                    "example": "any"
+                  },
+                  "newPassword": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -284,22 +450,41 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string",
+            "schema": {
+              "type": "string"
+            },
             "description": "Mongo ObjectID of the user to fetch"
           }
         ],
         "responses": {
           "200": {
             "description": "User successfully fetched.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "user": {
-                  "$ref": "#/definitions/PasswordlessUser"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/PasswordlessUser"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
                 }
               },
-              "xml": {
-                "name": "main"
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/PasswordlessUser"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
               }
             }
           },
@@ -322,7 +507,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -340,10 +527,53 @@
         "tags": [
           "Albums"
         ],
+        "summary": "Fetch all albums in a database (with price > $0)",
         "description": "",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Albums successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "albums": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Album"
+                      }
+                    },
+                    "count": {
+                      "type": "number",
+                      "example": 1
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "albums": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Album"
+                      }
+                    },
+                    "count": {
+                      "type": "number",
+                      "example": 1
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -351,24 +581,53 @@
         "tags": [
           "Albums"
         ],
-        "description": "",
+        "summary": "Create new album and save it to the database",
+        "description": "**ROLE REQUIRED:** admin",
         "parameters": [
           {
-            "name": "body",
+            "name": "newAlbum",
             "in": "body",
+            "description": "Album information to use for creation.",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "user": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/components/schemas/NewAlbum"
             }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "201": {
+            "description": "Albums was successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "album": {
+                      "$ref": "#/components/schemas/Album"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "album": {
+                      "$ref": "#/components/schemas/Album"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "validation error"
           }
         }
       },
@@ -376,24 +635,69 @@
         "tags": [
           "Albums"
         ],
+        "summary": "Update prices of albums passed in req.body",
         "description": "",
         "parameters": [
           {
-            "name": "body",
+            "name": "albums to update prices",
             "in": "body",
+            "description": "Array of information to use to update album prices",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "map((update": {
-                  "example": "any"
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "example": "5f9d7b3b9d9d9d9d9d9d9d9d"
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 9.99
+                  }
                 }
               }
             }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Albums prices were successfully updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "albums": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Album"
+                      }
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "albums": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Album"
+                      }
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -403,37 +707,101 @@
         "tags": [
           "Albums"
         ],
+        "summary": "Fetch paginated list of albums with price > 0, with query parameters for sorting and filtering",
         "description": "",
         "parameters": [
           {
             "name": "limit",
+            "description": "Number of albums to fetch",
+            "default": 10,
             "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "order",
-            "in": "query",
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "offset",
+            "description": "Number of albums to skip (use with limit to page through results)",
+            "default": 0,
             "in": "query",
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "description": "Order of results",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
           },
           {
             "name": "albumName",
+            "description": "String to filter results by matching any part of album name (case-insensitive)",
             "in": "query",
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "artistName",
+            "description": "String to filter results by matching any part of artist name (case-insensitive)",
             "in": "query",
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Filtered by query parameters and with price more than 0 albums were successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "albums": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Album"
+                      }
+                    },
+                    "count": {
+                      "type": "number",
+                      "example": 1
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "albums": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Album"
+                      }
+                    },
+                    "count": {
+                      "type": "number",
+                      "example": 1
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -443,18 +811,53 @@
         "tags": [
           "Albums"
         ],
+        "summary": "Fetch an album by id",
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            },
+            "description": "Mongo ObjectID of the album to fetch"
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Album successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "album": {
+                      "$ref": "#/components/schemas/Album"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "album": {
+                      "$ref": "#/components/schemas/Album"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No album with this id was found."
           }
         }
       },
@@ -462,18 +865,65 @@
         "tags": [
           "Albums"
         ],
+        "summary": "Fetch an album by id and update it",
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            },
+            "description": "Mongo ObjectID of the album to fetch"
+          },
+          {
+            "name": "album properties to update",
+            "in": "body",
+            "description": "Album information to use for update",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/NewAlbum"
+            }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Album successfully fetched and updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "album": {
+                      "$ref": "#/components/schemas/Album"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "album": {
+                      "$ref": "#/components/schemas/Album"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "validation error"
+          },
+          "404": {
+            "description": "No album with this id was found."
           }
         }
       }
@@ -483,18 +933,60 @@
         "tags": [
           "Albums"
         ],
+        "summary": "Show all users that purchased this particular album",
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Album with users who purchased it was fetched successfully ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "album": {
+                      "$ref": "#/components/schemas/AlbumWithUsers"
+                    },
+                    "purchasingUsersCount": {
+                      "type": "number",
+                      "example": 1
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "album": {
+                      "$ref": "#/components/schemas/AlbumWithUsers"
+                    },
+                    "purchasingUsersCount": {
+                      "type": "number",
+                      "example": 1
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No album with this id wasfound."
           }
         }
       }
@@ -509,8 +1001,17 @@
         "responses": {
           "200": {
             "description": "Orders successfully fetched.",
-            "schema": {
-              "$ref": "#/definitions/OrderList"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderList"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderList"
+                }
+              }
             }
           }
         }
@@ -521,22 +1022,60 @@
         ],
         "summary": "Create a new order and process payment",
         "description": "Creates a new order and processes payment using Stripe.",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Order information including order items, subtotal, tax, and total",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/Order"
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "201": {
             "description": "Order created successfully",
-            "schema": {
-              "$ref": "#/definitions/Order"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "order": {
+                      "$ref": "#/components/schemas/Order"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "order": {
+                      "$ref": "#/components/schemas/Order"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "orderItems": {
+                    "example": "any"
+                  },
+                  "subtotal": {
+                    "example": "any"
+                  },
+                  "tax": {
+                    "example": "any"
+                  },
+                  "total": {
+                    "example": "any"
+                  }
+                }
+              }
             }
           }
         }
@@ -554,15 +1093,42 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string",
+            "schema": {
+              "type": "string"
+            },
             "description": "Mongo ObjectID of the order to fetch"
           }
         ],
         "responses": {
           "200": {
             "description": "Order successfully fetched.",
-            "schema": {
-              "$ref": "#/definitions/Order"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "order": {
+                      "$ref": "#/components/schemas/Order"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "order": {
+                      "$ref": "#/components/schemas/Order"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
             }
           },
           "404": {
@@ -575,19 +1141,51 @@
           "Orders"
         ],
         "summary": "Delete an order by id",
-        "description": "**ROLE REQUIRED:** user",
+        "description": "**ROLE REQUIRED:** user or admin",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string",
+            "schema": {
+              "type": "string"
+            },
             "description": "Mongo ObjectID of the order to delete"
           }
         ],
         "responses": {
           "200": {
-            "description": "The order was successfully deleted."
+            "description": "The order was successfully deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "example": "Success! Order was deleted"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "example": "Success! Order was deleted"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "No order with id found."
@@ -619,7 +1217,9 @@
             "name": "albumId",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -638,27 +1238,31 @@
             "name": "albumId",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
             "schema": {
-              "type": "object",
-              "properties": {
-                "album": {
-                  "example": "any"
-                },
-                "user": {
-                  "example": "any"
-                }
-              }
+              "type": "string"
             }
           }
         ],
         "responses": {
           "default": {
             "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "album": {
+                    "example": "any"
+                  },
+                  "user": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -674,7 +1278,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -693,7 +1299,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -712,30 +1320,34 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
             "schema": {
-              "type": "object",
-              "properties": {
-                "rating": {
-                  "example": "any"
-                },
-                "title": {
-                  "example": "any"
-                },
-                "comment": {
-                  "example": "any"
-                }
-              }
+              "type": "string"
             }
           }
         ],
         "responses": {
           "default": {
             "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "rating": {
+                    "example": "any"
+                  },
+                  "title": {
+                    "example": "any"
+                  },
+                  "comment": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -764,13 +1376,17 @@
             "name": "wishlist_id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "album_id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -797,13 +1413,17 @@
             "name": "wishlist_id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "album_id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -840,320 +1460,466 @@
       }
     }
   },
-  "definitions": {
-    "PasswordlessUser": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "example": "64d6ca92a15d2e18ab96a2a3"
-        },
-        "name": {
-          "type": "string",
-          "example": "John Doe"
-        },
-        "username": {
-          "type": "string",
-          "example": "johndoe"
-        },
-        "email": {
-          "type": "string",
-          "example": "john@example.com"
-        },
-        "role": {
-          "type": "string",
-          "enum": [
-            "user",
-            "admin"
-          ]
-        },
-        "profileImage": {
-          "type": "object",
-          "properties": {
-            "url": {
-              "type": "string",
-              "example": "https://example.com/profile-image.jpg"
-            }
-          }
-        },
-        "creditCardInfo": {
-          "type": "object",
-          "properties": {
-            "hashedNumber": {
-              "type": "string",
-              "example": "1234567890"
-            },
-            "expiry": {
-              "type": "string",
-              "example": "12/24"
-            },
-            "preferredPaymentOption": {
-              "type": "string",
-              "enum": [
-                "credit card",
-                "paypal",
-                "google pay"
-              ]
-            }
-          }
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "username",
-        "email",
-        "role"
-      ]
-    },
-    "definitions": {
-      "type": "object",
-      "properties": {
-        "Order": {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "example": "123456"
-            },
-            "user": {
-              "type": "string",
-              "example": "John Doe"
-            },
-            "orderItems": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "album": {
-                    "type": "string",
-                    "example": "5f7f1f7a5c3f2b2d9c1b0b9d"
-                  },
-                  "quantity": {
-                    "type": "number",
-                    "example": 2
-                  }
-                }
+  "components": {
+    "schemas": {
+      "PasswordlessUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "64d6ca92a15d2e18ab96a2a3"
+          },
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "username": {
+            "type": "string",
+            "example": "johndoe"
+          },
+          "email": {
+            "type": "string",
+            "example": "john@example.com"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "user",
+              "admin"
+            ]
+          },
+          "profileImage": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "example": "https://example.com/profile-image.jpg"
               }
-            },
-            "subtotal": {
-              "type": "number",
-              "example": 9.99
-            },
-            "tax": {
-              "type": "number",
-              "example": 0.75
-            },
-            "total": {
-              "type": "number",
-              "example": 10.74
             }
           },
-          "required": [
-            "id"
-          ]
-        }
-      }
-    },
-    "OrderList": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "example": "789012"
-        },
-        "orders": {
-          "type": "array",
-          "items": {
+          "creditCardInfo": {
             "type": "object",
             "properties": {
-              "user": {
+              "hashedNumber": {
                 "type": "string",
-                "example": "Bob Johnson"
+                "example": "1234567890"
               },
-              "orderItems": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "album": {
-                      "type": "string",
-                      "example": "5f7f1f7a5c3f2b2d9c1b0b9e"
-                    },
-                    "quantity": {
-                      "type": "number",
-                      "example": 3
-                    }
-                  }
-                }
+              "expiry": {
+                "type": "string",
+                "example": "12/24"
               },
-              "subtotal": {
-                "type": "number",
-                "example": 29.97
-              },
-              "tax": {
-                "type": "number",
-                "example": 2.5
-              },
-              "total": {
-                "type": "number",
-                "example": 32.47
+              "preferredPaymentOption": {
+                "type": "string",
+                "enum": [
+                  "credit card",
+                  "paypal",
+                  "google pay"
+                ]
               }
             }
           }
         },
-        "count": {
-          "type": "number",
-          "example": 2
+        "required": [
+          "id",
+          "name",
+          "username",
+          "email",
+          "role"
+        ],
+        "xml": {
+          "name": "PasswordlessUser"
         }
       },
-      "required": [
-        "id"
-      ]
-    },
-    "UserWithAlbums": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "example": "64d6ca92a15d2e18ab96a2a3"
-        },
-        "name": {
-          "type": "string",
-          "example": "John Doe"
-        },
-        "username": {
-          "type": "string",
-          "example": "johndoe"
-        },
-        "email": {
-          "type": "string",
-          "example": "john@example.com"
-        },
-        "role": {
-          "type": "string",
-          "enum": [
-            "user",
-            "admin"
-          ]
-        },
-        "profileImage": {
-          "type": "object",
-          "properties": {
-            "url": {
-              "type": "string",
-              "example": "https://example.com/profile-image.jpg"
+      "TokenizedUser": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "John Doe"
+              },
+              "userId": {
+                "type": "string",
+                "example": "64ef5885c2a489217c571253"
+              },
+              "role": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "admin"
+                ]
+              }
             }
           }
         },
-        "creditCardInfo": {
-          "type": "object",
-          "properties": {
-            "hashedNumber": {
-              "type": "string",
-              "example": "1234567890"
-            },
-            "expiry": {
-              "type": "string",
-              "example": "12/24"
-            },
-            "preferredPaymentOption": {
-              "type": "string",
-              "enum": [
-                "credit card",
-                "paypal",
-                "google pay"
+        "xml": {
+          "name": "TokenizedUser"
+        }
+      },
+      "UserWithAlbums": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "64d6ca92a15d2e18ab96a2a3"
+          },
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "username": {
+            "type": "string",
+            "example": "johndoe"
+          },
+          "email": {
+            "type": "string",
+            "example": "john@example.com"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "user",
+              "admin"
+            ]
+          },
+          "profileImage": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "example": "https://example.com/profile-image.jpg"
+              }
+            }
+          },
+          "creditCardInfo": {
+            "type": "object",
+            "properties": {
+              "hashedNumber": {
+                "type": "string",
+                "example": "1234567890"
+              },
+              "expiry": {
+                "type": "string",
+                "example": "12/24"
+              },
+              "preferredPaymentOption": {
+                "type": "string",
+                "enum": [
+                  "credit card",
+                  "paypal",
+                  "google pay"
+                ]
+              }
+            }
+          },
+          "purchasedAlbums": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "64ef50c8c5551074444547bc"
+                },
+                "user": {
+                  "type": "string",
+                  "example": "64d6ca92a15d2e18ab96a2a3"
+                },
+                "album": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "64d2a94c793389a43fc5a8d6"
+                    },
+                    "albumName": {
+                      "type": "string",
+                      "example": "...Baby one more time"
+                    },
+                    "artistName": {
+                      "type": "string",
+                      "example": "Britney Spears"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2023-08-08T20:45:00.942Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2023-08-17T10:10:42.861Z"
+                    },
+                    "price": {
+                      "type": "number",
+                      "example": 20.99
+                    },
+                    "image": {
+                      "type": "string",
+                      "example": "https://i.scdn.co/image/ab67616d0000b27371cae34ad5a39bdab78af13e"
+                    },
+                    "spotifyUrl": {
+                      "type": "string",
+                      "example": "https://api.spotify.com/v1/albums/6r1lh7fHMB499vGKtIyJLy"
+                    },
+                    "releaseDate": {
+                      "type": "string",
+                      "example": "2023-07-28T00:00:00.000Z"
+                    },
+                    "averageRating": {
+                      "type": "number",
+                      "example": 0
+                    },
+                    "numOfReviews": {
+                      "type": "number",
+                      "example": 0
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "albumName",
+                    "artistName",
+                    "createdAt",
+                    "updatedAt",
+                    "price"
+                  ]
+                }
+              },
+              "required": [
+                "_id",
+                "user",
+                "album"
               ]
             }
           }
         },
-        "purchasedAlbums": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "_id": {
-                "type": "string",
-                "example": "64ef50c8c5551074444547bc"
-              },
-              "user": {
-                "type": "string",
-                "example": "64d6ca92a15d2e18ab96a2a3"
-              },
-              "album": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string",
-                    "example": "64d2a94c793389a43fc5a8d6"
-                  },
-                  "albumName": {
-                    "type": "string",
-                    "example": "...Baby one more time"
-                  },
-                  "artistName": {
-                    "type": "string",
-                    "example": "Britney Spears"
-                  },
-                  "createdAt": {
-                    "type": "string",
-                    "example": "2023-08-08T20:45:00.942Z"
-                  },
-                  "updatedAt": {
-                    "type": "string",
-                    "example": "2023-08-17T10:10:42.861Z"
-                  },
-                  "price": {
-                    "type": "number",
-                    "example": 20.99
-                  },
-                  "image": {
-                    "type": "string",
-                    "example": "https://i.scdn.co/image/ab67616d0000b27371cae34ad5a39bdab78af13e"
-                  },
-                  "spotifyUrl": {
-                    "type": "string",
-                    "example": "https://api.spotify.com/v1/albums/6r1lh7fHMB499vGKtIyJLy"
-                  },
-                  "releaseDate": {
-                    "type": "string",
-                    "example": "2023-07-28T00:00:00.000Z"
-                  },
-                  "averageRating": {
-                    "type": "number",
-                    "example": 0
-                  },
-                  "numOfReviews": {
-                    "type": "number",
-                    "example": 0
-                  }
-                },
-                "required": [
-                  "id",
-                  "albumName",
-                  "artistName",
-                  "createdAt",
-                  "updatedAt",
-                  "price"
-                ]
-              }
-            },
-            "required": [
-              "_id",
-              "user",
-              "album"
-            ]
-          }
+        "required": [
+          "id",
+          "name",
+          "username",
+          "email",
+          "role",
+          "purchasedAlbums"
+        ],
+        "xml": {
+          "name": "UserWithAlbums"
         }
       },
-      "required": [
-        "id",
-        "name",
-        "username",
-        "email",
-        "role",
-        "purchasedAlbums"
-      ]
+      "Album": {
+        "type": "object",
+        "properties": {
+          "albumName": {
+            "type": "string",
+            "example": "The Dark Side of the Moon"
+          },
+          "artistName": {
+            "type": "string",
+            "example": "Pink Floyd"
+          },
+          "price": {
+            "type": "number",
+            "example": 9.99
+          },
+          "image": {
+            "type": "string",
+            "example": "/uploads/example.jpg"
+          },
+          "releaseDate": {
+            "type": "string",
+            "example": "2022-03-01T00:00:00.000Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2022-03-01T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2022-03-01T00:00:00.000Z"
+          },
+          "category": {
+            "type": "string",
+            "example": "rock"
+          },
+          "spotifyUrl": {
+            "type": "string",
+            "example": "https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv"
+          },
+          "averageRating": {
+            "type": "number",
+            "example": 4.5
+          },
+          "numOfReviews": {
+            "type": "number",
+            "example": 2
+          }
+        },
+        "required": [
+          "albumName",
+          "artistName",
+          "spotifyUrl"
+        ],
+        "xml": {
+          "name": "Album"
+        }
+      },
+      "NewAlbum": {
+        "type": "object",
+        "properties": {
+          "albumName": {
+            "type": "string",
+            "example": "The Dark Side of the Moon"
+          },
+          "artistName": {
+            "type": "string",
+            "example": "Pink Floyd"
+          },
+          "price": {
+            "type": "number",
+            "example": 9.99
+          },
+          "image": {
+            "type": "string",
+            "example": "/uploads/example.jpg"
+          },
+          "releaseDate": {
+            "type": "string",
+            "example": "2022-03-01T00:00:00.000Z"
+          },
+          "category": {
+            "type": "string",
+            "example": "rock"
+          },
+          "spotifyUrl": {
+            "type": "string",
+            "example": "https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv"
+          }
+        },
+        "required": [
+          "albumName",
+          "artistName",
+          "spotifyUrl"
+        ],
+        "xml": {
+          "name": "NewAlbum"
+        }
+      },
+      "AlbumWithUsers": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "64d2a94c793389a43fc5a8d6"
+          },
+          "artistName": {
+            "type": "string",
+            "example": "F"
+          },
+          "albumName": {
+            "type": "string",
+            "example": "AUSTIN"
+          },
+          "price": {
+            "type": "number",
+            "example": 0
+          },
+          "image": {
+            "type": "string",
+            "example": "https://i.scdn.co/image/ab67616d0000b27371cae34ad5a39bdab78af13e"
+          },
+          "releaseDate": {
+            "type": "string",
+            "example": "2023-07-28T00:00:00.000Z"
+          },
+          "spotifyUrl": {
+            "type": "string",
+            "example": "https://api.spotify.com/v1/albums/6r1lh7fHMB499vGKtIyJLy"
+          },
+          "averageRating": {
+            "type": "number",
+            "example": 0
+          },
+          "numOfReviews": {
+            "type": "number",
+            "example": 0
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-08-08T20:45:00.942Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-08-17T10:10:42.861Z"
+          },
+          "purchasedByUsers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "64ef50c8c5551074444547bc"
+                },
+                "album": {
+                  "type": "string",
+                  "example": "64d2a94c793389a43fc5a8d6"
+                },
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "64d6ca92a15d2e18ab96a2a3"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Akos123123"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "akos123@example.com"
+                    },
+                    "role": {
+                      "type": "string",
+                      "example": "user"
+                    },
+                    "username": {
+                      "type": "string",
+                      "example": "akos92"
+                    }
+                  },
+                  "required": [
+                    "_id",
+                    "name",
+                    "email",
+                    "username"
+                  ]
+                }
+              },
+              "required": [
+                "_id",
+                "album",
+                "user"
+              ]
+            }
+          },
+          "purchasingUsersCount": {
+            "type": "number",
+            "example": 1
+          }
+        },
+        "required": [
+          "_id",
+          "artistName",
+          "albumName",
+          "spotifyUrl",
+          "createdAt",
+          "updatedAt",
+          "purchasedByUsers"
+        ],
+        "xml": {
+          "name": "AlbumWithUsers"
+        }
+      }
     }
   }
 }

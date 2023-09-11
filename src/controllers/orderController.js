@@ -66,7 +66,7 @@ const createOrder = async (req, res) => {
     description: 'Order information including order items, subtotal, tax, and total',
     required: true,
     schema: {
-      $ref: '#/definitions/Order' 
+      $ref: '#/definitions/NewOrder' 
     },
   }
   #swagger.responses[201] = {
@@ -111,7 +111,7 @@ const getSingleOrder = async (req, res) => {
   }
   #swagger.responses[200] = {
     description: 'Order successfully fetched.',
-    schema: { $ref: '#/definitions/Order' } 
+    schema: { order: { $ref: '#/definitions/Order' } }
   }
   #swagger.responses[404] = { description: 'No order with id found.' }
   */
@@ -136,6 +136,7 @@ const deleteOrder = async (req, res) => {
   }
   #swagger.responses[200] = {
     description: 'The order was successfully deleted.',
+    schema: { msg: 'Success! Order was deleted' }
   }
   #swagger.responses[404] = { description: 'No order with id found.' }
   */
