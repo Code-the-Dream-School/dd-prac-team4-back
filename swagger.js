@@ -68,38 +68,6 @@ const doc = {
         paymentIntentId: 'pi_abc123456',
       },
     },
-
-    OrderList: {
-      $id: '789012',
-      orders: [
-        {
-          user: 'Jane Smith',
-          orderItems: [
-            {
-              album: '5f7f1f7a5c3f2b2d9c1b0b9d',
-              quantity: 1,
-            },
-          ],
-          subtotal: 14.99,
-          tax: 1.25,
-          total: 16.24,
-        },
-        {
-          user: 'Bob Johnson',
-          orderItems: [
-            {
-              album: '5f7f1f7a5c3f2b2d9c1b0b9e',
-              quantity: 3,
-            },
-          ],
-          subtotal: 29.97,
-          tax: 2.5,
-          total: 32.47,
-        },
-      ],
-      count: 2,
-    },
-
     UserWithAlbums: {
       $id: '64d6ca92a15d2e18ab96a2a3',
       $name: 'John Doe',
@@ -189,11 +157,9 @@ const doc = {
     },
   },
 };
-
 const outputFile = './swagger-output.json';
 const routes = ['./src/expressServer.js'];
 
 /* NOTE: If you are using the express Router, you must pass in the 'routes' only the 
 root file where the route starts, such as index.js, app.js, routes.js, etc ... */
-
-swaggerAutogen(outputFile, routes, doc);
+swaggerAutogen({ openapi: '3.1.0' })(outputFile, routes, doc);
