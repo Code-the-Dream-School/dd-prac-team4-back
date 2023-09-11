@@ -41,10 +41,10 @@
     "nodemailer": "^6.9.4",
     "passport": "^0.6.0",
     "socket.io": "^4.7.2",
-    "socket.io-client": "^4.7.2",
     "spotify-web-api-node": "^5.0.2",
     "stripe": "^13.0.0",
     "swagger-ui-dist": "^5.4.2",
+    "toastify-js": "^1.12.0",
     "validator": "^13.9.0",
     "winston": "^3.10.0"
   },
@@ -58,6 +58,7 @@
     "mongodb-memory-server": "^8.15.1",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.0",
+    "socket.io-client": "^4.7.2",
     "supertest": "^6.3.3",
     "swagger-autogen": "^2.23.5",
     "swagger-jsdoc": "^6.2.8"

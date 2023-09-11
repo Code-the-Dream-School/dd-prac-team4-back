@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const { sendOrderCancelledEvent } = require('../live/emitters');
 const io = require('../expressServer');
-const userId = '64d44c0e337399ccf9ad7e52';
-
 // mongoose schema for the individual order items
 const OrderItemSchema = new mongoose.Schema({
   // The album field references the Album model and is required
@@ -81,17 +79,34 @@ const updateOrderStatus = async () => {
     // Get the current date and subtract __x   period of time
     const expiryTimeSinceCreation = new Date(Date.now() - timeDuration);
 
+    // Use aggregate to group orders by user before updating them
+    const ordersToUpdate = await Order.aggregate([
+      {
+        $match: {
+          orderStatus: 'pending',
+          createdAt: { $lte: expiryTimeSinceCreation },
+        },
+      },
+      { $group: { _id: '$user', orders: { $push: '$$ROOT' } } },
+    ]);
+    console.log('ordersToUpdate:', ordersToUpdate);
     // Update orders with a status of "pending" that were created x time ago or earlier,
     // and set the order status to "cancelled"
-    const result = await Order.updateMany(
-      { orderStatus: 'pending', createdAt: { $lte: expiryTimeSinceCreation } },
-      { $set: { orderStatus: 'cancelled' } }
-    );
-    sendOrderCancelledEvent(io, {
-      userId: userId,
-      message: 'Your order has been cancelled.',
-    });
-    console.log('Update result:', result);
+    for (const userOrders of ordersToUpdate) {
+      // Update orders for each user
+      await Order.updateMany(
+        { _id: { $in: userOrders.orders.map((order) => order._id) } },
+        { $set: { orderStatus: 'cancelled' } }
+      );
+
+      // Emit a message for the user
+      sendOrderCancelledEvent(io, {
+        userId: userOrders._id,
+        message: 'Your order has been cancelled.',
+      });
+    }
+
+    console.log('Update result:', ordersToUpdate);
   } catch (error) {
     console.error('Error updating orders:', error);
   }
@@ -126,7 +141,7 @@ OrderSchema.pre('findOne', async function (next) {
 OrderSchema.index(
   { expiresAt: 1 },
   {
-    expireAfterSeconds: 7200,
+    expireAfterSeconds: 60, //7200
     partialFilterExpression: { orderStatus: 'cancelled' },
   }
 );

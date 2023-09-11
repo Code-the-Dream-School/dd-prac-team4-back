@@ -1,3 +1,4 @@
+const path = require('path');
 require('dotenv').config();
 
 const express = require('express');
@@ -144,6 +145,7 @@ const server = http.createServer(app);
 const socketServer = new Server(server);
 const setupSocket = require('./live');
 const io = socketServer.of('/'); // Create an instance of Socket.io
+global.io = io; // add the io instance to the global object
 
 // Set up Socket.io connection event
 io.on('connection', (socket) => {
@@ -157,5 +159,8 @@ io.on('connection', (socket) => {
     console.log('Disconnected');
   });
 });
+
+// add the io instance to the global object so that it can be used in other modules without circular dependency
+global.io = io;
 
 module.exports = { app: server, connectDB, io };
