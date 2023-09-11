@@ -24,8 +24,9 @@ const baseEmail = new Email({
       extension: 'ejs', // this tells email-templates that the file will end tith *.ejs
     },
   },
-  send: false,
-  preview: true,
+  send:
+    process.env.ACTUALLY_SEND_EMAIL || process.env.NODE_ENV === 'production',
+  preview: process.env.NODE_ENV === 'development', // only open a preview window in development
   juice: true,
   juiceResources: {
     webResources: { relativeTo: path.resolve('src/mailing/templates') },
