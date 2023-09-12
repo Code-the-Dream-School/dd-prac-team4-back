@@ -146,12 +146,19 @@ const forgotPassword = async (req, res) => {
   await user.save();
 
   // Send reset password email
-
+  const emailTemplate = 'forgot_password';
   const recipient = user.email;
   const localVariables = {
     resetToken,
   };
-  await emailSender.sendForgotPasswordEmail(recipient, localVariables);
+  // Extract the resetToken string from localVariables
+  const resetTokenString = localVariables.resetToken;
+
+  await emailSender.sendForgotPasswordEmail(
+    emailTemplate,
+    recipient,
+    resetTokenString
+  );
 
   res.status(StatusCodes.OK).json({ message: 'Password reset email sent' });
 };
