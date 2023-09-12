@@ -46,29 +46,12 @@ async function sendTestEmail(to, username) {
 }
 
 async function sendForgotPasswordEmail(toEmail, resetToken) {
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-  });
-
-  // Load and render the HTML template
-  const htmlTemplate = await ejs.renderFile(
-    path.join(__dirname, './templates/forgot_password/html.ejs'),
-    { resetLink: `http://localhost:8000/api/v1/reset-password/${resetToken}` }
-  );
-
-  const mailOptions = {
-    from: 'your@example.com',
-    to: toEmail,
-    subject: 'Password Reset Request',
-    html: htmlTemplate,
-  };
-
   try {
-    await transporter.sendMail(mailOptions);
+    await baseEmail.send({
+      template: 'forgot_password',
+      message: { to: toEmail },
+      locals: { resetLink: `${process.env.BACKEND_BASE_URL}/reset_password?token=${resetToken}`},
+    })
     console.log('Password reset email sent successfully');
   } catch (error) {
     console.error('Error sending password reset email:', error);
