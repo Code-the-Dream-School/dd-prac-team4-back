@@ -74,8 +74,23 @@ const doc = {
       $total: 115,
       $orderItems: [{ album: 'abcdef12345', quantity: 2 }],
     },
-    OrderList: [],
 
+    OrderList: {
+      orders: [
+        {
+          user: 'Jane Smith',
+          orderItems: [
+            {
+              album: '5f7f1f7a5c3f2b2d9c1b0b9d',
+              quantity: 1,
+            },
+          ],
+          subtotal: 14.99,
+          tax: 1.25,
+          total: 16.24,
+        },
+      ],
+    },
     UserWithAlbums: {
       $id: '64d6ca92a15d2e18ab96a2a3',
       $name: 'John Doe',
