@@ -76,6 +76,7 @@ const doc = {
     },
 
     OrderList: {
+      count: 1,
       orders: [
         {
           user: '64d44bc8337399ccf9ad7e4d',
