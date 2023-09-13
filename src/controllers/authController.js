@@ -146,7 +146,6 @@ const forgotPassword = async (req, res) => {
   await user.save();
 
   // Send reset password email
-  const emailTemplate = 'forgot_password';
   const recipient = user.email;
   const localVariables = {
     resetToken,
