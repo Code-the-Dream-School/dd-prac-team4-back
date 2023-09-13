@@ -92,7 +92,15 @@ const doc = {
           createdAt: '2023-08-08T20:45:00.942Z',
           updatedAt: '2023-08-08T20:45:00.942Z',
           _id: '64ef50c8c5551074444547bc',
-          orderStatus: { '@enum': ['pending', 'payment_successful', 'payment_failed', 'cancelled', 'complete'] },
+          orderStatus: {
+            '@enum': [
+              'pending',
+              'payment_successful',
+              'payment_failed',
+              'cancelled',
+              'complete',
+            ],
+          },
           paymentIntentId: 'pi_abc123456',
         },
       ],
