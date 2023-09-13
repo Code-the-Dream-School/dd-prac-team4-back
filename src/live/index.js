@@ -5,7 +5,7 @@ const onConnect = (io, socket) => {
 
   /* Add event handlers below */
   socket.on('test:ping', testPing); // <-- this is creating a socket that listens for messages sent for the "test:ping" event and then calls the testPing function
-  
+
   socket.on('join:user_notifications', (userId) => {
     handleUserNotificationsJoin(io, socket, userId);
   });

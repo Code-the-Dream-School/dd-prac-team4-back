@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { createTestAccount } = require('nodemailer');
-const sendTestEmail = require('../src/mailing/sender.js');
+//const sendTestEmail = require('../src/mailing/sender.js');
 
 describe('sendTestEmail function', () => {
   it('sends a test email with expected content', async () => {
@@ -11,6 +11,6 @@ describe('sendTestEmail function', () => {
     process.env.EMAIL_USERNAME = testAccount.user;
     process.env.EMAIL_PASSWORD = testAccount.pass;
     // Import the sendTestEmail function from the sender.js file; this will now use the above env varas
-    const sendTestEmail = require('../src/mailing/sender.js');
+    //const sendTestEmail = require('../src/mailing/sender.js');
   });
 });

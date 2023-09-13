@@ -1,4 +1,4 @@
-const path = require('path');
+//const path = require('path');
 require('dotenv').config();
 
 const express = require('express');
@@ -16,6 +16,7 @@ const swaggerOutputFile = require('../swagger-output.json');
 const pathToSwaggerUi = require('swagger-ui-dist').absolutePath();
 const { readFileSync } = require('fs');
 const { join } = require('path');
+const expressStaticGzip = require('express-static-gzip');
 
 const app = express();
 require('express-async-errors');
@@ -133,6 +134,23 @@ app.get('/order-notifications', (req, res) => {
   res.render('orderNotifications'); // Render the EJS template
 });
 
+app.use(
+  '/toastify',
+  expressStaticGzip('./node_modules/toastify-js/src', { enableBrotli: true })
+);
+
+app.get('/toastify/toastify.js', (req, res) => {
+  res.setHeader('content-type', 'application/javascript');
+  const jsFile = readFileSync('./node_modules/toastify-js/src/toastify.js');
+  res.send(jsFile);
+});
+
+app.get('/toastify/toastify.css', (req, res) => {
+  res.setHeader('content-type', 'text/css');
+  const cssFile = readFileSync('./node_modules/toastify-js/src/toastify.css');
+  res.send(cssFile);
+});
+
 // Error handling middleware (must be defined after all other routes and middleware)
 app.use(notFoundMiddleware); // Not found middleware to handle invalid routes
 app.use(errorHandlerMiddleware); // Error handler middleware
@@ -145,7 +163,6 @@ const server = http.createServer(app);
 const socketServer = new Server(server);
 const setupSocket = require('./live');
 const io = socketServer.of('/'); // Create an instance of Socket.io
-global.io = io; // add the io instance to the global object
 
 // Set up Socket.io connection event
 io.on('connection', (socket) => {
