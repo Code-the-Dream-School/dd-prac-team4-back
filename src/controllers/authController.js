@@ -154,11 +154,7 @@ const forgotPassword = async (req, res) => {
   // Extract the resetToken string from localVariables
   const resetTokenString = localVariables.resetToken;
 
-  await emailSender.sendForgotPasswordEmail(
-    emailTemplate,
-    recipient,
-    resetTokenString
-  );
+  await emailSender.sendForgotPasswordEmail(recipient, resetTokenString);
 
   res.status(StatusCodes.OK).json({ message: 'Password reset email sent' });
 };
