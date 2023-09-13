@@ -1,4 +1,4 @@
-//const path = require('path');
+const path = require('path');
 require('dotenv').config();
 
 const express = require('express');
@@ -139,21 +139,27 @@ app.use(
   expressStaticGzip('./node_modules/toastify-js/src', { enableBrotli: true })
 );
 
-app.get('/toastify/toastify.js', (req, res) => {
-  res.setHeader('content-type', 'application/javascript');
-  const jsFile = readFileSync('./node_modules/toastify-js/src/toastify.js');
-  res.send(jsFile);
-});
+//app.get('/toastify/toastify.js', (req, res) => {
+//  res.setHeader('content-type', 'application/javascript');
+//  const jsFile = readFileSync('./node_modules/toastify-js/src/toastify.js');
+//  res.send(jsFile);
+//});
 
-app.get('/toastify/toastify.css', (req, res) => {
-  res.setHeader('content-type', 'text/css');
-  const cssFile = readFileSync('./node_modules/toastify-js/src/toastify.css');
-  res.send(cssFile);
-});
+//app.get('/toastify/toastify.css', (req, res) => {
+//  res.setHeader('content-type', 'text/css');
+//  const cssFile = readFileSync('./node_modules/toastify-js/src/toastify.css');
+//  res.send(cssFile);
+//});
 
 // Error handling middleware (must be defined after all other routes and middleware)
 app.use(notFoundMiddleware); // Not found middleware to handle invalid routes
 app.use(errorHandlerMiddleware); // Error handler middleware
+
+// Serving the documentation page
+app.get('/tests', (req, res) => {
+  const documentationFilePath = path.join(__dirname, 'public', 'tests.html');
+  res.sendFile(documentationFilePath);
+});
 
 // Setup websocket
 // put the express server definitions inside a more generic Node server so that we can reuse it for Socket.io

@@ -45,7 +45,6 @@
     "spotify-web-api-node": "^5.0.2",
     "stripe": "^13.0.0",
     "swagger-ui-dist": "^5.4.2",
-    "toastify": "^2.0.1",
     "toastify-js": "^1.12.0",
     "validator": "^13.9.0",
     "winston": "^3.10.0"
