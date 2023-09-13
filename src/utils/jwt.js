@@ -19,6 +19,7 @@ const attachCookiesToResponse = ({ res, user }) => {
     httpOnly: true, // Set the cookie as HTTP-only to prevent client-side JavaScript access
     expires: new Date(Date.now() + oneDay), // Set the cookie expiration time
     secure: process.env.NODE_ENV === 'production', // Set the secure flag to only send the cookie over HTTPS in production
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'Lax', // Set the sameSite property 'none' to allow requests from cross-site domain (frontend). Together with "secure: true" we still will prevent CSRF attacks against the application
     signed: true, // Sign the cookie value
   });
 };
