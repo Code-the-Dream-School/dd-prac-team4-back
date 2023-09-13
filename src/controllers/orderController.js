@@ -76,7 +76,7 @@ const getSingleOrder = async (req, res) => {
     throw new CustomError.NotFoundError(`No order with id ${orderId}`);
   }
 
-  checkPermissions(req.user, order.user);
+  checkPermissions(req.user, order.user._id);
 
   res.status(StatusCodes.OK).json({ order });
 };
