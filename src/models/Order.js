@@ -137,7 +137,7 @@ OrderSchema.pre('findOne', async function (next) {
 OrderSchema.index(
   { expiresAt: 1 },
   {
-    expireAfterSeconds: 60, //7200
+    expireAfterSeconds: 7200,
     partialFilterExpression: { orderStatus: 'cancelled' },
   }
 );
