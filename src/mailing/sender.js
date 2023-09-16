@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 const Email = require('email-templates');
 const path = require('path');
-const ejs = require('ejs');
+
 // Create a nodemailer transport
 const transport = nodemailer.createTransport({
   service: process.env.EMAIL_SERVICE,

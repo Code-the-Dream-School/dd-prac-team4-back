@@ -18,6 +18,7 @@ const OrderItemSchema = new mongoose.Schema({
   },
 });
 
+
 // Schema for the main Order model
 const OrderSchema = new mongoose.Schema(
   {
@@ -35,7 +36,6 @@ const OrderSchema = new mongoose.Schema(
         'payment_successful',
         'payment_failed',
         'cancelled',
-        'complete',
       ],
       default: 'pending',
       required: [true, 'Please provide an order status'], // Order status is required
@@ -118,20 +118,18 @@ OrderSchema.pre('findOne', async function (next) {
   next();
 });
 
-// Middleware to send order completion email when the order status changes to "complete"
-OrderSchema.post('save', async function (doc) {
+// send order completion email when the order status changes to "payment_successful"
+OrderSchema.post('findOneAndUpdate', async function (doc) {
   try {
-    if (doc.orderStatus === 'complete') {
-      const user = await User.findById(doc.user); // Assuming you have a User model
+    if (this.getUpdate().$set.orderStatus === 'payment_successful') {
+      const user = await User.findById(doc.user); 
 
-      const orderItemsWithFullAlbum = await doc
-        .populate({ path: 'orderItems.album' })
-        .execPopulate();
-
+      //   populate by calling await + populate(...) and we can chain populate calls by using an array. This allows us to populate both the full user object and the full orderItems.album objects
+      const orderItemsWithFullAlbum = await doc.populate(['user', { path: 'orderItems.album' }])
       // Send the order completion email
       await sendOrderCompletedEmail(
-        user.email,
-        user.username, // Use the appropriate field for the username
+        orderItemsWithFullAlbum.user.email,
+        orderItemsWithFullAlbum.user.username, // Use the appropriate field for the username
         orderItemsWithFullAlbum.orderItems,
         orderItemsWithFullAlbum.total
       );

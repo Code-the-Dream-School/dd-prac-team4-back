@@ -26,7 +26,7 @@
                             <p>Here's a list of albums you bought:</p>
                             <ul>
                                 <% orderItems.forEach(function(item) { %>
-                                    <li><%= item.album %> - <%= item.quantity %> x $<%= item.price %> </li>
+                                    <li><%= item.album%> - <%= item.quantity %> x $<%= item.album %> </li>
                                 <% }); %>
                                 <li>Total amount: $<%= total %> </li>
                             </ul>

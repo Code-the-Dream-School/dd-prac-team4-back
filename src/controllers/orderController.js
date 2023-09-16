@@ -41,7 +41,7 @@ const createOrder = async (req, res) => {
 
       await purchasedAlbum.save({ session });
     }
-
+    //Server  tells Stripe that an order is being made (creating a "paymentIntent" object in Stripe)
     const paymentIntent = await stripe.paymentIntents.create({
       amount: total * 100,
       currency: 'usd',
@@ -56,13 +56,13 @@ const createOrder = async (req, res) => {
         totalAlbums: orderItems.length,
       },
     });
-
+//Stripe  gives the server the paymentIntent object. The server will save the id of this object in the Order document so that we can easily associate the two. 
     order.paymentIntentId = paymentIntent.id;
     //this is where the payment happens? so if it's successful -we change orderStatus to'complete'? then we should save this new status is a db - that triggers a save middleware in Order.js that sends email of order being paid?
     await order.save({ session });
 
     await session.commitTransaction();
-
+//Frontend will pass the clientSecret (he gets from here)to Stripe. This is how Stripe authenticates and knows that this frontend is legitimately handling a Stripe payment for the user
     res
       .status(StatusCodes.CREATED)
       .json({ clientSecret: paymentIntent.client_secret, order });
@@ -77,6 +77,8 @@ const createOrder = async (req, res) => {
     session.endSession();
   }
 };
+
+
 
 const getAllOrders = async (req, res) => {
   const orders = await Order.find({});
