@@ -94,3 +94,143 @@ describe('GET /api/v1/users/:user_id endpoint', () => {
     expect(response.status).toBe(404);
   });
 });
+
+describe('PATCH /api/v1/users/updateCurrentUser endpoint', () => {
+  it('should update the current user', async () => {
+    const signedCookie = await loginAndReturnCookie({
+      email: 'ava@ava.com',
+      password: 'secret',
+    });
+
+    const updatedUserData = {
+      email: 'new_email@example.com',
+      name: 'new_name',
+    };
+
+    const response = await request(app)
+      .patch('/api/v1/users/updateCurrentUser')
+      .send(updatedUserData)
+      .set('Cookie', [signedCookie]);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('user');
+    expect(response.body.user).toMatchObject(updatedUserData);
+  });
+
+  it('should return an error if required data is missing', async () => {
+    const signedCookie = await loginAndReturnCookie({
+      email: 'ava@ava.com',
+      password: 'secret',
+    });
+
+    const response = await request(app)
+      .patch('/api/v1/users/updateCurrentUser')
+      .set('Cookie', [signedCookie]);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty('msg', 'Please provide all values');
+  });
+});
+
+describe('GET /api/v1/users/getCurrentUserWithPurchasedAlbums endpoint', () => {
+  it('should return the data of the currently authenticated user with purchased albums', async () => {
+    // Act: Log in and get a signed cookie
+    const signedCookie = await loginAndReturnCookie(testUserCredentials);
+
+    // Act: Get the current user's information with purchased albums using the authenticated cookie
+    const response = await request(app)
+      .get('/api/v1/users/getCurrentUserWithPurchasedAlbums')
+      .set('Cookie', [signedCookie]);
+
+    // Assert: Check the response status and user information
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('user');
+    expect(response.body.user).toHaveProperty('name', 'ava');
+    expect(response.body.user).toHaveProperty('email', 'ava@ava.com');
+    expect(response.body.user).toHaveProperty('role', 'user');
+    expect(response.body.user).toHaveProperty('purchasedAlbums');
+    expect(Array.isArray(response.body.user.purchasedAlbums)).toBe(true);
+
+    // Check that each purchased album has required properties
+    response.body.user.purchasedAlbums.forEach((album) => {
+      expect(album).toHaveProperty('title');
+      expect(album).toHaveProperty('artist');
+      expect(album).toHaveProperty('year');
+      // Add more checks for album properties if needed
+    });
+
+    expect(response.body.user).not.toHaveProperty('password');
+  });
+
+  it('should return a 401 status if the user is not authenticated', async () => {
+    // Act: Attempt to get the current user's information with purchased albums without authentication
+    const response = await request(app).get(
+      '/api/v1/users/getCurrentUserWithPurchasedAlbums'
+    );
+
+    // Assert: Check the response status for 401
+    expect(response.status).toBe(401);
+  });
+});
+
+describe('GET /api/v1/users/showCurrentUser endpoint', () => {
+  it('should return the data of the currently authenticated user', async () => {
+    // Act: Log in and get a signed cookie
+    const signedCookie = await loginAndReturnCookie(testUserCredentials);
+
+    // Act: Get the current user's information using the authenticated cookie
+    const response = await request(app)
+      .get('/api/v1/users/showCurrentUser')
+      .set('Cookie', [signedCookie]);
+
+    // Assert: Check the response status and user information
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('user');
+    expect(response.body.user).toMatchObject({
+      name: 'ava',
+      email: 'ava@ava.com',
+      role: 'user',
+    });
+    expect(response.body.user).not.toHaveProperty('password');
+  });
+
+  it('should return a 401 status if the user is not authenticated', async () => {
+    // Act: Attempt to get the current user's information without authentication
+    const response = await request(app).get('/api/v1/users/showCurrentUser');
+
+    // Assert: Check the response status for 401
+    expect(response.status).toBe(401);
+  });
+});
+
+describe('GET /api/v1/users endpoint', () => {
+  it('should return a list of users without the password field', async () => {
+    // Act: Log in and get a signed cookie
+    const signedCookie = await loginAndReturnCookie(testUserCredentials);
+
+    // Act: Get a list of users using the authenticated cookie
+    const response = await request(app)
+      .get('/api/v1/users')
+      .set('Cookie', [signedCookie]);
+
+    // Assert: Check the response status and the list of users
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('users');
+    expect(Array.isArray(response.body.users)).toBe(true);
+
+    // Check that each user in the list doesn't have a password field
+    response.body.users.forEach((user) => {
+      expect(user).toHaveProperty('name');
+      expect(user).toHaveProperty('email');
+      expect(user).toHaveProperty('role');
+      expect(user).not.toHaveProperty('password');
+    });
+  });
+
+  it('should return a 401 status if the user is not authenticated', async () => {
+    // Act: Attempt to get a list of users without authentication
+    const response = await request(app).get('/api/v1/users');
+
+    expect(response.status).toBe(401);
+  });
+});
