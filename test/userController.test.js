@@ -143,6 +143,97 @@ describe('PATCH /api/v1/users/updateCurrentUser endpoint', () => {
   });
 });
 
+describe('PATCH /api/v1/users/updateUserPassword endpoint', () => {
+  it("should update the current user's password", async () => {
+    // Arrange: Log in and get a signed cookie with valid test user credentials
+    const signedCookie = await loginAndReturnCookie(testUserCredentials);
+
+    // Arrange: Define the old and new passwords
+    const oldPassword = 'secret';
+    const newPassword = 'newSecret';
+
+    // Act: Attempt to update the user's password using the authenticated cookie
+    const response = await request(app)
+      .patch('/api/v1/users/updateUserPassword')
+      .set('Cookie', [signedCookie])
+      .send({ oldPassword, newPassword });
+
+    // Assert: Check the response status for success
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('msg', 'Success! Password Updated.');
+  });
+
+  it('should return an error if old password is incorrect', async () => {
+    // Arrange: Log in and get a signed cookie with valid test user credentials
+    const signedCookie = await loginAndReturnCookie(testUserCredentials);
+
+    // Arrange: Define the incorrect old password and a new password
+    const incorrectOldPassword = 'incorrectSecret';
+    const newPassword = 'newSecret';
+
+    // Act: Attempt to update the user's password with an incorrect old password
+    const response = await request(app)
+      .patch('/api/v1/users/updateUserPassword')
+      .set('Cookie', [signedCookie])
+      .send({ oldPassword: incorrectOldPassword, newPassword });
+
+    // Assert: Check the response status for an error
+    expect(response.status).toBe(401);
+  });
+
+  it('should return an error if required data is missing', async () => {
+    // Arrange: Log in and get a signed cookie with valid test user credentials
+    const signedCookie = await loginAndReturnCookie(testUserCredentials);
+
+    // Act: Attempt to update the user's password without providing old and new passwords
+    const response = await request(app)
+      .patch('/api/v1/users/updateUserPassword')
+      .set('Cookie', [signedCookie])
+      .send({});
+
+    // Assert: Check the response status for an error
+    expect(response.status).toBe(400);
+  });
+});
+
+describe('DELETE /api/v1/users/deleteSingleUser endpoint', () => {
+  it('should delete a user if the user exists', async () => {
+    // Arrange: Log in and get a signed cookie with valid test user credentials
+    const signedCookie = await loginAndReturnCookie(testUserCredentials);
+
+    // Act: Attempt to delete the user using the authenticated cookie
+    const response = await request(app)
+      .delete('/api/v1/users/deleteSingleUser')
+      .set('Cookie', [signedCookie]);
+
+    // Assert: Check the response status for success
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('msg', 'Success! User Deleted.');
+  });
+
+  it('should return an error if the user does not exist', async () => {
+    // Arrange: Log in and get a signed cookie with valid test user credentials
+    const signedCookie = await loginAndReturnCookie(testUserCredentials);
+
+    // Act: Attempt to delete a non-existent user
+    const response = await request(app)
+      .delete('/api/v1/users/nonexistentUserId')
+      .set('Cookie', [signedCookie]);
+
+    // Assert: Check the response status for an error
+    expect(response.status).toBe(404);
+  });
+
+  it('should return an error if not authenticated', async () => {
+    // Act: Attempt to delete a user without authentication
+    const response = await request(app).delete(
+      '/api/v1/users/deleteSingleUser'
+    );
+
+    // Assert: Check the response status for an error
+    expect(response.status).toBe(401);
+  });
+});
 /*
 const { app, connectDB } = require('../src/expressServer.js');
 const { MongoMemoryServer } = require('mongodb-memory-server');
