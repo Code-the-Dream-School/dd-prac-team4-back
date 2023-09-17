@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { sendOrderCancelledEvent } = require('../live/emitters');
 
 // mongoose schema for the individual order items
 const OrderItemSchema = new mongoose.Schema({
@@ -75,16 +76,33 @@ const timeDuration = isDevelopment
 // Create a function to update order statuses
 const updateOrderStatus = async () => {
   try {
-    // Get the current date and subtract __x   period of time
     const expiryTimeSinceCreation = new Date(Date.now() - timeDuration);
 
-    // Update orders with a status of "pending" that were created x time ago or earlier,
-    // and set the order status to "cancelled"
-    const result = await Order.updateMany(
-      { orderStatus: 'pending', createdAt: { $lte: expiryTimeSinceCreation } },
-      { $set: { orderStatus: 'cancelled' } }
-    );
-    console.log('Update result:', result);
+    const ordersToUpdate = await Order.aggregate([
+      {
+        $match: {
+          orderStatus: 'pending',
+          createdAt: { $lte: expiryTimeSinceCreation },
+        },
+      },
+      { $group: { _id: '$user', orders: { $push: '$$ROOT' } } },
+    ]);
+    console.log('ordersToUpdate:', ordersToUpdate);
+
+    for (const userOrders of ordersToUpdate) {
+      console.log('Attempting to update orders for user:', userOrders._id);
+
+      // Update orders for each user
+      await Order.updateMany(
+        { _id: { $in: userOrders.orders.map((order) => order._id) } },
+        { $set: { orderStatus: 'cancelled' } }
+      );
+
+      sendOrderCancelledEvent(userOrders);
+      console.log('Orders updated for user:', userOrders._id);
+    }
+
+    console.log('Update result:', ordersToUpdate);
   } catch (error) {
     console.error('Error updating orders:', error);
   }
@@ -119,7 +137,7 @@ OrderSchema.pre('findOne', async function (next) {
 OrderSchema.index(
   { expiresAt: 1 },
   {
-    expireAfterSeconds: 7200,
+    expireAfterSeconds: 60, //7200
     partialFilterExpression: { orderStatus: 'cancelled' },
   }
 );

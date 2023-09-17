@@ -16,6 +16,7 @@ const swaggerOutputFile = require('../swagger-output.json');
 const pathToSwaggerUi = require('swagger-ui-dist').absolutePath();
 const { readFileSync } = require('fs');
 const { join } = require('path');
+const expressStaticGzip = require('express-static-gzip');
 
 const app = express();
 require('express-async-errors');
@@ -128,9 +129,37 @@ app.use('/api/v1/wishlist', wishlistRoutes /* #swagger.tags = ['Wishlist'] */);
 app.use('/admin', require('./routes/adminRoutes'));
 app.use(express.static(__dirname + '/public'));
 
+// Add this route to serve the order notifications page
+app.get('/order-notifications', (req, res) => {
+  res.render('orderNotifications'); // Render the EJS template
+});
+
+app.use(
+  '/toastify',
+  expressStaticGzip('./node_modules/toastify-js/src', { enableBrotli: true })
+);
+
+//app.get('/toastify/toastify.js', (req, res) => {
+//  res.setHeader('content-type', 'application/javascript');
+//  const jsFile = readFileSync('./node_modules/toastify-js/src/toastify.js');
+//  res.send(jsFile);
+//});
+
+//app.get('/toastify/toastify.css', (req, res) => {
+//  res.setHeader('content-type', 'text/css');
+//  const cssFile = readFileSync('./node_modules/toastify-js/src/toastify.css');
+//  res.send(cssFile);
+//});
+
 // Error handling middleware (must be defined after all other routes and middleware)
 app.use(notFoundMiddleware); // Not found middleware to handle invalid routes
 app.use(errorHandlerMiddleware); // Error handler middleware
+
+// Serving the documentation page
+app.get('/tests', (req, res) => {
+  const documentationFilePath = path.join(__dirname, 'public', 'tests.html');
+  res.sendFile(documentationFilePath);
+});
 
 // Setup websocket
 // put the express server definitions inside a more generic Node server so that we can reuse it for Socket.io
@@ -154,10 +183,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// Serving the documentation page
-app.get('/tests', (req, res) => {
-  const documentationFilePath = path.join(__dirname, 'public', 'tests.html');
-  res.sendFile(documentationFilePath);
-});
+// add the io instance to the global object so that it can be used in other modules without circular dependency
+global.io = io;
 
-module.exports = { app: server, connectDB };
+module.exports = { app: server, connectDB, io };
