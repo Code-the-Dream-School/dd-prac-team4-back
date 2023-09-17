@@ -1,5 +1,13 @@
 const jwt = require('jsonwebtoken');
 
+/**
+ * Creates a JWT token with the provided data.
+ *
+ * @param {Object} options - Options for creating a JWT token.
+ * @param {Object} options.payload - The payload data for the token.
+ * @returns {string} - JWT token.
+ */
+
 const creatJWT = ({ payload }) => {
   // Create a JWT token with the provided payload
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
@@ -8,7 +16,23 @@ const creatJWT = ({ payload }) => {
   return token;
 };
 
+/**
+ * Checks the validity of a JWT token.
+ *
+ * @param {Object} options - Options for verifying a JWT token.
+ * @param {string} options.token - The JWT token to verify.
+ * @throws {Error} - Thrown if the token is invalid.
+ */
+
 const isTokenValid = ({ token }) => jwt.verify(token, process.env.JWT_SECRET); // Verify the validity of a JWT token
+
+/**
+ * Attaches cookies with a JWT token to the response object.
+ *
+ * @param {Object} options - Options for attaching cookies to the response.
+ * @param {Object} options.res - The response object.
+ * @param {Object} options.user - User data for creating a JWT token.
+ */
 
 const attachCookiesToResponse = ({ res, user }) => {
   // Attach a JWT token as a cookie to the response object
