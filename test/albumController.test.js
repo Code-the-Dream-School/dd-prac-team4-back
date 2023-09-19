@@ -44,6 +44,7 @@ describe('AlbumController API Tests', () => {
 
   it('should return an empty list if there are no albums in the database', async () => {
     const response = await request(app).get('/api/v1/albums');
+
     expect(response.status).toBe(StatusCodes.UNAUTHORIZED);
     expect(response.body).toEqual([]);
   });
@@ -52,7 +53,7 @@ describe('AlbumController API Tests', () => {
     const albums = await Album.find({});
     const albumId = albums[0]._id;
 
-    const response = await request(app).get(`/api/albums/v1/${albumId}`);
+    const response = await request(app).get(`/api/v1/albums/v1/${albumId}`);
     expect(response.status).toBe(StatusCodes.OK);
     expect(response.body).toHaveProperty('album');
   });
