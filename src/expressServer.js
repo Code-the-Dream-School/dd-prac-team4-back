@@ -1,3 +1,4 @@
+const path = require('path');
 require('dotenv').config();
 
 const express = require('express');
@@ -36,7 +37,7 @@ app.get('/', (req, res) => {
 //Security middleware
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 60, // limit each IP to 100 requests per windowMs
+  max: process.env.NODE_ENV === 'production' ? 100 : 1000, // limit each IP to 100 requests per windowMs
 });
 app.use(helmet());
 app.use(limiter);
@@ -151,6 +152,12 @@ io.on('connection', (socket) => {
   socket.on('disconnect', function () {
     console.log('Disconnected');
   });
+});
+
+// Serving the documentation page
+app.get('/tests', (req, res) => {
+  const documentationFilePath = path.join(__dirname, 'public', 'tests.html');
+  res.sendFile(documentationFilePath);
 });
 
 module.exports = { app: server, connectDB };
