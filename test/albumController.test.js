@@ -42,9 +42,10 @@ describe('AlbumController API Tests', () => {
     expect(response.body.albums).toHaveLength(1);
   });
 
-  it('should test the getAllAlbums endpoint - Error Case (Unauthorized)', async () => {
+  it('should return an empty list if there are no albums in the database', async () => {
     const response = await request(app).get('/api/v1/albums');
     expect(response.status).toBe(StatusCodes.UNAUTHORIZED);
+    expect(response.body).toEqual([]);
   });
 
   it('should test the getSingleAlbum endpoint - Success Case', async () => {
