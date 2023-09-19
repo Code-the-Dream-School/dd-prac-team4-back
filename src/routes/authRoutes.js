@@ -6,13 +6,13 @@ const {
   login,
   logout,
   forgotPassword,
-  reset_password,
+  resetPassword,
 } = require('../controllers/authController');
 
 router.post('/register', register);
 router.post('/login', login);
 router.post('/logout', logout);
 router.post('/forgot_password', forgotPassword);
-router.post('/reset_password', reset_password);
+router.post('/resetPassword', resetPassword);
 
 module.exports = router;

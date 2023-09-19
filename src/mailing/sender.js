@@ -51,7 +51,7 @@ async function sendForgotPasswordEmail(toEmail, resetToken) {
       template: 'forgot_password',
       message: { to: toEmail },
       locals: {
-        resetLink: `${process.env.BACKEND_BASE_URL}/reset_password?token=${resetToken}`,
+        resetLink: `${process.env.BACKEND_BASE_URL_AUTH_PROD}/resetPassword?token=${resetToken}`, //or BACKEND_BASE_URL_AUTH_DEV in development
       },
     });
     console.log('Password reset email sent successfully');
