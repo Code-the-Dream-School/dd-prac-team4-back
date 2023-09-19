@@ -158,9 +158,45 @@ const forgotPassword = async (req, res) => {
   res.status(StatusCodes.OK).json({ message: 'Password reset email sent' });
 };
 
+//reset Password endpoint
+const reset_password = async (req, res) => {
+  const { passwordToken, newPassword } = req.body;
+  //AKOS: How would we receive this passwordToken from the frontend?
+  // Find the user with the provided password token
+  const user = await User.findOne({
+    passwordResetToken: passwordToken,
+    passwordResetExpiresOn: { $gt: new Date() }, // Check if reset token is still valid
+  });
+
+  if (!user) {
+    throw new CustomError.NotFoundError('User not found');
+  }
+
+// Check if password reset token is still valid
+const now = new Date();
+if (user.passwordResetExpiresOn < now) {
+  return res.status(StatusCodes.Unauthorized).json({ message: 'Password reset token has expired' });
+}
+
+  // Update user's password and reset token
+  user.password = newPassword;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpiresOn = undefined;
+  await user.save();
+
+  res.json({ message: 'Password reset successful' });
+
+  /* add later
+    #swagger.summary 
+    #swagger.description 
+    #swagger.responses 
+  */
+};
+
 module.exports = {
   register,
   login,
   logout,
   forgotPassword,
+  reset_password,
 };
