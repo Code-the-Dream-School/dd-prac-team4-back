@@ -77,7 +77,7 @@ describe('AlbumController API Tests', () => {
 
   it('should test the getAlbumWithAllUsersWhoPurchasedIt endpoint - Error Case (Not Found)', async () => {
     const response = await request(app).get(
-      '/api/albums/invalidAlbumId/purchased-users'
+      '/api/v1/albums/invalidAlbumId/listOfUsersWhoPurchasedThisAlbum'
     );
     expect(response.status).toBe(StatusCodes.NOT_FOUND); // Expect not found status code
   });
