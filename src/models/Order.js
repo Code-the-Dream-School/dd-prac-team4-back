@@ -18,7 +18,6 @@ const OrderItemSchema = new mongoose.Schema({
   },
 });
 
-
 // Schema for the main Order model
 const OrderSchema = new mongoose.Schema(
   {
@@ -31,12 +30,7 @@ const OrderSchema = new mongoose.Schema(
     // The orderStatus field indicates the current status of the order
     orderStatus: {
       type: String,
-      enum: [
-        'pending',
-        'payment_successful',
-        'payment_failed',
-        'cancelled',
-      ],
+      enum: ['pending', 'payment_successful', 'payment_failed', 'cancelled'],
       default: 'pending',
       required: [true, 'Please provide an order status'], // Order status is required
     },
@@ -122,10 +116,13 @@ OrderSchema.pre('findOne', async function (next) {
 OrderSchema.post('findOneAndUpdate', async function (doc) {
   try {
     if (this.getUpdate().$set.orderStatus === 'payment_successful') {
-      const user = await User.findById(doc.user); 
+      const user = await User.findById(doc.user);
 
       //   populate by calling await + populate(...) and we can chain populate calls by using an array. This allows us to populate both the full user object and the full orderItems.album objects
-      const orderItemsWithFullAlbum = await doc.populate(['user', { path: 'orderItems.album' }])
+      const orderItemsWithFullAlbum = await doc.populate([
+        'user',
+        { path: 'orderItems.album' },
+      ]);
       // Send the order completion email
       await sendOrderCompletedEmail(
         orderItemsWithFullAlbum.user.email,

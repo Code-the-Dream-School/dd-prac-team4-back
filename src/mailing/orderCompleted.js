@@ -18,7 +18,6 @@ async function connectToDatabase() {
   }
 }
 
-
 async function sendOrderCompletedEmailToUser(userId) {
   try {
     await connectToDatabase();
@@ -43,16 +42,20 @@ async function sendOrderCompletedEmailToUser(userId) {
       return;
     }
     // Define order items
-    const orderItemsWithFullAlbum = await order.populate(['user', { path: 'orderItems.album' }]); //populate the user field in the order document.
-  
-    
+    const orderItemsWithFullAlbum = await order.populate([
+      'user',
+      { path: 'orderItems.album' },
+    ]); //populate the user field in the order document.
+
     console.log('CHECK IT OUT, ITS POPULATED ORDER:', orderItemsWithFullAlbum);
     console.log('CHECK ORDER items:', orderItemsWithFullAlbum.orderItems);
-    
-    const orderArray = orderItemsWithFullAlbum.orderItems // array of albums in one order
-    const albumNames = orderArray.map(item => item.album ? item.album.albumName : null);
 
-//got album names
+    const orderArray = orderItemsWithFullAlbum.orderItems; // array of albums in one order
+    const albumNames = orderArray.map((item) =>
+      item.album ? item.album.albumName : null
+    );
+
+    //got album names
     console.log('CHECK ORDER items album nameS:', albumNames);
     const total = order.total;
     console.log('TOTAL OF ORDER:', total);

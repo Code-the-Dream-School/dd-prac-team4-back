@@ -71,5 +71,8 @@ async function sendForgotPasswordEmail(toEmail, resetToken) {
   }
 }
 
-module.exports = { sendTestEmail, sendForgotPasswordEmail, sendOrderCompletedEmail };
-
+module.exports = {
+  sendTestEmail,
+  sendForgotPasswordEmail,
+  sendOrderCompletedEmail,
+};
