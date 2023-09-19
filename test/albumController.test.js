@@ -43,9 +43,9 @@ describe('AlbumController API Tests', () => {
   });
 
   it('should return an empty list if there are no albums in the database', async () => {
+    await Album.deleteMany({});
     const response = await request(app).get('/api/v1/albums');
-
-    expect(response.status).toBe(StatusCodes.UNAUTHORIZED);
+    expect(response.status).toBe(StatusCodes.OK);
     expect(response.body).toEqual([]);
   });
 
