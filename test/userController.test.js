@@ -8,6 +8,7 @@ const { intervalId: orderUpdateInterval } = require('../src/models/Order');
 let server;
 let mongooseConnection;
 let mongodb;
+let testUser;
 
 // Credentials for test user
 const testUserCredentials = {
@@ -30,6 +31,10 @@ const loginAndReturnCookie = async (credentials) => {
   return signedCookie; // Return the signed cookie, which typically contains authentication token
 };
 
+const createSingleUser = async (userData) => {
+  return User.create(userData);
+};
+
 // set up the mongodb and the express server before starting the tests
 beforeAll(async () => {
   // This will create a new instance of "MongoMemoryServer" and automatically start it
@@ -38,6 +43,12 @@ beforeAll(async () => {
   // set the url so that our server's mongoose connects to the in-memory mongodb and not our real one
   process.env.MONGO_URL = url;
   mongooseConnection = await connectDB(url);
+  testUser = await createSingleUser({
+    ...testUserCredentials,
+    name: 'Ava Smith',
+    username: 'ava123',
+    role: 'user',
+  });
   server = await app.listen(8001);
 });
 
@@ -52,21 +63,12 @@ afterAll(async () => {
 
 describe('GET /api/v1/users/:user_id endpoint', () => {
   it('should return a valid user without the password field if found', async () => {
-    // Arrange: Create a test user
-    const user = await User.create({
-      name: 'ava',
-      username: 'ava',
-      email: 'ava@ava.com',
-      password: 'secret',
-      role: 'user',
-    });
-
-    // Act: Log in and get a signed cookie
+    // Arrange: Log in and get a signed cookie with valid test user credentials
     const signedCookie = await loginAndReturnCookie(testUserCredentials);
 
     // Act: Get user information using the authenticated cookie
     const response = await request(app)
-      .get(`/api/v1/users/${user.id}`)
+      .get(`/api/v1/users/${testUser.id}`)
       .set('Cookie', [signedCookie]);
 
     // Assert: Check the response status and user information
@@ -74,7 +76,7 @@ describe('GET /api/v1/users/:user_id endpoint', () => {
     expect(response.body).toHaveProperty('user'); // Assertion: Expecting the response body to have the property "user"
     // Assertion: Expecting the user properties (name, email, role) to match the specified values
     expect(response.body.user).toMatchObject({
-      name: 'ava',
+      name: 'Ava Smith',
       email: 'ava@ava.com',
       role: 'user',
     });
