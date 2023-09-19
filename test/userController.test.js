@@ -2,7 +2,6 @@ const { app, connectDB } = require('../src/expressServer.js');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const request = require('supertest');
 const User = require('../src/models/User');
-const { intervalId: orderUpdateInterval } = require('../src/models/Order');
 
 // Declare variables for the server, database connection, and in-memory MongoDB instance
 let server;
@@ -57,8 +56,6 @@ afterAll(async () => {
   await server.close();
   await mongooseConnection.disconnect();
   await mongodb.stop();
-  // turn off the order update interval so that jest can cleanly shutdown
-  clearInterval(orderUpdateInterval);
 });
 
 describe('GET /api/v1/users/:user_id endpoint', () => {

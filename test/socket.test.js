@@ -1,6 +1,5 @@
 const { app } = require('../src/expressServer');
 const io = require('socket.io-client');
-const { intervalId } = require('../src/models/Order');
 
 let server;
 const PORT = 8001;
@@ -10,7 +9,6 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  clearInterval(intervalId); // Clear the interval after tests are finished
   server.close();
 });
 
