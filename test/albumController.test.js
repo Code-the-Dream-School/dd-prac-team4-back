@@ -27,7 +27,7 @@ describe('AlbumController API Tests', () => {
     albumName: 'Test Album',
     artistName: 'Test Artist',
     price: 9.99,
-    spotifyUrl: 'https://api.spotify.com/v1/albums/',
+    spotifyUrl: 'https://api.spotify.com/v1/albums/blah123',
   };
 
   beforeEach(async () => {
