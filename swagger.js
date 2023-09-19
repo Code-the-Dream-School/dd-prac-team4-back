@@ -41,12 +41,78 @@ const doc = {
         },
       },
     },
-    TokenizedUser: {
-      user: {
-        name: 'John Doe',
-        userId: '64ef5885c2a489217c571253',
-        role: { '@enum': ['user', 'admin'] },
+
+    Order: {
+      $_id: 'idabc123456',
+      $user: {
+        $id: 'idabc123456',
+        $name: 'John Doe',
+        $username: 'johndoe',
+        $email: 'john@example.com',
+        $role: { '@enum': ['user', 'admin'] },
       },
+
+      $orderStatus: {
+        '@enum': [
+          'pending',
+          'payment_successful',
+          'payment_failed',
+          'cancelled',
+          'complete',
+        ],
+        default: 'pending',
+      },
+      orderItems: [
+        {
+          $album: '5f7f1f7a5c3f2b2d9c1b0b9d',
+          $quantity: 2,
+          $_id: 'idabc12345',
+        },
+      ],
+      $subtotal: 9.99,
+      $tax: 0.75,
+      $total: 10.74,
+      $createdAt: '2023-08-08T20:45:00.942Z',
+      $updatedAt: '2023-08-08T20:45:00.942Z',
+      paymentIntentId: 'pi_abc123456',
+    },
+
+    NewOrder: {
+      $subtotal: 100,
+      $tax: 0.15,
+      $total: 115,
+      $orderItems: [{ album: 'abcdef12345', quantity: 2 }],
+    },
+
+    OrderList: {
+      count: 1,
+      orders: [
+        {
+          user: '64d44bc8337399ccf9ad7e4d',
+          orderItems: [
+            {
+              album: '5f7f1f7a5c3f2b2d9c1b0b9d',
+              quantity: 1,
+            },
+          ],
+          subtotal: 14.99,
+          tax: 1.25,
+          total: 16.24,
+          createdAt: '2023-08-08T20:45:00.942Z',
+          updatedAt: '2023-08-08T20:45:00.942Z',
+          _id: '64ef50c8c5551074444547bc',
+          orderStatus: {
+            '@enum': [
+              'pending',
+              'payment_successful',
+              'payment_failed',
+              'cancelled',
+              'complete',
+            ],
+          },
+          paymentIntentId: 'pi_abc123456',
+        },
+      ],
     },
     UserWithAlbums: {
       $id: '64d6ca92a15d2e18ab96a2a3',
