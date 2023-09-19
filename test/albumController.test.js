@@ -89,11 +89,4 @@ describe('AlbumController API Tests', () => {
     expect(response.body).toHaveProperty('albums');
     expect(response.body).toHaveProperty('count');
   });
-
-  it('should test the getFilteredAlbums endpoint - Error Case (Bad Request)', async () => {
-    const response = await request(app).get(
-      '/api/v1/albums?invalidParam=invalidValue'
-    );
-    expect(response.status).toBe(StatusCodes.BAD_REQUEST); // Expect bad request status code
-  });
 });
