@@ -1,4 +1,3 @@
-// global document, location
 document.addEventListener('DOMContentLoaded', function () {
   const updatePriceBtn = document.getElementById('updatePriceBtn');
   const newPriceInput = document.getElementById('newPrice');

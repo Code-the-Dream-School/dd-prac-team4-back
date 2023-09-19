@@ -1,4 +1,4 @@
-/* global, location, io, Toastify */
+/* global io, Toastify */
 
 document.addEventListener('DOMContentLoaded', function () {
   const socket = io();

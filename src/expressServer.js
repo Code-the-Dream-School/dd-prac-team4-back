@@ -1,6 +1,6 @@
-const path = require('path');
 require('dotenv').config();
 
+const path = require('path');
 const express = require('express');
 const session = require('express-session');
 const morgan = require('morgan');
@@ -19,9 +19,14 @@ const { join } = require('path');
 const expressStaticGzip = require('express-static-gzip');
 
 const app = express();
+// Express Async Errors must be used before any route is used,
+// it will catch any errors that are thrown in the async functions without needing a try/catch
 require('express-async-errors');
 
 // Create a health endpoint for Render.com
+// This endpoint is used by Render.com to check if the backend is running
+// If the backend is not running, Render.com will restart the backend
+// No middleware is needed here and no need to document it in Swagger docs
 app.get('/health', (req, res) => {
   /* #swagger.ignore = true */
   res.status(200).send('OK');
@@ -33,7 +38,7 @@ app.get('/', (req, res) => {
   res.send('<h1>Music Store API</h1><a href="/api-docs">API Docs</a>');
 });
 
-// ====== Middleware setup ======
+// ====== MIDDLEWARE SETUP ======
 
 //Security middleware
 const limiter = rateLimit({
@@ -57,7 +62,7 @@ app.use(
   })
 );
 
-// API Docs
+// ====== API DOCUMENTATION SETUP ======
 // By default, the swagger-ui-dist package will serve Swagger UI with an example pets API.
 // We want to serve our own API documentation, so we need to modify the swagger-ui-dist files:
 const swaggerConfig = readFileSync(
@@ -68,6 +73,12 @@ const swaggerConfig = readFileSync(
     'https://petstore.swagger.io/v2/swagger.json',
     '/musicstore-api.json'
   );
+// Serve the Swagger JSON document
+app.get('/musicstore-api.json', (req, res) => {
+  /* #swagger.ignore = true */
+  res.json(swaggerOutputFile);
+});
+
 // When the HTML requests the swagger-initializer.js file, we will serve our own modified version
 app.get('*swagger-initializer.js', (req, res) =>
   res.setHeader('content-type', 'application/javascript').send(swaggerConfig)
@@ -76,20 +87,15 @@ app.get('*swagger-initializer.js', (req, res) =>
 // Serve Swagger UI API documentation from the static files path
 app.use('/api-docs', express.static(pathToSwaggerUi));
 
-// Serve the Swagger JSON document
-app.get('/musicstore-api.json', (req, res) => {
-  /* #swagger.ignore = true */
-  res.json(swaggerOutputFile);
-});
-
-// Express request middleware
+// ====== EXPRESS REQUEST MIDDLEWARE SETUP ======
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.set('views', `${__dirname}/views`); // Set up EJS for server-side rendering
+// Set up EJS for server-side rendering
+app.set('views', `${__dirname}/views`);
 app.set('view engine', 'ejs');
-app.use(express.static('public'));
 app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(cookieParser(process.env.JWT_SECRET)); // Cookie parser middleware with JWT secret
+// Cookie parser middleware with JWT secret
+app.use(cookieParser(process.env.JWT_SECRET));
 
 // Configure express-session middleware
 app.use(
@@ -104,20 +110,18 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// database
-const connectDB = require('./db/connect');
-
-//routers
+// ====== IMPORT ROUTERS ======
 const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
 const albumRouter = require('./routes/albumRoutes');
 const orderRouter = require('./routes/orderRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const wishlistRoutes = require('./routes/wishlistRoutes');
-// middleware
+// ====== IMPORT ERROR HANDLER MIDDLEWARE ======
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 
+// ====== SETUP ROUTES ======
 app.use('/api/v1/auth', authRouter /* #swagger.tags = ['Authentication'] */);
 app.use('/api/v1/users', userRouter /* #swagger.tags = ['Users'] */);
 app.use('/api/v1/albums', albumRouter /* #swagger.tags = ['Albums'] */);
@@ -134,26 +138,11 @@ app.get('/order-notifications', (req, res) => {
   res.render('orderNotifications'); // Render the EJS template
 });
 
+// Serve the static files for the Toastify library for use in EJS templates
 app.use(
   '/toastify',
   expressStaticGzip('./node_modules/toastify-js/src', { enableBrotli: true })
 );
-
-//app.get('/toastify/toastify.js', (req, res) => {
-//  res.setHeader('content-type', 'application/javascript');
-//  const jsFile = readFileSync('./node_modules/toastify-js/src/toastify.js');
-//  res.send(jsFile);
-//});
-
-//app.get('/toastify/toastify.css', (req, res) => {
-//  res.setHeader('content-type', 'text/css');
-//  const cssFile = readFileSync('./node_modules/toastify-js/src/toastify.css');
-//  res.send(cssFile);
-//});
-
-// Error handling middleware (must be defined after all other routes and middleware)
-app.use(notFoundMiddleware); // Not found middleware to handle invalid routes
-app.use(errorHandlerMiddleware); // Error handler middleware
 
 // Serving the documentation page
 app.get('/tests', (req, res) => {
@@ -161,7 +150,11 @@ app.get('/tests', (req, res) => {
   res.sendFile(documentationFilePath);
 });
 
-// Setup websocket
+// Error handling middleware (**MUST** be defined _after_ all other routes and middleware)
+app.use(notFoundMiddleware); // Not found middleware to handle invalid routes
+app.use(errorHandlerMiddleware); // Error handler middleware
+
+// ====== WEBSOCKET SETUP ======
 // put the express server definitions inside a more generic Node server so that we can reuse it for Socket.io
 const { Server } = require('socket.io');
 const http = require('http');
@@ -185,5 +178,7 @@ io.on('connection', (socket) => {
 
 // add the io instance to the global object so that it can be used in other modules without circular dependency
 global.io = io;
+// export the database connection function
+const connectDB = require('./db/connect');
 
 module.exports = { app: server, connectDB, io };
