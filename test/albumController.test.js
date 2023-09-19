@@ -4,13 +4,6 @@ const request = require('supertest');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const Album = require('../src/models/Album');
 
-const {
-  getAllAlbums,
-  getSingleAlbum,
-  getAlbumWithAllUsersWhoPurchasedIt,
-  getFilteredAlbums,
-} = require('../src/controllers/albumController');
-
 let server;
 let mongooseConnection;
 let mongodb;
