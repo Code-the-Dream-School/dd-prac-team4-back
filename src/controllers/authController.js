@@ -172,11 +172,13 @@ const reset_password = async (req, res) => {
     throw new CustomError.NotFoundError('User not found');
   }
 
-// Check if password reset token is still valid
-const now = new Date();
-if (user.passwordResetExpiresOn < now) {
-  return res.status(StatusCodes.Unauthorized).json({ message: 'Password reset token has expired' });
-}
+  // Check if password reset token is still valid
+  const now = new Date();
+  if (user.passwordResetExpiresOn < now) {
+    return res
+      .status(StatusCodes.Unauthorized)
+      .json({ message: 'Password reset token has expired' });
+  }
 
   // Update user's password and reset token
   user.password = newPassword;
