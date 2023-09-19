@@ -66,7 +66,7 @@ describe('AlbumController API Tests', () => {
     const { _id: albumId } = await Album.findOne({});
 
     const response = await request(app).get(
-      `/api/albums/${albumId}/listOfUsersWhoPurchasedThisAlbum`
+      `/api/v1/albums/:id/listOfUsersWhoPurchasedThisAlbum`
     );
     expect(response.status).toBe(StatusCodes.OK);
     expect(response.body).toHaveProperty('album');
