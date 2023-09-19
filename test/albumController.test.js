@@ -59,7 +59,7 @@ describe('AlbumController API Tests', () => {
   });
 
   it('should test the getSingleAlbum endpoint - Error Case (Not Found)', async () => {
-    const response = await request(app).get('/api/albums/v1/invalidAlbumId');
+    const response = await request(app).get('/api/v1/albums/invalidAlbumId');
     expect(response.status).toBe(StatusCodes.NOT_FOUND);
   });
 
