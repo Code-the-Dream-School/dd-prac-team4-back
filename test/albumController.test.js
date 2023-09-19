@@ -63,8 +63,7 @@ describe('AlbumController API Tests', () => {
   });
 
   it('should test the getAlbumWithAllUsersWhoPurchasedIt endpoint - Success Case', async () => {
-    const albums = await Album.find({});
-    const albumId = albums[0]._id;
+    const { _id: albumId } = await Album.findOne({});
 
     const response = await request(app).get(
       `/api/albums/${albumId}/purchased-users`
