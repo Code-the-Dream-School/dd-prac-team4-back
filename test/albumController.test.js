@@ -52,7 +52,7 @@ describe('AlbumController API Tests', () => {
   it('should test the getSingleAlbum endpoint - Success Case', async () => {
     const { _id: albumId } = await Album.findOne({});
 
-    const response = await request(app).get(`/api/v1/albums/v1/${albumId}`);
+    const response = await request(app).get(`/api/v1/albums/${albumId}`);
     expect(response.status).toBe(StatusCodes.OK);
     expect(response.body).toHaveProperty('album');
   });
