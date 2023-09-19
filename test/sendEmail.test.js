@@ -3,7 +3,6 @@ const { createTestAccount } = require('nodemailer');
 
 //const sendTestEmail = require('../src/mailing/sender.js');
 
-
 describe('sendTestEmail function', () => {
   it('sends a test email with expected content', async () => {
     // create a test sender account using nodemailers 'etheral SMTP' service
@@ -27,6 +26,5 @@ describe('sendTestEmail function', () => {
     // Verify the content of the sent email
     expect(result.envelope.from).toEqual(process.env.EMAIL_USERNAME); // Verify the 'from' address
     expect(result.envelope.to).toEqual([recipientEmail]); // Verify the 'to' address
-
   });
 });
