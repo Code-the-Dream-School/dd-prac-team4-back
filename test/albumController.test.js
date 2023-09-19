@@ -4,13 +4,6 @@ const request = require('supertest');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const Album = require('../src/models/Album');
 
-const {
-  getAllAlbums,
-  getSingleAlbum,
-  getAlbumWithAllUsersWhoPurchasedIt,
-  getFilteredAlbums,
-} = require('../src/controllers/albumController');
-
 let server;
 let mongooseConnection;
 let mongodb;
@@ -100,6 +93,6 @@ describe('AlbumController API Tests', () => {
     const response = await request(app).get(
       '/api/v1/albums?invalidParam=invalidValue'
     );
-    expect(response.status).toBe(StatusCodes.BAD_REQUEST); // Expect bad request status code
+    expect(response.status).toBe(StatusCodes.BAD_REQUEST);
   });
 });
