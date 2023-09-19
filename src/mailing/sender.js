@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 const Email = require('email-templates');
 const path = require('path');
+require('dotenv').config();
 
 // Create a nodemailer transport
 const transport = nodemailer.createTransport({
@@ -44,5 +45,19 @@ async function sendTestEmail(to, username) {
   });
 }
 
-// Export the transport and the sendTestEmail function
-module.exports = { sendTestEmail };
+async function sendForgotPasswordEmail(toEmail, resetToken) {
+  try {
+    await baseEmail.send({
+      template: 'forgot_password',
+      message: { to: toEmail },
+      locals: {
+        resetLink: `${process.env.BACKEND_BASE_URL}/reset_password?token=${resetToken}`,
+      },
+    });
+    console.log('Password reset email sent successfully');
+  } catch (error) {
+    console.error('Error sending password reset email:', error);
+  }
+}
+
+module.exports = { sendTestEmail, sendForgotPasswordEmail };

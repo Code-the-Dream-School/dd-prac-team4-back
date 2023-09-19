@@ -3,6 +3,8 @@ const argon2 = require('argon2');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const { attachCookiesToResponse, createTokenUser } = require('../utils');
+const crypto = require('crypto');
+const emailSender = require('../mailing/sender');
 
 const register = async (req, res) => {
   const { name, email, password, username } = req.body;
@@ -120,8 +122,45 @@ const logout = async (req, res) => {
   */
 };
 
+//forgotPassword endpoint
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    throw new CustomError.BadRequestError('Please provide an email');
+  }
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new CustomError.NotFoundError('User not found');
+  }
+
+  // Generate a random token
+  const resetToken = crypto.randomBytes(20).toString('hex');
+  const resetExpires = Date.now() + 15 * 60 * 1000; // 15 minutes from now
+
+  // Update user's reset token and expiration date
+  user.passwordResetToken = resetToken;
+  user.passwordResetExpiresOn = new Date(resetExpires);
+  await user.save();
+
+  // Send reset password email
+  const recipient = user.email;
+  const localVariables = {
+    resetToken,
+  };
+  // Extract the resetToken string from localVariables
+  const resetTokenString = localVariables.resetToken;
+
+  await emailSender.sendForgotPasswordEmail(recipient, resetTokenString);
+
+  res.status(StatusCodes.OK).json({ message: 'Password reset email sent' });
+};
+
 module.exports = {
   register,
   login,
   logout,
+  forgotPassword,
 };

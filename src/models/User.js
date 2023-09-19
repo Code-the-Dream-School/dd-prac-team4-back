@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const argon2 = require('argon2');
+
 // Must be required to ensure that the model is created before we try to use it
 require('./PurchasedAlbum');
 
@@ -68,11 +69,16 @@ const UserSchema = new mongoose.Schema(
     },
     profileImage: profileImageSchema,
     creditCardInfo: creditCardSchema,
+
+    // New properties for password reset
+    passwordResetToken: { type: String, default: null },
+    passwordResetExpiresOn: { type: Date, default: null },
   },
   // when converting from a model to JSON (eg: when we return it in `res.json(...)`) we want to include virtual properties (eg: purchasedAlbums)
   { toJSON: { virtuals: true } }
 );
-// using this virtual we want to  return all the albums this single user has purchased
+
+// using this virtual we want to return all the albums this single user has purchased
 UserSchema.virtual('purchasedAlbums', {
   ref: 'PurchasedAlbum',
   localField: '_id',
