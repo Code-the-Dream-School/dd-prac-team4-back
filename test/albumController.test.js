@@ -105,6 +105,7 @@ describe('AlbumController API Tests', () => {
     const albumToCreate = {
       albumName: 'Album 1',
       artistName: 'Artist 1',
+      spotifyUrl: 'https://open.spotify.com/album/album1',
     };
 
     await Album.create(albumToCreate);

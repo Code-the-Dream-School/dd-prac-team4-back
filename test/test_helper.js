@@ -7,6 +7,7 @@ const loginAsAdmin = async (credentials) => {
 
   // Get the 'set-cookie' header from the response
   const cookieHeader = resp.headers['set-cookie'];
+
   // Find the cookie that starts with 'token' in the 'set-cookie' header
   // Split the cookie string by ';' and take the first part (before the first ';')
   const signedCookie = cookieHeader
