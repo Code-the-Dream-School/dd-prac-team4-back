@@ -2,7 +2,14 @@ const { StatusCodes } = require('http-status-codes');
 const logger = require('../../logs/logger');
 
 const errorHandlerMiddleware = (err, req, res, _next) => {
-  if (process.env.NODE_ENV !== 'test') logger.error(err);
+  if (process.env.NODE_ENV === 'test') {
+    // reduce amount of error logging during testing
+    logger.error(err.message);
+  } else {
+    // log the error including its stacktrace to the console for debugging
+    logger.error(err);
+  }
+
   let customError = {
     statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
     msg: err.message || 'Something went wrong try again later',
