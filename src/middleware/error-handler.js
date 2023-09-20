@@ -2,11 +2,13 @@ const { StatusCodes } = require('http-status-codes');
 const logger = require('../../logs/logger');
 
 const errorHandlerMiddleware = (err, req, res, _next) => {
-  logger.error(err);
+  if (process.env.NODE_ENV !== 'test') logger.error(err);
   let customError = {
     statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
     msg: err.message || 'Something went wrong try again later',
   };
+
+  // handle different mongoose error codes
   if (err.name === 'ValidationError') {
     customError.msg = Object.values(err.errors)
       .map((item) => item.message)
@@ -24,6 +26,7 @@ const errorHandlerMiddleware = (err, req, res, _next) => {
     customError.statusCode = 404;
   }
 
+  // return an error response
   return res.status(customError.statusCode).json({ msg: customError.msg });
 };
 

@@ -962,19 +962,62 @@
     "/api/v1/orders/": {
       "get": {
         "tags": ["Orders"],
-        "description": "",
+        "summary": "Fetch all orders in a database",
+        "description": "**ROLE REQUIRED:** admin",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Orders successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderList"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderList"
+                }
+              }
+            }
           }
         }
       },
       "post": {
         "tags": ["Orders"],
-        "description": "",
+        "summary": "Create a new order and process payment",
+        "description": "Creates a new order and processes payment using Stripe.",
+        "parameters": [],
         "responses": {
-          "default": {
-            "description": ""
+          "201": {
+            "description": "Order created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "order": {
+                      "$ref": "#/components/schemas/Order"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "order": {
+                      "$ref": "#/components/schemas/Order"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -1005,6 +1048,7 @@
     "/api/v1/orders/{id}": {
       "get": {
         "tags": ["Orders"],
+        "summary": "Fetch an order by id",
         "description": "",
         "parameters": [
           {
@@ -1013,18 +1057,51 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "Mongo ObjectID of the order to fetch"
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Order successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "order": {
+                      "$ref": "#/components/schemas/Order"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "order": {
+                      "$ref": "#/components/schemas/Order"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No order with id found."
           }
         }
       },
       "delete": {
         "tags": ["Orders"],
-        "description": "",
+        "summary": "Delete an order by id",
+        "description": "**ROLE REQUIRED:** user or admin",
         "parameters": [
           {
             "name": "id",
@@ -1032,12 +1109,46 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "Mongo ObjectID of the order to delete"
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "The order was successfully deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "example": "Success! Order was deleted"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "example": "Success! Order was deleted"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No order with id found."
           }
         }
       }
@@ -1420,29 +1531,193 @@
           "name": "PasswordlessUser"
         }
       },
-      "TokenizedUser": {
+      "Order": {
         "type": "object",
         "properties": {
+          "_id": {
+            "type": "string",
+            "example": "idabc123456"
+          },
           "user": {
             "type": "object",
             "properties": {
+              "id": {
+                "type": "string",
+                "example": "idabc123456"
+              },
               "name": {
                 "type": "string",
                 "example": "John Doe"
               },
-              "userId": {
+              "username": {
                 "type": "string",
-                "example": "64ef5885c2a489217c571253"
+                "example": "johndoe"
+              },
+              "email": {
+                "type": "string",
+                "example": "john@example.com"
               },
               "role": {
                 "type": "string",
                 "enum": ["user", "admin"]
               }
+            },
+            "required": ["id", "name", "username", "email", "role"]
+          },
+          "orderStatus": {
+            "default": "pending",
+            "type": "string",
+            "enum": [
+              "pending",
+              "payment_successful",
+              "payment_failed",
+              "cancelled",
+              "complete"
+            ]
+          },
+          "orderItems": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "album": {
+                  "type": "string",
+                  "example": "5f7f1f7a5c3f2b2d9c1b0b9d"
+                },
+                "quantity": {
+                  "type": "number",
+                  "example": 2
+                },
+                "_id": {
+                  "type": "string",
+                  "example": "idabc12345"
+                }
+              },
+              "required": ["album", "quantity", "_id"]
+            }
+          },
+          "subtotal": {
+            "type": "number",
+            "example": 9.99
+          },
+          "tax": {
+            "type": "number",
+            "example": 0.75
+          },
+          "total": {
+            "type": "number",
+            "example": 10.74
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-08-08T20:45:00.942Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-08-08T20:45:00.942Z"
+          },
+          "paymentIntentId": {
+            "type": "string",
+            "example": "pi_abc123456"
+          }
+        },
+        "required": [
+          "_id",
+          "user",
+          "orderStatus",
+          "subtotal",
+          "tax",
+          "total",
+          "createdAt",
+          "updatedAt"
+        ],
+        "xml": {
+          "name": "Order"
+        }
+      },
+      "NewOrder": {
+        "type": "object",
+        "properties": {
+          "subtotal": {
+            "type": "number",
+            "example": 100
+          },
+          "tax": {
+            "type": "number",
+            "example": 0.15
+          },
+          "total": {
+            "type": "number",
+            "example": 115
+          },
+          "orderItems": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "album": {
+                  "type": "string",
+                  "example": "abcdef12345"
+                },
+                "quantity": {
+                  "type": "number",
+                  "example": 2
+                }
+              }
+            }
+          }
+        },
+        "required": ["subtotal", "tax", "total", "orderItems"],
+        "xml": {
+          "name": "NewOrder"
+        }
+      },
+      "OrderList": {
+        "type": "object",
+        "properties": {
+          "orders": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "user": {
+                  "type": "string",
+                  "example": "Jane Smith"
+                },
+                "orderItems": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "album": {
+                        "type": "string",
+                        "example": "5f7f1f7a5c3f2b2d9c1b0b9d"
+                      },
+                      "quantity": {
+                        "type": "number",
+                        "example": 1
+                      }
+                    }
+                  }
+                },
+                "subtotal": {
+                  "type": "number",
+                  "example": 14.99
+                },
+                "tax": {
+                  "type": "number",
+                  "example": 1.25
+                },
+                "total": {
+                  "type": "number",
+                  "example": 16.24
+                }
+              }
             }
           }
         },
         "xml": {
-          "name": "TokenizedUser"
+          "name": "OrderList"
         }
       },
       "UserWithAlbums": {

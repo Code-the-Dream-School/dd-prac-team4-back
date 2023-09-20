@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Password Reset</title>
+    <link rel="stylesheet" type="text/css" href="forgot_password/style.css" />
+  </head>
+  <body>
+    <div class="email-container">
+      <h2>Password Reset Request</h2>
+      <p>Hello,</p>
+      <p>
+        We received a request to reset your password. Click the link below to
+        reset your password:
+      </p>
+      <p><a href="<%= resetLink %>">Reset Password</a></p>
+      <%/* The <\% resetLink %\> placeholder should be replaced with the actual
+      URL later to the reset password page. */%>
+
+      <p>
+        If you did not initiate this request, you can safely ignore this email.
+      </p>
+      <p>Thank you,</p>
+      <p>Your Music Store Team</p>
+    </div>
+  </body>
+</html>
