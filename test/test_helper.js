@@ -1,7 +1,7 @@
 const request = require('supertest');
 const { app } = require('../src/expressServer.js');
 
-const loginAsAdmin = async (credentials) => {
+const loginAndReturnCookie = async (credentials) => {
   // Send a login request and get the signed cookie from the response
   const resp = await request(app).post('/api/v1/auth/login').send(credentials);
 
