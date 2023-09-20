@@ -3,6 +3,7 @@ const { StatusCodes } = require('http-status-codes');
 const request = require('supertest');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const Album = require('../src/models/Album');
+const { loginAsAdmin } = require('./test_helper');
 
 let server;
 let mongooseConnection;
@@ -65,9 +66,16 @@ describe('AlbumController API Tests', () => {
   it('should test the getAlbumWithAllUsersWhoPurchasedIt endpoint - Success Case', async () => {
     const { _id: albumId } = await Album.findOne({});
 
-    const response = await request(app).get(
-      `/api/v1/albums/${albumId}/listOfUsersWhoPurchasedThisAlbum`
-    );
+    // Login as admin
+    const loginResponse = await loginAsAdmin(app);
+
+    // Check if login was successful (assuming a successful login returns a 200 status code)
+    expect(loginResponse.status).toBe(200);
+
+    const response = await request(app)
+      .get(`/api/v1/albums/${albumId}/listOfUsersWhoPurchasedThisAlbum`)
+      .set('Cookie', loginResponse.header['set-cookie']);
+
     expect(response.status).toBe(StatusCodes.OK);
     expect(response.body).toHaveProperty('album');
     expect(response.body).toHaveProperty('album');
