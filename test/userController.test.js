@@ -8,11 +8,17 @@ let server;
 let mongooseConnection;
 let mongodb;
 let testUser;
+let testAdmin;
 
 // Credentials for test user
 const testUserCredentials = {
   email: 'ava@ava.com',
   password: 'secret',
+};
+// Credentials for test admin
+const testAdminCredentials = {
+  email: 'admin@admin.com',
+  password: 'adminsecret',
 };
 
 // log in and return a cookie
@@ -47,6 +53,13 @@ beforeAll(async () => {
     name: 'Ava Smith',
     username: 'ava123',
     role: 'user',
+  });
+  // Create the test admin user with the specified admin credentials
+  testAdmin = await createSingleUser({
+    ...testAdminCredentials,
+    name: 'Admin',
+    username: 'admin123',
+    role: 'admin', // Set the role to 'admin'
   });
   server = await app.listen(8001);
 });
@@ -96,10 +109,8 @@ describe('GET /api/v1/users/:user_id endpoint', () => {
 
 describe('PATCH /api/v1/users/updateCurrentUser endpoint', () => {
   it('should update the current user', async () => {
-    const signedCookie = await loginAndReturnCookie({
-      email: 'ava@ava.com',
-      password: 'secret',
-    });
+    // Arrange: Log in and get a signed cookie with valid test user credentials
+    const signedCookie = await loginAndReturnCookie(testUserCredentials);
 
     const updatedUserData = {
       email: 'new_email@example.com',
@@ -131,20 +142,20 @@ describe('PATCH /api/v1/users/updateCurrentUser endpoint', () => {
   });
 });
 
-describe('GET /api/v1/users/getCurrentUserWithPurchasedAlbums endpoint', () => {
+describe('GET /api/v1/users/showMe/withAlbums endpoint', () => {
   it('should return the data of the currently authenticated user with purchased albums', async () => {
     // Act: Log in and get a signed cookie
     const signedCookie = await loginAndReturnCookie(testUserCredentials);
 
     // Act: Get the current user's information with purchased albums using the authenticated cookie
     const response = await request(app)
-      .get('/api/v1/users/getCurrentUserWithPurchasedAlbums')
+      .get('/api/v1/users/showMe/withAlbums')
       .set('Cookie', [signedCookie]);
 
     // Assert: Check the response status and user information
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('user');
-    expect(response.body.user).toHaveProperty('name', 'ava');
+    expect(response.body.user).toHaveProperty('name', 'Ava Smith');
     expect(response.body.user).toHaveProperty('email', 'ava@ava.com');
     expect(response.body.user).toHaveProperty('role', 'user');
     expect(response.body.user).toHaveProperty('purchasedAlbums');
@@ -163,9 +174,7 @@ describe('GET /api/v1/users/getCurrentUserWithPurchasedAlbums endpoint', () => {
 
   it('should return a 401 status if the user is not authenticated', async () => {
     // Act: Attempt to get the current user's information with purchased albums without authentication
-    const response = await request(app).get(
-      '/api/v1/users/getCurrentUserWithPurchasedAlbums'
-    );
+    const response = await request(app).get('/api/v1/users/showMe/withAlbums');
 
     // Assert: Check the response status for 401
     expect(response.status).toBe(401);
@@ -179,14 +188,14 @@ describe('GET /api/v1/users/showCurrentUser endpoint', () => {
 
     // Act: Get the current user's information using the authenticated cookie
     const response = await request(app)
-      .get('/api/v1/users/showCurrentUser')
+      .get('/api/v1/users/showMe')
       .set('Cookie', [signedCookie]);
 
     // Assert: Check the response status and user information
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('user');
     expect(response.body.user).toMatchObject({
-      name: 'ava',
+      name: 'Ava Smith',
       email: 'ava@ava.com',
       role: 'user',
     });
@@ -195,7 +204,7 @@ describe('GET /api/v1/users/showCurrentUser endpoint', () => {
 
   it('should return a 401 status if the user is not authenticated', async () => {
     // Act: Attempt to get the current user's information without authentication
-    const response = await request(app).get('/api/v1/users/showCurrentUser');
+    const response = await request(app).get('/api/v1/users/showMe');
 
     // Assert: Check the response status for 401
     expect(response.status).toBe(401);
@@ -204,8 +213,8 @@ describe('GET /api/v1/users/showCurrentUser endpoint', () => {
 
 describe('GET /api/v1/users endpoint', () => {
   it('should return a list of users without the password field', async () => {
-    // Act: Log in and get a signed cookie
-    const signedCookie = await loginAndReturnCookie(testUserCredentials);
+    // Arrange: Log in as an admin and get a signed cookie
+    const signedCookie = await loginAndReturnCookie(testAdminCredentials);
 
     // Act: Get a list of users using the authenticated cookie
     const response = await request(app)
@@ -214,7 +223,7 @@ describe('GET /api/v1/users endpoint', () => {
 
     // Assert: Check the response status and the list of users
     expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('users');
+    expect(response.body.users).toBeInstanceOf(Array);
     expect(Array.isArray(response.body.users)).toBe(true);
 
     // Check that each user in the list doesn't have a password field
@@ -231,5 +240,16 @@ describe('GET /api/v1/users endpoint', () => {
     const response = await request(app).get('/api/v1/users');
 
     expect(response.status).toBe(401);
+  });
+
+  it('should return a 403 status if the user is not an admin', async () => {
+    // Arrange: Log in as a regular user and get a signed cookie
+    const signedCookie = await loginAndReturnCookie(testUserCredentials);
+    // Act: Attempt to get a list of users using the authenticated cookie
+    const response = await request(app)
+      .get('/api/v1/users')
+      .set('Cookie', [signedCookie]);
+    // Assert: Check the response status for 403
+    expect(response.status).toBe(403);
   });
 });
