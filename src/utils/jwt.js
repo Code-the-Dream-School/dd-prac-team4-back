@@ -17,11 +17,15 @@ const creatJWT = ({ payload }) => {
 };
 
 /**
+ * @typedef {import('./createTokenUser.js').TokenUser} TokenUser
+ */
+/**
  * Checks the validity of a JWT token.
  *
  * @param {Object} options - Options for verifying a JWT token.
  * @param {string} options.token - The JWT token to verify.
  * @throws {Error} - Thrown if the token is invalid.
+ * @returns {TokenUser} - User object with data for token creation.
  */
 
 const isTokenValid = ({ token }) => jwt.verify(token, process.env.JWT_SECRET); // Verify the validity of a JWT token
