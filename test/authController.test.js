@@ -2,6 +2,7 @@ const { app, connectDB } = require('../src/expressServer.js');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const request = require('supertest');
 const { intervalId: orderUpdateInterval } = require('../src/models/Order');
+const User = require('../src/models/User');
 
 // Declare variables for the server, database connection, and in-memory MongoDB instance
 let server;
@@ -68,6 +69,16 @@ describe('Authentication API Endpoints', () => {
     // Assert: Check the response status and body
     expect(registrationResponse.status).toBe(201); // Expecting a successful registration
     expect(registrationResponse.body).toHaveProperty('user'); // Expecting a user object in the response
+    const createdUser = await User.findOne({ email: testUser.email });
+    // Expecting the user to be saved in the database (not null)
+    expect(createdUser).not.toBeNull();
+    // Expect the user object in the response to match the user object in the database
+    expect(registrationResponse.body.user).toMatchObject({
+      email: createdUser.email,
+      name: createdUser.name,
+      role: createdUser.role,
+      userId: createdUser.id,
+    });
 
     // Act: Log in with the newly registered user's credentials
     const loginResponse = await request(app)
@@ -77,6 +88,12 @@ describe('Authentication API Endpoints', () => {
     // Assert: Check the response status and body
     expect(loginResponse.status).toBe(201); // Expecting a successful login
     expect(loginResponse.body).toHaveProperty('user'); // Expecting a user object in the response
+    // Further assertions on the shape of the user object in the response
+    const userInResponse = loginResponse.body.user;
+    expect(userInResponse).toHaveProperty('email');
+    expect(userInResponse).toHaveProperty('name');
+    expect(userInResponse).toHaveProperty('role');
+    expect(userInResponse).toHaveProperty('userId');
   });
 
   it('should log out the user', async () => {
