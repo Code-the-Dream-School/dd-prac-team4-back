@@ -129,15 +129,37 @@ describe('AlbumController API Tests', () => {
   it('should return a limited list of albums when using a limit parameter', async () => {
     const albumsToCreate = [
       {
-        albumName: 'The Dark Side of the Moon',
-        artistName: 'Pink Floyd',
+        albumName: 'Album 1',
+        artistName: 'Artist 1',
         price: 9.99,
-        image: '/uploads/example.jpg',
-        releaseDate: '2022-03-01T00:00:00.000Z',
+        image: '/uploads/album1.jpg',
+        releaseDate: '2022-01-01T00:00:00.000Z',
         category: 'rock',
-        spotifyUrl: 'https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv',
+        spotifyUrl: 'https://open.spotify.com/album/album1',
         averageRating: 4.5,
         numOfReviews: 2,
+      },
+      {
+        albumName: 'Album 2',
+        artistName: 'Artist 2',
+        price: 8.99,
+        image: '/uploads/album2.jpg',
+        releaseDate: '2022-02-01T00:00:00.000Z',
+        category: 'pop',
+        spotifyUrl: 'https://open.spotify.com/album/album2',
+        averageRating: 3.7,
+        numOfReviews: 3,
+      },
+      {
+        albumName: 'Album 3',
+        artistName: 'Artist 3',
+        price: 7.99,
+        image: '/uploads/album3.jpg',
+        releaseDate: '2022-03-01T00:00:00.000Z',
+        category: 'rock',
+        spotifyUrl: 'https://open.spotify.com/album/album3',
+        averageRating: 4.2,
+        numOfReviews: 1,
       },
     ];
 
