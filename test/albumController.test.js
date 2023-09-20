@@ -101,11 +101,28 @@ describe('AlbumController API Tests', () => {
   });
 
   it('should test the getFilteredAlbums endpoint - Success Case', async () => {
+    // Create 1 album in the database
+    const albumToCreate = {
+      albumName: 'Album 1',
+      artistName: 'Artist 1',
+    };
+
+    await Album.create(albumToCreate);
+
     const response = await request(app).get(
       '/api/v1/albums?limit=10&order=asc'
     );
+
     expect(response.status).toBe(StatusCodes.OK);
+    // Assert that the response body is an object with "albums" and "count" keys
     expect(response.body).toHaveProperty('albums');
     expect(response.body).toHaveProperty('count');
+    // Assert that "albums" is an array with the expected number of albums (based on the limit)
+    // In this case, since we have only 1 album in the database, the "albums" array should have 1 item
+    expect(response.body.albums).toHaveLength(1);
+
+    // Assert that the "count" field reflects the actual count of albums in the database
+    // In this case, it should be 1 because we created 1 album
+    expect(response.body.count).toBe(1);
   });
 });
