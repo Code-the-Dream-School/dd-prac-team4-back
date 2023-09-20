@@ -17,5 +17,5 @@ const loginAndReturnCookie = async (credentials) => {
 };
 
 module.exports = {
-  loginAsAdmin,
+  loginAndReturnCookie,
 };
