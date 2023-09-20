@@ -105,7 +105,7 @@ describe('AlbumController API Tests', () => {
     const albumToCreate = {
       albumName: 'Album 1',
       artistName: 'Artist 1',
-      spotifyUrl: 'https://open.spotify.com/album/album1',
+      spotifyUrl: 'https://api.spotify.com/v1/albums/blah123',
     };
 
     await Album.create(albumToCreate);
@@ -136,7 +136,7 @@ describe('AlbumController API Tests', () => {
         image: '/uploads/album1.jpg',
         releaseDate: '2022-01-01T00:00:00.000Z',
         category: 'rock',
-        spotifyUrl: 'https://open.spotify.com/album/album1',
+        spotifyUrl: 'https://api.spotify.com/v1/albums/blah123',
         averageRating: 4.5,
         numOfReviews: 2,
       },
@@ -147,7 +147,7 @@ describe('AlbumController API Tests', () => {
         image: '/uploads/album2.jpg',
         releaseDate: '2022-02-01T00:00:00.000Z',
         category: 'pop',
-        spotifyUrl: 'https://open.spotify.com/album/album2',
+        spotifyUrl: 'https://api.spotify.com/v1/albums/blah123',
         averageRating: 3.7,
         numOfReviews: 3,
       },
@@ -158,7 +158,7 @@ describe('AlbumController API Tests', () => {
         image: '/uploads/album3.jpg',
         releaseDate: '2022-03-01T00:00:00.000Z',
         category: 'rock',
-        spotifyUrl: 'https://open.spotify.com/album/album3',
+        spotifyUrl: 'https://api.spotify.com/v1/albums/blah123',
         averageRating: 4.2,
         numOfReviews: 1,
       },
