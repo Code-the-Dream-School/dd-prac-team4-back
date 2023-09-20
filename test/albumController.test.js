@@ -125,4 +125,40 @@ describe('AlbumController API Tests', () => {
     // In this case, it should be 1 because we created 1 album
     expect(response.body.count).toBe(1);
   });
+
+  it('should return a limited list of albums when using a limit parameter', async () => {
+    const albumsToCreate = [
+      {
+        albumName: 'The Dark Side of the Moon',
+        artistName: 'Pink Floyd',
+        price: 9.99,
+        image: '/uploads/example.jpg',
+        releaseDate: '2022-03-01T00:00:00.000Z',
+        category: 'rock',
+        spotifyUrl: 'https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv',
+        averageRating: 4.5,
+        numOfReviews: 2,
+      },
+    ];
+
+    await Album.insertMany(albumsToCreate);
+
+    // Make a GET request to the /api/v1/albums endpoint with a limit parameter set to 2
+    const limit = 2;
+    const response = await request(app).get(`/api/v1/albums?limit=${limit}`);
+
+    // Assert that the response status is OK (200)
+    expect(response.status).toBe(StatusCodes.OK);
+
+    // Assert that the response body is an object with "albums" and "count" keys
+    expect(response.body).toHaveProperty('albums');
+    expect(response.body).toHaveProperty('count');
+
+    // Assert that "albums" is an array with a length equal to the specified limit
+    expect(response.body.albums).toHaveLength(limit);
+
+    // Assert that the "count" field reflects the actual count of albums in the database
+    // In this case, it should be 5 because we created 5 albums
+    expect(response.body.count).toBe(albumsToCreate.length);
+  });
 });
