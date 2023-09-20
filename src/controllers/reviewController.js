@@ -125,7 +125,7 @@ const getSingleReview = async (req, res) => {
 
 // delete review
 const deleteReview = async (req, res) => {
-  const { reviewId } = req.params; // take the id of the review from req.params
+  const { id: reviewId } = req.params; // take the id of the review from req.params
 
   // Fetch the existing review
   const review = await Review.findOne({ _id: reviewId });
@@ -143,7 +143,7 @@ const deleteReview = async (req, res) => {
   }
 
   // Delete the review
-  await review.remove();
+  await Review.findByIdAndDelete(reviewId);
 
   res.status(StatusCodes.OK).json({ message: 'Review deleted successfully' });
 };
