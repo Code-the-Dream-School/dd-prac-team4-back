@@ -45,9 +45,21 @@ describe('AlbumController API Tests', () => {
 
   it('should return an empty list if there are no albums in the database', async () => {
     await Album.deleteMany({});
+    // Make a GET request to the /api/v1/albums endpoint
     const response = await request(app).get('/api/v1/albums');
+
+    // Assert that the response status is OK (200)
     expect(response.status).toBe(StatusCodes.OK);
-    expect(response.body).toEqual([]);
+
+    // Assert that the response body is an object with "albums" and "count" keys
+    expect(response.body).toHaveProperty('albums');
+    expect(response.body).toHaveProperty('count');
+
+    // Assert that "albums" is an empty array since there are no albums in the database
+    expect(response.body.albums).toEqual([]);
+
+    // Assert that the "count" field reflects the actual count of albums (which is 0 in this case)
+    expect(response.body.count).toBe(0);
   });
 
   it('should test the getSingleAlbum endpoint - Success Case', async () => {
