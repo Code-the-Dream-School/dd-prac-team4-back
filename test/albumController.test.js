@@ -90,7 +90,6 @@ describe('AlbumController API Tests', () => {
 
     expect(response.status).toBe(StatusCodes.OK);
     expect(response.body).toHaveProperty('album');
-    expect(response.body).toHaveProperty('album');
     expect(response.body).toHaveProperty('purchasingUsersCount');
   });
 
