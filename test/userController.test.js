@@ -18,7 +18,7 @@ const testUserCredentials = {
 // Credentials for test admin
 const testAdminCredentials = {
   email: 'admin@admin.com',
-  password: 'adminsecret',
+  password: 'secret',
 };
 
 // log in and return a cookie
@@ -36,10 +36,6 @@ const loginAndReturnCookie = async (credentials) => {
   return signedCookie; // Return the signed cookie, which typically contains authentication token
 };
 
-const createSingleUser = async (userData) => {
-  return User.create(userData);
-};
-
 // set up the mongodb and the express server before starting the tests
 beforeAll(async () => {
   // This will create a new instance of "MongoMemoryServer" and automatically start it
@@ -48,19 +44,19 @@ beforeAll(async () => {
   // set the url so that our server's mongoose connects to the in-memory mongodb and not our real one
   process.env.MONGO_URL = url;
   mongooseConnection = await connectDB(url);
-  testUser = await createSingleUser({
-    ...testUserCredentials,
-    name: 'Ava Smith',
-    username: 'ava123',
-    role: 'user',
-  });
+  //testUser = await createSingleUser({
+  //  ...testUserCredentials,
+  //  name: 'Ava Smith',
+  //  username: 'ava123',
+  //  role: 'user',
+  //});
   // Create the test admin user with the specified admin credentials
-  testAdmin = await createSingleUser({
-    ...testAdminCredentials,
-    name: 'Admin',
-    username: 'admin123',
-    role: 'admin', // Set the role to 'admin'
-  });
+  //testAdmin = await createSingleUser({
+  //  ...testAdminCredentials,
+  //  name: 'Admin',
+  //  username: 'admin123',
+  //  role: 'admin', // Set the role to 'admin'
+  //});
   server = await app.listen(8001);
 });
 
@@ -72,8 +68,8 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-  // Delete all users with the same email before creating the test user
-  await User.deleteMany({ email: testUserCredentials.email });
+  // Delete all users before creating the test user
+  await User.deleteMany({});
 
   // Create a test user before each test
   testUser = await User.create({
@@ -82,6 +78,13 @@ beforeEach(async () => {
     email: 'ava@ava.com',
     password: 'secret',
     role: 'user',
+  });
+  testAdmin = await User.create({
+    name: 'admin',
+    username: 'admin',
+    email: 'admin@admin.com',
+    password: 'secret',
+    role: 'admin',
   });
 });
 
@@ -129,7 +132,7 @@ describe('PATCH /api/v1/users/updateCurrentUser endpoint', () => {
   it('should update the current user', async () => {
     // Arrange: Log in and get a signed cookie with valid test user credentials
     const signedCookie = await loginAndReturnCookie(testUserCredentials);
-    
+
     const updatedUserData = {
       email: 'new_email@example.com',
       name: 'new_name',
@@ -173,7 +176,7 @@ describe('GET /api/v1/users/showMe/withAlbums endpoint', () => {
     // Assert: Check the response status and user information
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('user');
-    expect(response.body.user).toHaveProperty('name', 'Ava Smith');
+    expect(response.body.user).toHaveProperty('name', 'ava');
     expect(response.body.user).toHaveProperty('email', 'ava@ava.com');
     expect(response.body.user).toHaveProperty('role', 'user');
     expect(response.body.user).toHaveProperty('purchasedAlbums');
@@ -213,7 +216,7 @@ describe('GET /api/v1/users/showCurrentUser endpoint', () => {
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('user');
     expect(response.body.user).toMatchObject({
-      name: 'Ava Smith',
+      name: 'ava',
       email: 'ava@ava.com',
       role: 'user',
     });
@@ -327,12 +330,11 @@ describe('PATCH /api/v1/users/updateUserPassword endpoint', () => {
 describe('DELETE /api/v1/users/deleteSingleUser endpoint', () => {
   it('should delete a user if the user exists', async () => {
     // Arrange: Log in and get a signed cookie with valid test user credentials
-    const signedCookie = await loginAndReturnCookie(testUserCredentials);
+    const signedCookieAdmin = await loginAndReturnCookie(testAdminCredentials);
 
-    // Act: Attempt to delete the user using the authenticated cookie
     const response = await request(app)
-      .delete('/api/v1/users/deleteSingleUser')
-      .set('Cookie', [signedCookie]);
+      .delete(`/api/v1/users/deleteSingleUser/${testUser.id}`) // Assuming testUser is the user you want to delete
+      .set('Cookie', [signedCookieAdmin]);
 
     // Assert: Check the response status for success
     expect(response.status).toBe(200);
@@ -341,12 +343,12 @@ describe('DELETE /api/v1/users/deleteSingleUser endpoint', () => {
 
   it('should return an error if the user does not exist', async () => {
     // Arrange: Log in and get a signed cookie with valid test user credentials
-    const signedCookie = await loginAndReturnCookie(testUserCredentials);
+    const signedCookieAdmin = await loginAndReturnCookie(testAdminCredentials);
 
     // Act: Attempt to delete a non-existent user
     const response = await request(app)
       .delete('/api/v1/users/nonexistentUserId')
-      .set('Cookie', [signedCookie]);
+      .set('Cookie', [signedCookieAdmin]);
 
     // Assert: Check the response status for an error
     expect(response.status).toBe(404);
