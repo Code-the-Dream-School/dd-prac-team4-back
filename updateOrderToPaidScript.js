@@ -23,7 +23,7 @@ async function run() {
     const updatedOrder = await Order.findByIdAndUpdate(
       orderId,
       { orderStatus: 'payment_successful' },
-      { new: true }
+     // { new: true }
     );
 
     console.log('Order updated successfully.\n', updatedOrder);
