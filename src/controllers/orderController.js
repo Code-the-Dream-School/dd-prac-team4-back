@@ -6,7 +6,7 @@ const PurchasedAlbum = require('../models/PurchasedAlbum');
 const CustomError = require('../errors');
 const { checkPermissions } = require('../utils');
 const mongoose = require('mongoose');
-
+const { sendOrderCompletedEmail } = require('../mailing/sender');
 const createOrder = async (req, res) => {
   const session = await mongoose.startSession();
 
@@ -21,7 +21,8 @@ const createOrder = async (req, res) => {
       );
     }
     // Fetch user information from the request object
-    const user = req.user;
+    const user = req.user; //contains user object
+    console.log(user.name);
 
     const order = new Order({
       user: req.user.userId,
@@ -58,16 +59,26 @@ const createOrder = async (req, res) => {
     });
     //Stripe  gives the server the paymentIntent object. The server will save the id of this object in the Order document so that we can easily associate the two.
     order.paymentIntentId = paymentIntent.id;
-    //this is where the payment happens? so if it's successful -we change orderStatus to'complete'? then we should save this new status is a db - that triggers a save middleware in Order.js that sends email of order being paid?
     await order.save({ session });
 
     await session.commitTransaction();
+
+    const orderItemsWithFullAlbum = await order.populate({
+      path: 'orderItems.album',
+    });
+    // Send the order completion email after THE ORDER HAS STATUS COMPLETE
+    await sendOrderCompletedEmail(
+      user.email,
+      user.name,
+      orderItemsWithFullAlbum.orderItems,
+      orderItemsWithFullAlbum.total
+    );
     //Frontend will pass the clientSecret (he gets from here)to Stripe. This is how Stripe authenticates and knows that this frontend is legitimately handling a Stripe payment for the user
     res
       .status(StatusCodes.CREATED)
       .json({ clientSecret: paymentIntent.client_secret, order });
   } catch (error) {
-    // Handle errors and rollback the transaction if it fails
+    // Handle errors and rollback the transaction if any part of the try/catch fails
     await session.abortTransaction();
 
     console.error('Error while processing the order:', error);

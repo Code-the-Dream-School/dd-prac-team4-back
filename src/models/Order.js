@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const { sendOrderCompletedEmail } = require('../mailing/sender');
-const User = require('../models/User');
 
 // mongoose schema for the individual order items
 const OrderItemSchema = new mongoose.Schema({
@@ -116,8 +115,6 @@ OrderSchema.pre('findOne', async function (next) {
 OrderSchema.post('findOneAndUpdate', async function (doc) {
   try {
     if (this.getUpdate().$set.orderStatus === 'payment_successful') {
-      const user = await User.findById(doc.user);
-
       //   populate by calling await + populate(...) and we can chain populate calls by using an array. This allows us to populate both the full user object and the full orderItems.album objects
       const orderItemsWithFullAlbum = await doc.populate([
         'user',

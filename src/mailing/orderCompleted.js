@@ -28,6 +28,7 @@ async function sendOrderCompletedEmailToUser(userId) {
       // Throw a NotFoundError if the user is not found
       throw new CustomError.NotFoundError(`No user was found`);
     }
+    const username = user.username;
     console.log('User ID:', user._id);
     // Check if the user has an order with the 'payment_successful' status
     const order = await Order.findOne({
@@ -62,7 +63,7 @@ async function sendOrderCompletedEmailToUser(userId) {
     // Send the order completed email to the user
     const response = await sendOrderCompletedEmail(
       orderItemsWithFullAlbum.user.email,
-      orderItemsWithFullAlbum.user.username, // Use the appropriate field for the username
+      username, // Use the appropriate field for the username
       orderArray,
       orderItemsWithFullAlbum.total
     );

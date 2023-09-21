@@ -33,10 +33,6 @@ const baseEmail = new Email({
     webResources: { relativeTo: path.resolve('src/mailing/templates') },
   },
 });
-console.log(path.resolve('../templates'));
-console.log(process.cwd());
-
-const subject = 'First Subject of the first email to be sent';
 
 // Function to send a test email
 async function sendTestEmail(to, username) {
