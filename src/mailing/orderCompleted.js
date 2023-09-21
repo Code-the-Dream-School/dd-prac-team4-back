@@ -73,5 +73,6 @@ async function sendOrderCompletedEmailToUser(userId) {
   }
 }
 
+//for manual testing run : node -r dotenv/config src/mailing/orderCompleted.js in terminal + check process.env.TEST_USER_ID in .env/mongodb
 // Call the function with the user's ID as an argument
 sendOrderCompletedEmailToUser(process.env.TEST_USER_ID);
