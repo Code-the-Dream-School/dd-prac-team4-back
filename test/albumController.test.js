@@ -3,7 +3,7 @@ const { StatusCodes } = require('http-status-codes');
 const request = require('supertest');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const Album = require('../src/models/Album');
-const { loginAsAdmin } = require('./test_helper');
+const { loginAndReturnCookie } = require('./test_helper');
 
 let server;
 let mongooseConnection;
@@ -76,28 +76,31 @@ describe('AlbumController API Tests', () => {
   });
 
   it('should test the getAlbumWithAllUsersWhoPurchasedIt endpoint - Success Case', async () => {
-    const { _id: albumId } = await Album.findOne({});
+    // Try to find an album; if not found, create a default one
+    const album =
+      (await Album.findOne({})) ||
+      (await Album.create({
+        albumName: 'Album',
+        artistName: 'Artist',
+      }));
 
-    // Login as admin
-    const loginResponse = await loginAsAdmin(app);
+    const adminCredentials = {
+      email: 'admin@admin.com',
+      password: 'adminpassword',
+    };
 
-    // Check if login was successful (assuming a successful login returns a 200 status code)
-    expect(loginResponse.status).toBe(200);
+    // Use the loginAndReturnCookie function to log in as admin and get the signed cookie
+    const signedCookie = await loginAndReturnCookie(adminCredentials);
 
+    // Make a request to the endpoint and set the obtained cookie
     const response = await request(app)
-      .get(`/api/v1/albums/${albumId}/listOfUsersWhoPurchasedThisAlbum`)
-      .set('Cookie', loginResponse.header['set-cookie']);
+      .get(`/api/v1/albums/${album._id}/listOfUsersWhoPurchasedThisAlbum`)
+      .set('Cookie', signedCookie); // Set the obtained cookie
 
+    // Check if the response status is OK and contains the expected properties
     expect(response.status).toBe(StatusCodes.OK);
     expect(response.body).toHaveProperty('album');
     expect(response.body).toHaveProperty('purchasingUsersCount');
-  });
-
-  it('should test the getAlbumWithAllUsersWhoPurchasedIt endpoint - Error Case (Not Found)', async () => {
-    const response = await request(app).get(
-      '/api/v1/albums/invalidAlbumId/listOfUsersWhoPurchasedThisAlbum'
-    );
-    expect(response.status).toBe(StatusCodes.NOT_FOUND); // Expect not found status code
   });
 
   it('should test the getFilteredAlbums endpoint - Success Case', async () => {

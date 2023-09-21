@@ -4,7 +4,9 @@ const { app } = require('../src/expressServer.js');
 const loginAndReturnCookie = async (credentials) => {
   // Send a login request and get the signed cookie from the response
   const resp = await request(app).post('/api/v1/auth/login').send(credentials);
-
+  // Log the response and cookie header for debugging
+  console.log('Response:', resp);
+  console.log('Cookie Header:', resp.headers['set-cookie']);
   // Get the 'set-cookie' header from the response
   const cookieHeader = resp.headers['set-cookie'];
 
