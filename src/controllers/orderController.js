@@ -22,7 +22,7 @@ const createOrder = async (req, res) => {
     }
     // Fetch user information from the request object
     const user = req.user; //contains user object
-    console.log(user.name);
+    console.log(user);
 
     const order = new Order({
       user: req.user.userId,
