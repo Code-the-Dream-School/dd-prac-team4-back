@@ -30,7 +30,15 @@ describe('AlbumController API Tests', () => {
     price: 9.99,
     spotifyUrl: 'https://api.spotify.com/v1/albums/blah123',
   };
-
+  beforeAll(async () => {
+    await User.create({
+      email: 'admin@admin.com',
+      password: 'adminpassword',
+      name: 'Ava Smith',
+      username: 'ava123',
+      role: 'admin',
+    });
+  });
   beforeEach(async () => {
     await Album.deleteMany({});
     await Album.create(mockAlbumData);
