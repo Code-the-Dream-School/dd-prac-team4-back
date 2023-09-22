@@ -3,6 +3,7 @@ const { StatusCodes } = require('http-status-codes');
 const request = require('supertest');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const Album = require('../src/models/Album');
+const User = require('../src/models/User');
 const { loginAndReturnCookie } = require('./test_helper');
 
 let server;
@@ -172,9 +173,11 @@ describe('AlbumController API Tests', () => {
 
     await Album.insertMany(albumsToCreate);
 
-    // Make a GET request to the /api/v1/albums/filter endpoint with a limit parameter set to 2
-    const limit = 2;
-    const response = await request(app).get(`/api/v1/albums/filter?limit=${limit}`);
+    // Make a GET request to the /api/v1/albums/filter endpoint with a limit parameter set to 4
+    const limit = 4;
+    const response = await request(app).get(
+      `/api/v1/albums/filter?limit=${limit}`
+    );
 
     // Assert that the response status is OK (200)
     expect(response.status).toBe(StatusCodes.OK);
@@ -187,7 +190,7 @@ describe('AlbumController API Tests', () => {
     expect(response.body.albums).toHaveLength(limit);
 
     // Assert that the "count" field reflects the actual count of albums in the database
-    // In this case, it should be 5 because we created 5 albums
+
     expect(response.body.count).toBe(albumsToCreate.length);
   });
 });
