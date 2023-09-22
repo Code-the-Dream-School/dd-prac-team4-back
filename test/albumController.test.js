@@ -77,12 +77,7 @@ describe('AlbumController API Tests', () => {
 
   it('should test the getAlbumWithAllUsersWhoPurchasedIt endpoint - Success Case', async () => {
     // Try to find an album; if not found, create a default one
-    const album =
-      (await Album.findOne({})) ||
-      (await Album.create({
-        albumName: 'Album',
-        artistName: 'Artist',
-      }));
+    const album = await Album.findOne({});
 
     const adminCredentials = {
       email: 'admin@admin.com',
