@@ -172,7 +172,7 @@ describe('AlbumController API Tests', () => {
 
     await Album.insertMany(albumsToCreate);
 
-    // Make a GET request to the /api/v1/albums endpoint with a limit parameter set to 2
+    // Make a GET request to the /api/v1/albums/filter endpoint with a limit parameter set to 2
     const limit = 2;
     const response = await request(app).get(`/api/v1/albums/filter?limit=${limit}`);
 
