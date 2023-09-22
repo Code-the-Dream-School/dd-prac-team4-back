@@ -174,7 +174,7 @@ describe('AlbumController API Tests', () => {
 
     // Make a GET request to the /api/v1/albums endpoint with a limit parameter set to 2
     const limit = 2;
-    const response = await request(app).get(`/api/v1/albums?limit=${limit}`);
+    const response = await request(app).get(`/api/v1/albums/filter?limit=${limit}`);
 
     // Assert that the response status is OK (200)
     expect(response.status).toBe(StatusCodes.OK);
