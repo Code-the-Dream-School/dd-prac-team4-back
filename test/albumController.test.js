@@ -117,7 +117,7 @@ describe('AlbumController API Tests', () => {
     await Album.create(albumToCreate);
 
     const response = await request(app).get(
-      '/api/v1/albums?limit=10&order=asc'
+      '/api/v1/albums/filter?limit=10&order=asc'
     );
 
     expect(response.status).toBe(StatusCodes.OK);
