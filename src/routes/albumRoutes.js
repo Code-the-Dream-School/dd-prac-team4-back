@@ -13,6 +13,7 @@ const {
   updatePriceOfAlbums,
   getFilteredAlbums,
   getAlbumWithAllUsersWhoPurchasedIt,
+  subscribeToAlbumChat,
 } = require('../controllers/albumController');
 
 router
@@ -35,5 +36,7 @@ router
     authorizePermissions('admin'),
     getAlbumWithAllUsersWhoPurchasedIt
   ); //only admin can see who purchased album
+
+router.get('/albumChat/:albumId', authenticateUser, subscribeToAlbumChat);
 
 module.exports = router;
