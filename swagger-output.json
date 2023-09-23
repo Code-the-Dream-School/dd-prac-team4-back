@@ -16,6 +16,16 @@
     }
   ],
   "paths": {
+    "/tests": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/v1/auth/register": {
       "post": {
         "tags": ["Authentication"],
@@ -160,6 +170,31 @@
             "JWT": []
           }
         ]
+      }
+    },
+    "/api/v1/auth/forgot_password": {
+      "post": {
+        "tags": ["Authentication"],
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/users/": {
@@ -1675,6 +1710,10 @@
       "OrderList": {
         "type": "object",
         "properties": {
+          "count": {
+            "type": "number",
+            "example": 1
+          },
           "orders": {
             "type": "array",
             "items": {
@@ -1682,7 +1721,7 @@
               "properties": {
                 "user": {
                   "type": "string",
-                  "example": "Jane Smith"
+                  "example": "64d44bc8337399ccf9ad7e4d"
                 },
                 "orderItems": {
                   "type": "array",
@@ -1711,6 +1750,32 @@
                 "total": {
                   "type": "number",
                   "example": 16.24
+                },
+                "createdAt": {
+                  "type": "string",
+                  "example": "2023-08-08T20:45:00.942Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "example": "2023-08-08T20:45:00.942Z"
+                },
+                "_id": {
+                  "type": "string",
+                  "example": "64ef50c8c5551074444547bc"
+                },
+                "orderStatus": {
+                  "type": "string",
+                  "enum": [
+                    "pending",
+                    "payment_successful",
+                    "payment_failed",
+                    "cancelled",
+                    "complete"
+                  ]
+                },
+                "paymentIntentId": {
+                  "type": "string",
+                  "example": "pi_abc123456"
                 }
               }
             }
