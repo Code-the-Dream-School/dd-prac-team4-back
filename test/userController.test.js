@@ -44,19 +44,6 @@ beforeAll(async () => {
   // set the url so that our server's mongoose connects to the in-memory mongodb and not our real one
   process.env.MONGO_URL = url;
   mongooseConnection = await connectDB(url);
-  //testUser = await createSingleUser({
-  //  ...testUserCredentials,
-  //  name: 'Ava Smith',
-  //  username: 'ava123',
-  //  role: 'user',
-  //});
-  // Create the test admin user with the specified admin credentials
-  //testAdmin = await createSingleUser({
-  //  ...testAdminCredentials,
-  //  name: 'Admin',
-  //  username: 'admin123',
-  //  role: 'admin', // Set the role to 'admin'
-  //});
   server = await app.listen(8001);
 });
 
@@ -68,7 +55,7 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-  // Delete all users before creating the test user
+  // Delete all users before creating the test users (one for each role)
   await User.deleteMany({});
 
   // Create a test user before each test
@@ -86,11 +73,6 @@ beforeEach(async () => {
     password: 'secret',
     role: 'admin',
   });
-});
-
-afterEach(async () => {
-  // Delete the test user after each test
-  await User.deleteMany({});
 });
 
 describe('GET /api/v1/users/:user_id endpoint', () => {
@@ -149,10 +131,7 @@ describe('PATCH /api/v1/users/updateCurrentUser endpoint', () => {
   });
 
   it('should return an error if required data is missing', async () => {
-    const signedCookie = await loginAndReturnCookie({
-      email: 'ava@ava.com',
-      password: 'secret',
-    });
+    const signedCookie = await loginAndReturnCookie(testUserCredentials);
 
     const response = await request(app)
       .patch('/api/v1/users/updateCurrentUser')
@@ -333,12 +312,12 @@ describe('DELETE /api/v1/users/deleteSingleUser endpoint', () => {
     const signedCookieAdmin = await loginAndReturnCookie(testAdminCredentials);
 
     const response = await request(app)
-      .delete(`/api/v1/users/deleteSingleUser/${testUser.id}`) // Assuming testUser is the user you want to delete
+      .delete(`/api/v1/users/${testUser.id}`) // Assuming testUser is the user you want to delete
       .set('Cookie', [signedCookieAdmin]);
 
     // Assert: Check the response status for success
     expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('msg', 'Success! User Deleted.');
+    expect(response.body).toHaveProperty('message', 'User deleted successfully');
   });
 
   it('should return an error if the user does not exist', async () => {
@@ -357,7 +336,7 @@ describe('DELETE /api/v1/users/deleteSingleUser endpoint', () => {
   it('should return an error if not authenticated', async () => {
     // Act: Attempt to delete a user without authentication
     const response = await request(app).delete(
-      '/api/v1/users/deleteSingleUser'
+      `/api/v1/users/${testUser.id}`
     );
 
     // Assert: Check the response status for an error
