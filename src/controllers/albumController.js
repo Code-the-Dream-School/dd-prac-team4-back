@@ -225,15 +225,6 @@ const getFilteredAlbums = async (req, res) => {
   */
 };
 
-const subscribeToAlbumChat = async (req, res) => {
-  const { albumId } = req.params;
-
-  const chatRoomName = `chat:album:${albumId}`;
-  req.socket.join(chatRoomName);
-
-  res.status(StatusCodes.OK).json({ message: 'Subscribed to album chat' });
-};
-
 module.exports = {
   updateAlbum,
   createAlbum,
@@ -242,5 +233,4 @@ module.exports = {
   updatePriceOfAlbums,
   getAlbumWithAllUsersWhoPurchasedIt,
   getFilteredAlbums,
-  subscribeToAlbumChat,
 };
