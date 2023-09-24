@@ -163,9 +163,7 @@ describe('AlbumController API Tests', () => {
     const response = await request(app).get(
       `/api/v1/albums/filter?limit=${limit}`
     );
-<<<<<<< HEAD
     expect(response.status).toBe(StatusCodes.BAD_REQUEST);
-=======
 
 
     expect(response.status).toBe(StatusCodes.OK);
@@ -173,7 +171,6 @@ describe('AlbumController API Tests', () => {
     expect(response.body).toHaveProperty('count');
     expect(response.body.albums).toHaveLength(limit);
     expect(response.body.count).toBe(albumsToCreate.length);
->>>>>>> main
   });
 
   it('should create a new album - Success Case', async () => {
