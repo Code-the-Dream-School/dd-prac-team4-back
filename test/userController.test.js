@@ -2,12 +2,14 @@ const { app, connectDB } = require('../src/expressServer.js');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const request = require('supertest');
 const User = require('../src/models/User');
+const { loginAndReturnCookie } = require('./test_helper');
 
 // Declare variables for the server, database connection, and in-memory MongoDB instance
 let server;
 let mongooseConnection;
 let mongodb;
 let testUser;
+// eslint-disable-next-line no-unused-vars
 let testAdmin;
 
 // Credentials for test user
@@ -19,21 +21,6 @@ const testUserCredentials = {
 const testAdminCredentials = {
   email: 'admin@admin.com',
   password: 'secret',
-};
-
-// log in and return a cookie
-const loginAndReturnCookie = async (credentials) => {
-  // Send a login request and get the signed cookie from the response
-  const resp = await request(app).post('/api/v1/auth/login').send(credentials);
-
-  // Get the 'set-cookie' header from the response
-  const cookieHeader = resp.headers['set-cookie'];
-  // Find the cookie that starts with 'token' in the 'set-cookie' header
-  // Split the cookie string by ';' and take the first part (before the first ';')
-  const signedCookie = cookieHeader
-    .find((cookie) => cookie.startsWith('token'))
-    .split(';')[0];
-  return signedCookie; // Return the signed cookie, which typically contains authentication token
 };
 
 // set up the mongodb and the express server before starting the tests
@@ -317,7 +304,10 @@ describe('DELETE /api/v1/users/deleteSingleUser endpoint', () => {
 
     // Assert: Check the response status for success
     expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('message', 'User deleted successfully');
+    expect(response.body).toHaveProperty(
+      'message',
+      'User deleted successfully'
+    );
   });
 
   it('should return an error if the user does not exist', async () => {
@@ -335,9 +325,7 @@ describe('DELETE /api/v1/users/deleteSingleUser endpoint', () => {
 
   it('should return an error if not authenticated', async () => {
     // Act: Attempt to delete a user without authentication
-    const response = await request(app).delete(
-      `/api/v1/users/${testUser.id}`
-    );
+    const response = await request(app).delete(`/api/v1/users/${testUser.id}`);
 
     // Assert: Check the response status for an error
     expect(response.status).toBe(401);

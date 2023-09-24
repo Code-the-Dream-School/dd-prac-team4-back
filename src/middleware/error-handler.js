@@ -3,6 +3,7 @@ const logger = require('../../logs/logger');
 
 const errorHandlerMiddleware = (err, req, res, _next) => {
   if (process.env.NODE_ENV !== 'test') logger.error(err);
+
   let customError = {
     statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
     msg: err.message || 'Something went wrong try again later',
