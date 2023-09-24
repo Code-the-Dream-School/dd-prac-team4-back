@@ -10,6 +10,10 @@ const onConnect = (io, socket) => {
     handleUserNotificationsJoin(io, socket, userId);
   });
 
+  socket.on('join:album_chat', (albumId) => {
+    const chatRoomName = `chat:album:${albumId}`;
+    socket.join(chatRoomName);
+  });
   /* End event handlers */
 
   socket.on('disconnect', () => {

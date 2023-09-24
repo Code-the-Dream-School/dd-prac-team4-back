@@ -109,12 +109,16 @@ const updateOrderStatus = async () => {
 };
 
 // Call the updateOrderStatus function every .... x time
-
-//const intervalId = setInterval(updateOrderStatus, process.env.PROD_TIME_DURATION); //prod 1h
-const intervalId = setInterval(
-  updateOrderStatus,
-  timeDuration // in prod 1hr, in dev 20hrs
-);
+let intervalId;
+if (
+  process.env.NODE_ENV !== 'test' ||
+  process.env.START_ORDER_INTERVAL === 'true'
+) {
+  intervalId = setInterval(
+    updateOrderStatus,
+    timeDuration // in prod 1hr, in dev 20hrs
+  );
+}
 
 // Middleware: Update order statuses before executing a find operation
 OrderSchema.pre('find', async function (next) {

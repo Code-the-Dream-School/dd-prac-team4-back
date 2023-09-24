@@ -2,7 +2,7 @@ const { app, connectDB } = require('../src/expressServer.js');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const request = require('supertest');
 const User = require('../src/models/User');
-const { intervalId: orderUpdateInterval } = require('../src/models/Order');
+const { loginAndReturnCookie } = require('./test_helper');
 
 // Declare variables for the server, database connection, and in-memory MongoDB instance
 let server;
@@ -14,21 +14,6 @@ let testUser;
 const testUserCredentials = {
   email: 'ava@ava.com',
   password: 'secret',
-};
-
-// log in and return a cookie
-const loginAndReturnCookie = async (credentials) => {
-  // Send a login request and get the signed cookie from the response
-  const resp = await request(app).post('/api/v1/auth/login').send(credentials);
-
-  // Get the 'set-cookie' header from the response
-  const cookieHeader = resp.headers['set-cookie'];
-  // Find the cookie that starts with 'token' in the 'set-cookie' header
-  // Split the cookie string by ';' and take the first part (before the first ';')
-  const signedCookie = cookieHeader
-    .find((cookie) => cookie.startsWith('token'))
-    .split(';')[0];
-  return signedCookie; // Return the signed cookie, which typically contains authentication token
 };
 
 const createSingleUser = async (userData) => {
@@ -57,8 +42,6 @@ afterAll(async () => {
   await server.close();
   await mongooseConnection.disconnect();
   await mongodb.stop();
-  // turn off the order update interval so that jest can cleanly shutdown
-  clearInterval(orderUpdateInterval);
 });
 
 describe('GET /api/v1/users/:user_id endpoint', () => {
