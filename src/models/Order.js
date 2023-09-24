@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const { sendOrderCompletedEmail } = require('../mailing/sender');
 const { sendOrderCancelledEvent } = require('../live/emitters');
 
-
 // mongoose schema for the individual order items
 const OrderItemSchema = new mongoose.Schema({
   // The album field references the Album model and is required

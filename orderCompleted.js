@@ -4,7 +4,7 @@ const { sendOrderCompletedEmail } = require('./src/mailing/sender');
 const User = require('./src/models/User');
 const { Order } = require('./src/models/Order');
 const CustomError = require('./src/errors');
-const Album = require('./src/models/Album');
+
 // Connect to the MongoDB database
 async function connectToDatabase() {
   try {

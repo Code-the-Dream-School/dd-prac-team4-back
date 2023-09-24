@@ -22,8 +22,8 @@ async function run() {
     // this should also result in an email being sent due to the post-save middleware in Order.js
     const updatedOrder = await Order.findByIdAndUpdate(
       orderId,
-      { orderStatus: 'payment_successful' },
-     // { new: true }
+      { orderStatus: 'payment_successful' }
+      // { new: true }
     );
 
     console.log('Order updated successfully.\n', updatedOrder);
