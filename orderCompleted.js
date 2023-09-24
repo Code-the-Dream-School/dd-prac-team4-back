@@ -36,12 +36,12 @@ async function sendOrderCompletedEmailToUser(userId) {
       orderStatus: 'payment_successful',
     });
 
-    console.log('ORDER:', order._id);
     if (!order) {
       // If no 'payment_successful' order is found for the user, do nothing
       console.log(`No 'payment_successful' order found for user: ${user.name}`);
       return;
     }
+    console.log('ORDER:', order._id);
     // Define order items
     const orderItemsWithFullAlbum = await order.populate([
       'user',

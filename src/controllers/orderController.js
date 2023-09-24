@@ -5,8 +5,6 @@ const { BadRequestError } = require('../errors');
 const PurchasedAlbum = require('../models/PurchasedAlbum');
 const CustomError = require('../errors');
 const { checkPermissions } = require('../utils');
-const mongoose = require('mongoose');
-const { sendOrderCompletedEmail } = require('../mailing/sender');
 const createOrder = async (req, res) => {
   const session = await mongoose.startSession();
 
@@ -66,13 +64,7 @@ const createOrder = async (req, res) => {
     const orderItemsWithFullAlbum = await order.populate({
       path: 'orderItems.album',
     });
-    // Send the order completion email after THE ORDER HAS STATUS COMPLETE
-    await sendOrderCompletedEmail(
-      user.email,
-      user.name,
-      orderItemsWithFullAlbum.orderItems,
-      orderItemsWithFullAlbum.total
-    );
+  
     //Frontend will pass the clientSecret (he gets from here)to Stripe. This is how Stripe authenticates and knows that this frontend is legitimately handling a Stripe payment for the user
     res
       .status(StatusCodes.CREATED)

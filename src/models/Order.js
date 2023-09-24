@@ -135,9 +135,8 @@ OrderSchema.pre('findOne', async function (next) {
   next();
 });
 
-//AKOS: this post middleware is not being triggered after updating order status (node updateOrderToPaidScript numberOfOrder)
 // send order completion email when the order status changes to "payment_successful"
-OrderSchema.post('findByIdAndUpdate', async function (doc) {
+OrderSchema.post('findOneAndUpdate', async function (doc) {
   try {
     if (this.getUpdate().$set.orderStatus === 'payment_successful') {
       //   populate by calling await + populate(...) and we can chain populate calls by using an array. This allows us to populate both the full user object and the full orderItems.album objects
