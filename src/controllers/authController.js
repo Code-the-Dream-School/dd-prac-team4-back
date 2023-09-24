@@ -158,9 +158,63 @@ const forgotPassword = async (req, res) => {
   res.status(StatusCodes.OK).json({ message: 'Password reset email sent' });
 };
 
+//reset Password endpoint
+const resetPassword = async (req, res) => {
+  const { passwordToken, newPassword } = req.body;
+
+  // Find the user with the provided password token
+  const user = await User.findOne({
+    passwordResetToken: passwordToken,
+    // passwordResetExpiresOn: { $gt: new Date() }, // Check if reset token is still valid -option 1
+  });
+
+  if (!user) {
+    throw new CustomError.NotFoundError('User not found');
+  }
+
+  // Check if password reset token is still valid-option 2
+  const now = new Date();
+  if (user.passwordResetExpiresOn < now) {
+    return res
+      .status(StatusCodes.Unauthorized)
+      .json({ message: 'Password reset token has expired' });
+  }
+
+  // Update user's password and reset token
+  user.password = newPassword;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpiresOn = undefined;
+  await user.save();
+
+  res.json({ message: 'Password reset successful' });
+
+  /*
+    #swagger.summary = 'Reset user's password using the provided password token.'
+    #swagger.description = 'Resets the user's password if the provided password token is valid.'
+ 
+#swagger.parameters['requestBody'] = {
+                in: 'body',
+                required: true,
+                description: 'The request body containing passwordToken and newPassword.'
+                
+}
+   #swagger.responses[200] = {
+        description: 'Password reset successful.'
+        
+    }
+    #swagger.responses[401] = {
+      description: 'Bad request, passwordResetToken has expired'
+    }
+    #swagger.responses[403] = {
+      description: 'User not found'
+    }
+  */
+};
+
 module.exports = {
   register,
   login,
   logout,
   forgotPassword,
+  resetPassword,
 };

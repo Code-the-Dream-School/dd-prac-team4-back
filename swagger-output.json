@@ -16,6 +16,16 @@
     }
   ],
   "paths": {
+    "/order-notifications": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/tests": {
       "get": {
         "description": "",
@@ -188,6 +198,42 @@
                 "type": "object",
                 "properties": {
                   "email": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/resetPassword": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Reset user",
+        "description": "Resets the user",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Password reset successful."
+          },
+          "401": {
+            "description": "Bad request, passwordResetToken has expired"
+          },
+          "403": {
+            "description": "User not found"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "passwordToken": {
+                    "example": "any"
+                  },
+                  "newPassword": {
                     "example": "any"
                   }
                 }
