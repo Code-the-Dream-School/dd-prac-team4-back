@@ -3,8 +3,11 @@ const { StatusCodes } = require('http-status-codes');
 const request = require('supertest');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const Album = require('../src/models/Album');
+<<<<<<< HEAD
+=======
 const User = require('../src/models/User');
 const { loginAndReturnCookie } = require('./test_helper');
+>>>>>>> main
 
 let server;
 let mongooseConnection;
@@ -163,6 +166,9 @@ describe('AlbumController API Tests', () => {
     const response = await request(app).get(
       `/api/v1/albums/filter?limit=${limit}`
     );
+<<<<<<< HEAD
+    expect(response.status).toBe(StatusCodes.BAD_REQUEST);
+=======
 
 
     expect(response.status).toBe(StatusCodes.OK);
@@ -170,6 +176,7 @@ describe('AlbumController API Tests', () => {
     expect(response.body).toHaveProperty('count');
     expect(response.body.albums).toHaveLength(limit);
     expect(response.body.count).toBe(albumsToCreate.length);
+>>>>>>> main
   });
 
   it('should create a new album - Success Case', async () => {
