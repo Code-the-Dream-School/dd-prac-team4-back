@@ -3,11 +3,8 @@ const { StatusCodes } = require('http-status-codes');
 const request = require('supertest');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const Album = require('../src/models/Album');
-<<<<<<< HEAD
-=======
 const User = require('../src/models/User');
 const { loginAndReturnCookie } = require('./test_helper');
->>>>>>> main
 
 let server;
 let mongooseConnection;
