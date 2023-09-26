@@ -172,11 +172,6 @@ io.on('connection', (socket) => {
   console.log('Connected');
   setupSocket(io, socket); // Call your setupSocket function
 
-  socket.on('chat:album', function (data) {
-    const { handleAlbumChat } = require('./live/handleAlbumChat');
-    handleAlbumChat(io, socket, data);
-  });
-
   socket.on('msg_from_client', function (from, msg) {
     console.log('Message is ' + from, msg);
   });
