@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Template</title>
+    <link rel='stylesheet' href='./orderCompleted/style.css' data-inline>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+</head>
+<body>
+    <table cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="center">
+                <table cellpadding="0" cellspacing="0" width="600">
+                    <tr>
+                        <td>
+                            <img src="https://img.freepik.com/vector-gratis/logo-mujer-auriculares_23-2147494273.jpg?size=626&ext=jpg&ga=GA1.2.338276990.1694094472&semt=ais" alt="Company Logo" width="100px" height="100px">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h1>Hello <%= username %>,</h1>
+                            <p>Thank you for purchasing in our music store!!!</p>
+                            <p>Here's a list of albums you bought:</p>
+                            <ol>
+                                <% orderItems.forEach(function(item) { %>
+                                    <li><%= item.album.albumName%> - <%= item.album.artistName%>   - <%= item.quantity %>  units x $<%= item.album.price %> </li>
+                                <% }); %>
+                                <li class="noDot"><b>Total amount: $<%= total %></b> </li>
+                            </ol>
+                            <p>You will receive an email with payment cofirmation</p>
+                            <p>Thank you for using our services!</p>
+                            <p>Best regards,<br>BeatBazaar</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

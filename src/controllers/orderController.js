@@ -5,58 +5,78 @@ const { BadRequestError } = require('../errors');
 const PurchasedAlbum = require('../models/PurchasedAlbum');
 const CustomError = require('../errors');
 const { checkPermissions } = require('../utils');
-
+const mongoose = require('mongoose');
 const createOrder = async (req, res) => {
-  const { orderItems, subtotal, tax, total } = req.body;
+  const session = await mongoose.startSession();
 
-  // Perform necessary checks and validations
-  if (!orderItems?.length) {
-    throw new BadRequestError(
-      'Unable to create order because the order items are missing.'
-    );
-  }
+  try {
+    session.startTransaction();
 
-  // Create an Order document in the database
-  const order = await Order.create({
-    user: req.user.userId,
-    orderItems,
-    subtotal,
-    tax,
-    total,
-  });
+    const { orderItems, subtotal, tax, total } = req.body;
 
-  // Create a payment intent with Stripe
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: Math.round(total * 100), // Stripe requires amount in integer cents
-    currency: 'usd',
-    description: `Order #${order._id}`,
-    metadata: {
-      userId: req.user.userId,
-      orderId: order._id, // key-values
-      totalQuantity: orderItems.reduce(
-        (total, item) => total + item.quantity,
-        0
-      ), // the total number of items in the order
-      totalAlbums: orderItems.length, // the total number of albums purchased in order
-    },
-  });
+    if (!orderItems?.length) {
+      throw new BadRequestError(
+        'Unable to create an order because the order items are missing.'
+      );
+    }
+    // Fetch user information from the request object
+    const user = req.user; //contains user object
+    console.log(user);
 
-  // Save the paymentIntent to the Order model
-  order.paymentIntentId = paymentIntent.id;
-  await order.save();
-
-  // Create PurchasedAlbum entries for each album in orderItems
-  for (const orderItem of orderItems) {
-    await PurchasedAlbum.create({
-      album: orderItem.album, // album ID from orderItem
-      user: req.user.userId, // user ID from the request
+    const order = new Order({
+      user: req.user.userId,
+      orderItems, // Use the array with full album data
+      subtotal,
+      tax,
+      total,
     });
+
+    await order.save({ session });
+
+    for (const orderItem of orderItems) {
+      const purchasedAlbum = new PurchasedAlbum({
+        album: orderItem.album,
+        user: req.user.userId,
+      });
+
+      await purchasedAlbum.save({ session });
+    }
+    //Server  tells Stripe that an order is being made (creating a "paymentIntent" object in Stripe)
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: total * 100,
+      currency: 'usd',
+      description: `Order #${order._id}`,
+      metadata: {
+        userId: req.user.userId,
+        orderId: order._id,
+        totalQuantity: orderItems.reduce(
+          (total, item) => total + item.quantity,
+          0
+        ),
+        totalAlbums: orderItems.length,
+      },
+    });
+    //Stripe  gives the server the paymentIntent object. The server will save the id of this object in the Order document so that we can easily associate the two.
+    order.paymentIntentId = paymentIntent.id;
+    await order.save({ session });
+
+    await session.commitTransaction();
+
+    //Frontend will pass the clientSecret (he gets from here)to Stripe. This is how Stripe authenticates and knows that this frontend is legitimately handling a Stripe payment for the user
+    res
+      .status(StatusCodes.CREATED)
+      .json({ clientSecret: paymentIntent.client_secret, order });
+  } catch (error) {
+    // Handle errors and rollback the transaction if any part of the try/catch fails
+    await session.abortTransaction();
+
+    console.error('Error while processing the order:', error);
+
+    res.status(500).json({ error: 'Internal server error' });
+  } finally {
+    session.endSession();
   }
 
-  // Send the payment intent client secret and order information to the client
-  res
-    .status(StatusCodes.CREATED)
-    .json({ clientSecret: paymentIntent.client_secret, order });
   /*
   #swagger.summary = 'Create a new order and process payment'
   #swagger.description = 'Creates a new order and processes payment using Stripe.'
