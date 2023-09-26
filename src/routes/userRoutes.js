@@ -33,9 +33,7 @@ router
 router.route('/updateCurrentUser').patch(authenticateUser, updateCurrentUser);
 // - PATCH /updateUser: Update the currently authenticated user's information
 
-router
-  .route('/updateUserPasssword')
-  .patch(authenticateUser, updateUserPassword);
+router.route('/updateUserPassword').patch(authenticateUser, updateUserPassword);
 // - PATCH /updateUserPasssword: Update the currently authenticated user's password
 
 router.route('/:id').get(authenticateUser, getSingleUser);
