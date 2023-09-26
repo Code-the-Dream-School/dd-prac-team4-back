@@ -62,10 +62,6 @@ const createOrder = async (req, res) => {
 
     await session.commitTransaction();
 
-    const orderItemsWithFullAlbum = await order.populate({
-      path: 'orderItems.album',
-    });
-
     //Frontend will pass the clientSecret (he gets from here)to Stripe. This is how Stripe authenticates and knows that this frontend is legitimately handling a Stripe payment for the user
     res
       .status(StatusCodes.CREATED)
