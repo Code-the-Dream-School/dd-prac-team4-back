@@ -159,7 +159,11 @@ app.use(errorHandlerMiddleware); // Error handler middleware
 const { Server } = require('socket.io');
 const http = require('http');
 const server = http.createServer(app);
-const socketServer = new Server(server);
+const socketServer = new Server(server, {
+  cors: {
+    origin: [/localhost:3000$/, /beatbazaar\.onrender\.com$/],
+  },
+});
 const setupSocket = require('./live');
 const io = socketServer.of('/'); // Create an instance of Socket.io
 
@@ -167,6 +171,11 @@ const io = socketServer.of('/'); // Create an instance of Socket.io
 io.on('connection', (socket) => {
   console.log('Connected');
   setupSocket(io, socket); // Call your setupSocket function
+
+  socket.on('chat:album', function (data) {
+    const { handleAlbumChat } = require('./live/handleAlbumChat');
+    handleAlbumChat(io, socket, data);
+  });
 
   socket.on('msg_from_client', function (from, msg) {
     console.log('Message is ' + from, msg);

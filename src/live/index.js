@@ -1,5 +1,7 @@
 const { testPing } = require('./testHandlers');
 const { handleUserNotificationsJoin } = require('./notificationHandlers');
+const { handleAlbumChat } = require('./handleAlbumChat');
+
 const onConnect = (io, socket) => {
   console.log('a user connected');
 
@@ -13,6 +15,10 @@ const onConnect = (io, socket) => {
   socket.on('join:album_chat', (albumId) => {
     const chatRoomName = `chat:album:${albumId}`;
     socket.join(chatRoomName);
+  });
+
+  socket.on('chat:album', (data) => {
+    handleAlbumChat(io, socket, data);
   });
   /* End event handlers */
 
