@@ -163,9 +163,7 @@ describe('AlbumController API Tests', () => {
     const response = await request(app).get(
       `/api/v1/albums/filter?limit=${limit}`
     );
-    expect(response.status).toBe(StatusCodes.BAD_REQUEST);
-
-
+  
     expect(response.status).toBe(StatusCodes.OK);
     expect(response.body).toHaveProperty('albums');
     expect(response.body).toHaveProperty('count');
