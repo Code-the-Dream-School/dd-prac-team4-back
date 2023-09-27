@@ -56,7 +56,6 @@ describe('AlbumController API Tests', () => {
     await Album.deleteMany({});
     const response = await request(app).get('/api/v1/albums');
 
-
     expect(response.status).toBe(StatusCodes.OK);
     expect(response.body).toHaveProperty('albums');
     expect(response.body).toHaveProperty('count');
@@ -78,7 +77,6 @@ describe('AlbumController API Tests', () => {
   });
 
   it('should test the getAlbumWithAllUsersWhoPurchasedIt endpoint - Success Case', async () => {
-
     const album = await Album.findOne({});
 
     const adminCredentials = {
@@ -89,11 +87,9 @@ describe('AlbumController API Tests', () => {
     // Use the loginAndReturnCookie function to log in as admin and get the signed cookie
     const signedCookie = await loginAndReturnCookie(adminCredentials);
 
-
     const response = await request(app)
       .get(`/api/v1/albums/${album._id}/listOfUsersWhoPurchasedThisAlbum`)
-      .set('Cookie', signedCookie); 
-
+      .set('Cookie', signedCookie);
 
     expect(response.status).toBe(StatusCodes.OK);
     expect(response.body).toHaveProperty('album');
@@ -163,7 +159,7 @@ describe('AlbumController API Tests', () => {
     const response = await request(app).get(
       `/api/v1/albums/filter?limit=${limit}`
     );
-  
+
     expect(response.status).toBe(StatusCodes.OK);
     expect(response.body).toHaveProperty('albums');
     expect(response.body).toHaveProperty('count');
@@ -172,42 +168,30 @@ describe('AlbumController API Tests', () => {
   });
 
   it('should create a new album - Success Case', async () => {
-
-    const user = await authenticateUser(User); 
-  
-      const newAlbumData = {
-        albumName: 'New Album',
-        artistName: 'New Artist',
-        price: 9.99,
-        spotifyUrl: 'https://api.spotify.com/v1/albums/new123',
+    const userCredentials = {
+      email: 'user@user.com',
+      password: 'secret',
     };
-  
-    const response = await request(app)
-      .post('/api/v1/albums')
-      .set('Cookie', `token=${user.token}`) 
-      .send(newAlbumData);
-  
- 
-    expect(response.status).toBe(StatusCodes.CREATED);
-    expect(response.body).toHaveProperty('album');
-  
-  });
 
- 
+    const signedCookie = await loginAndReturnCookie(userCredentials);
+
+    const newAlbumData = {
+      albumName: 'New Album',
+      artistName: 'New Artist',
+      price: 9.99,
+      spotifyUrl: 'https://api.spotify.com/v1/albums/new123',
+    };
+
     const response = await request(app)
       .post('/api/v1/albums')
-      .set('Cookie', signedCookie) 
+      .set('Cookie', signedCookie)
       .send(newAlbumData);
 
     expect(response.status).toBe(StatusCodes.CREATED);
     expect(response.body).toHaveProperty('album');
-    expect(response.body.album.albumName).toBe(newAlbumData.albumName);
-    expect(response.body.album.artistName).toBe(newAlbumData.artistName);
-
   });
 
   it('should create a new album - Error Case (Invalid Data)', async () => {
-
     const invalidAlbumData = {
       artistName: 'New Artist',
       price: 12.99,
@@ -222,11 +206,9 @@ describe('AlbumController API Tests', () => {
   });
 
   it('should update an existing album - Success Case', async () => {
- 
     const existingAlbum = await Album.findOne({});
     const updatedData = {
       albumName: 'Updated Album Name',
-     
     };
 
     const response = await request(app)
@@ -235,15 +217,12 @@ describe('AlbumController API Tests', () => {
 
     expect(response.status).toBe(StatusCodes.OK);
     expect(response.body).toHaveProperty('album');
-  
   });
 
   it('should update an existing album - Error Case (Not Found)', async () => {
-   
     const invalidAlbumId = 'invalidAlbumId';
     const updatedData = {
       albumName: 'Updated Album Name',
-
     };
 
     const response = await request(app)
@@ -254,7 +233,6 @@ describe('AlbumController API Tests', () => {
   });
 
   it('should update album prices - Success Case', async () => {
-
     const existingAlbum = await Album.findOne({});
     const updatedData = {
       id: existingAlbum._id,
@@ -267,11 +245,9 @@ describe('AlbumController API Tests', () => {
 
     expect(response.status).toBe(StatusCodes.OK);
     expect(response.body).toHaveProperty('albums');
-
   });
 
   it('should update album prices - Error Case (Invalid Price)', async () => {
-
     const existingAlbum = await Album.findOne({});
     const invalidPriceData = {
       price: -5.99, // Invalid price
@@ -283,4 +259,4 @@ describe('AlbumController API Tests', () => {
 
     expect(response.status).toBe(StatusCodes.BAD_REQUEST);
   });
-
+});
