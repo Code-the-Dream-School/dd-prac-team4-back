@@ -168,12 +168,12 @@ describe('AlbumController API Tests', () => {
   });
 
   it('should create a new album - Success Case', async () => {
-    const userCredentials = {
-      email: 'user@user.com',
-      password: 'secret',
+    const adminCredentials = {
+      email: 'admin@admin.com',
+      password: 'adminpassword',
     };
 
-    const signedCookie = await loginAndReturnCookie(userCredentials);
+    const signedCookie = await loginAndReturnCookie(adminCredentials);
 
     const newAlbumData = {
       albumName: 'New Album',
@@ -192,6 +192,13 @@ describe('AlbumController API Tests', () => {
   });
 
   it('should create a new album - Error Case (Invalid Data)', async () => {
+    const adminCredentials = {
+      email: 'admin@admin.com',
+      password: 'adminpassword',
+    };
+
+    const signedCookie = await loginAndReturnCookie(adminCredentials);
+
     const invalidAlbumData = {
       artistName: 'New Artist',
       price: 12.99,
@@ -200,12 +207,20 @@ describe('AlbumController API Tests', () => {
 
     const response = await request(app)
       .post('/api/v1/albums')
+      .set('Cookie', signedCookie)
       .send(invalidAlbumData);
 
     expect(response.status).toBe(StatusCodes.BAD_REQUEST);
   });
 
   it('should update an existing album - Success Case', async () => {
+    const adminCredentials = {
+      email: 'admin@admin.com',
+      password: 'adminpassword',
+    };
+
+    const signedCookie = await loginAndReturnCookie(adminCredentials);
+
     const existingAlbum = await Album.findOne({});
     const updatedData = {
       albumName: 'Updated Album Name',
@@ -213,13 +228,25 @@ describe('AlbumController API Tests', () => {
 
     const response = await request(app)
       .patch(`/api/v1/albums/${existingAlbum._id}`)
+      .set('Cookie', signedCookie)
       .send(updatedData);
 
     expect(response.status).toBe(StatusCodes.OK);
     expect(response.body).toHaveProperty('album');
+    const updatedAlbum = await Album.findById(existingAlbum._id);
+
+    expect(updatedAlbum).not.toBeNull();
+    expect(updatedAlbum.albumName).toBe(updatedData.albumName);
   });
 
   it('should update an existing album - Error Case (Not Found)', async () => {
+    const adminCredentials = {
+      email: 'admin@admin.com',
+      password: 'adminpassword',
+    };
+
+    const signedCookie = await loginAndReturnCookie(adminCredentials);
+
     const invalidAlbumId = 'invalidAlbumId';
     const updatedData = {
       albumName: 'Updated Album Name',
@@ -227,12 +254,20 @@ describe('AlbumController API Tests', () => {
 
     const response = await request(app)
       .patch(`/api/v1/albums/${invalidAlbumId}`)
+      .set('Cookie', signedCookie)
       .send(updatedData);
 
     expect(response.status).toBe(StatusCodes.NOT_FOUND);
   });
 
   it('should update album prices - Success Case', async () => {
+    const adminCredentials = {
+      email: 'admin@admin.com',
+      password: 'adminpassword',
+    };
+
+    const signedCookie = await loginAndReturnCookie(adminCredentials);
+
     const existingAlbum = await Album.findOne({});
     const updatedData = {
       id: existingAlbum._id,
@@ -241,20 +276,28 @@ describe('AlbumController API Tests', () => {
 
     const response = await request(app)
       .patch(`/api/v1/albums/${existingAlbum._id}`)
+      .set('Cookie', signedCookie)
       .send(updatedData);
 
     expect(response.status).toBe(StatusCodes.OK);
-    expect(response.body).toHaveProperty('albums');
+    expect(response.body).toHaveProperty('album');
   });
 
   it('should update album prices - Error Case (Invalid Price)', async () => {
+    const adminCredentials = {
+      email: 'admin@admin.com',
+      password: 'adminpassword',
+    };
+
+    const signedCookie = await loginAndReturnCookie(adminCredentials);
     const existingAlbum = await Album.findOne({});
     const invalidPriceData = {
       price: -5.99, // Invalid price
     };
 
     const response = await request(app)
-      .patch(`/api/v1/albums/updatePrices/${existingAlbum._id}`)
+      .patch(`/api/v1/albums/${existingAlbum._id}`)
+      .set('Cookie', signedCookie)
       .send(invalidPriceData);
 
     expect(response.status).toBe(StatusCodes.BAD_REQUEST);
