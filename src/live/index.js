@@ -22,7 +22,7 @@ const onConnect = (io, socket) => {
 
   socket.on('chat:album', (data) => {
     console.log(
-      `received message from socket: ${socket.id}. Message=${data.message} | Album=&{data.albumId} | User=${data.userId}`
+      `received message from socket: ${socket.id}. Message=${data.message} | Album=${data.albumId} | User=${data.userId}`
     );
     handleAlbumChat(io, socket, data);
   });
