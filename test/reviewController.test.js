@@ -25,27 +25,30 @@ afterAll(async () => {
 });
 
 describe('ReviewController API Tests', () => {
+  let user;
+  let album;
+  let review;
+
   beforeAll(async () => {
     await Review.deleteMany({});
-    await User.create({
+    //create a user
+    user = await User.create({
       email: 'Emily@google.com',
       password: 'secret',
       name: 'Emily',
       username: 'emily123',
       role: 'user',
     });
-  });
-
-  beforeEach(async () => {
-    await Review.deleteMany({});
     // Create a unique album and user for each test
-    const album = await Album.create({
+    album = await Album.create({
       albumName: 'Unique Album',
       artistName: 'Unique Artist',
       spotifyUrl: 'https://api.spotify.com/v1/albums/unique',
     });
+  });
 
-    const user = await User.findOne({ username: 'emily123' });
+  beforeEach(async () => {
+    await Review.deleteMany({});
 
     const mockReviewData = {
       rating: 5,
@@ -55,7 +58,7 @@ describe('ReviewController API Tests', () => {
       album: album._id,
     };
 
-    await Review.create(mockReviewData);
+    review = await Review.create(mockReviewData);
   });
   //get all reviews
 
@@ -64,6 +67,8 @@ describe('ReviewController API Tests', () => {
     expect(response.status).toBe(StatusCodes.OK);
     expect(response.body).toHaveProperty('reviews');
     expect(response.body.reviews).toHaveLength(1);
+    expect(response.body).toHaveProperty('count');
+    expect(response.body.count).toBe(1);
   });
   it('should return an empty list if there are no reviews in the database', async () => {
     await Review.deleteMany({});
@@ -91,6 +96,10 @@ describe('ReviewController API Tests', () => {
     const response = await request(app).get(`/api/v1/reviews/${reviewId}`);
     expect(response.status).toBe(StatusCodes.OK);
     expect(response.body).toHaveProperty('review');
+    //expect(response.body.review._id.toString()).toBe(reviewId.toString());//check if the response.body.review._id value matches what we expect // or
+    expect(response.body.review).toMatchObject(
+      JSON.parse(JSON.stringify(review))
+    ); //checks if the object on the right is a subset (ie: has at least some of the same fields and values) as the object on the left.
   });
 
   it('should test the getSingleReview endpoint - Error Case (Not Found)', async () => {
@@ -108,6 +117,12 @@ describe('ReviewController API Tests', () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty('allProductReviews');
+    expect(response.body.allProductReviews).toHaveLength(1);
     expect(response.body).toHaveProperty('count');
+    expect(response.body.count).toBe(1);
+    // If no reviews are found, allProductReviews should be an empty array and count should be 0
+    if (response.body.count === 0) {
+      expect(response.body.allProductReviews).toEqual([]);
+    }
   });
 });
