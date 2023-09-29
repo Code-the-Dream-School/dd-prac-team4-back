@@ -189,6 +189,7 @@ describe('AlbumController API Tests', () => {
 
     expect(response.status).toBe(StatusCodes.CREATED);
     expect(response.body).toHaveProperty('album');
+    expect(response.body.album).toMatchObject(newAlbumData);
   });
 
   it('should create a new album - Error Case (Invalid Data)', async () => {
