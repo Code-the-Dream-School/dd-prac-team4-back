@@ -170,6 +170,9 @@ const getFilteredAlbums = async (req, res) => {
   if (artistName) {
     query.artistName = { $regex: artistName, $options: 'i' }; // If the artistName. $options: 'i' - case-insensitive
   }
+  // Count the total number of matching albums (excluding limit and offset for accurate count)
+  const totalCount = await Album.countDocuments(query);
+
   // Create an empty sortOptions object to store sorting parameters. Methods provided by the Mongoose library
   const sortOptions = {};
   if (order === 'asc') {
@@ -185,7 +188,7 @@ const getFilteredAlbums = async (req, res) => {
     .skip(parseInt(offset) || 0) // Skip a specified number of albums (pagination implementation)
     .limit(parseInt(limit) || 10); // Limit the number of returned albums (pagination implementation)
 
-  res.status(StatusCodes.OK).json({ albums, count: albums.length }); // Return the found albums and the count of albums
+  res.status(StatusCodes.OK).json({ albums, count: totalCount }); // Return the found albums  and the total count
   /*
      #swagger.summary = 'Fetch paginated list of albums with price > 0, with query parameters for sorting and filtering'
      #swagger.autoQuery = false
