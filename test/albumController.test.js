@@ -282,6 +282,10 @@ describe('AlbumController API Tests', () => {
 
     expect(response.status).toBe(StatusCodes.OK);
     expect(response.body).toHaveProperty('album');
+    const updatedAlbumInDB = await Album.findById(existingAlbum._id);
+
+    expect(updatedAlbumInDB).not.toBeNull();
+    expect(updatedAlbumInDB.price).toBe(updatedData.price);
   });
 
   it('should update album prices - Error Case (Invalid Price)', async () => {
