@@ -212,7 +212,7 @@ const getFilteredAlbums = async (req, res) => {
             parseInt(offset) - (parseInt(limit) || 10)
           }`
         : null,
-  }); // Return the found albums  and the total count
+  }); 
   /*
      #swagger.summary = 'Fetch paginated list of albums with price > 0, with query parameters for sorting and filtering'
      #swagger.autoQuery = false
