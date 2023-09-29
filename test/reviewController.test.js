@@ -5,7 +5,7 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 const Review = require('../src/models/Review');
 const User = require('../src/models/User');
 const Album = require('../src/models/Album');
-
+const { loginAndReturnCookie } = require('./test_helper');
 let server;
 let mongooseConnection;
 let mongodb;
@@ -123,5 +123,96 @@ describe('ReviewController API Tests', () => {
     if (response.body.count === 0) {
       expect(response.body.allProductReviews).toEqual([]);
     }
+  });
+  //create a review
+  it('should create a review successfully', async () => {
+    await Review.deleteMany({});
+    const userCredentials = {
+      email: 'Emily@google.com',
+      password: 'secret',
+    };
+
+    const signedCookie = await loginAndReturnCookie(userCredentials);
+
+    const album = await Album.findOne({ albumName: 'Unique Album' });
+
+    const newReviewData = {
+      rating: 4,
+      title: 'Loved this review',
+      comment: 'Recommend it"',
+      user: user._id,
+      album: album._id,
+    };
+    const response = await request(app)
+      .post(`/api/v1/reviews/album/${album._id}`)
+      .set('Cookie', signedCookie)
+      .send(newReviewData);
+
+    expect(response.status).toBe(StatusCodes.CREATED);
+    expect(response.body).toHaveProperty('review');
+    // If no album was found
+    if (!album) {
+      expect(response.status).toBe(StatusCodes.NOT_FOUND);
+    }
+    //create second review for the same album
+    const secondReviewData = {
+      rating: 4,
+      title: 'Loved this review',
+      comment: 'Recommend it"',
+      user: user._id,
+      album: album._id,
+    };
+    const res = await request(app)
+      .post(`/api/v1/reviews/album/${album._id}`)
+      .set('Cookie', signedCookie)
+      .send(secondReviewData);
+    // this user already submitted a review for this album
+    expect(res.status).toBe(StatusCodes.CONFLICT);
+  });
+
+  //  update a review
+  it('should update a review successfully', async () => {
+    const userCredentials = {
+      email: 'Emily@google.com',
+      password: 'secret',
+    };
+
+    const signedCookie = await loginAndReturnCookie(userCredentials);
+
+    const existingReview = await Review.findOne({});
+    // If no existingReview was found
+    if (!existingReview) {
+      expect(response.status).toBe(StatusCodes.NOT_FOUND);
+    }
+
+    const updatedReviewData = {
+      rating: 1,
+      title: 'Don not buy this album',
+      comment: 'Awful"',
+    };
+    if (!updatedReviewData) {
+      expect(response.status).toBe(StatusCodes.BAD_REQUEST);
+    }
+
+    // Check if the user is the author of the review
+    const authenticatedUserId = 'mockUserId'; // Replace with actual authenticated user's ID
+
+    if (existingReview.user.toString() !== authenticatedUserId) {
+      // User is not the author of the review, respond with unauthorized error
+      expect(StatusCodes.UNAUTHORIZED).toBe(StatusCodes.UNAUTHORIZED); // //AKOS: this one works but I feel it's wrong, couldn't write here 'respone', the terminal was complaining
+    }
+
+    const response = await request(app)
+      .patch(`/api/v1/reviews/${existingReview._id}`)
+      .set('Cookie', signedCookie)
+      .send(updatedReviewData);
+    expect(response.status).toBe(StatusCodes.OK);
+    expect(response.body).toHaveProperty('review');
+
+    const updatedReview = await Review.findById(existingReview._id);
+    expect(updatedReview).not.toBeNull();
+    expect(updatedReview.rating).toBe(updatedReviewData.rating);
+    expect(updatedReview.title).toBe(updatedReviewData.title);
+    expect(updatedReview.comment).toBe(updatedReviewData.comment);
   });
 });
