@@ -124,4 +124,60 @@ describe('ReviewController API Tests', () => {
       expect(response.body.allProductReviews).toEqual([]);
     }
   });
+
+  //create a review
+  it('should create a review successfully', async () => {
+    await Review.deleteMany({});
+
+    const album = await Album.findOne({ albumName: 'Unique Album' });
+    const mockReviewData = {
+      rating: 5,
+      title: 'Loved this review',
+      comment: 'Recommend it"',
+      user: user._id,
+      album: album._id,
+    };
+    const response = await request(app)
+      .post(`/api/v1/reviews/album/${album._id}`)
+      .send(mockReviewData);
+
+    expect(response.status).toBe(201);
+    expect(response.body).toHaveProperty('review');
+  });
+
+  //   //update a review
+  //   it('should update a review successfully', async () => {
+  //     // Mock request body and parameters
+  //     const mockReviewId = 'mock-review-id';
+  //     const mockRequestBody = {
+  //       rating: 4,
+  //       title: 'Updated Title',
+  //       comment: 'Updated comment.',
+  //     };
+
+  //     // Mock Review.findOne to return a review (found review for the provided ID)
+  //     Review.findOne.mockResolvedValue({
+  //       _id: mockReviewId,
+  //       user: 'mock-user-id',
+  //       rating: 3,
+  //       title: 'Old Title',
+  //       comment: 'Old comment.',
+  //       save: jest.fn(), // Mock the save function
+  //     });
+
+  //     const response = await request(app)
+  //       .put(`/api/v1/reviews/${mockReviewId}`)
+  //       .send(mockRequestBody);
+
+  //     expect(response.status).toBe(StatusCodes.OK);
+  //     expect(response.body).toHaveProperty('review');
+  //     expect(response.body.review).toEqual(
+  //       expect.objectContaining({
+  //         _id: mockReviewId,
+  //         rating: mockRequestBody.rating,
+  //         title: mockRequestBody.title,
+  //         comment: mockRequestBody.comment,
+  //       })
+  //     );
+  // });
 });

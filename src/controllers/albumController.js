@@ -188,7 +188,31 @@ const getFilteredAlbums = async (req, res) => {
     .skip(parseInt(offset) || 0) // Skip a specified number of albums (pagination implementation)
     .limit(parseInt(limit) || 10); // Limit the number of returned albums (pagination implementation)
 
-  res.status(StatusCodes.OK).json({ albums, count: totalCount }); // Return the found albums  and the total count
+  const totalPages = Math.ceil(totalCount / (parseInt(limit) || 10));
+  const currentPage = Math.ceil(
+    (parseInt(offset) + 1) / (parseInt(limit) || 10)
+  );
+  const more = currentPage < totalPages;
+
+  res.status(StatusCodes.OK).json({
+    albums,
+    count: albums.length,
+    total: totalCount,
+    more,
+    currentPage,
+    totalPages,
+    nextPage: more
+      ? `${req.originalUrl.split('&offset=')[0]}&offset=${
+          parseInt(offset) + (parseInt(limit) || 10)
+        }`
+      : null,
+    prevPage:
+      currentPage > 1
+        ? `${req.originalUrl.split('&offset=')[0]}&offset=${
+            parseInt(offset) - (parseInt(limit) || 10)
+          }`
+        : null,
+  }); // Return the found albums  and the total count
   /*
      #swagger.summary = 'Fetch paginated list of albums with price > 0, with query parameters for sorting and filtering'
      #swagger.autoQuery = false
