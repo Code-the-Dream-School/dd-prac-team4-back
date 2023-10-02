@@ -55,6 +55,7 @@ const register = async (req, res) => {
       description: 'Bad request, missing email, name, password, or username'
     }
   */
+  emailSender.sendWelcomeEmail(user.email, user);
 };
 
 const login = async (req, res) => {

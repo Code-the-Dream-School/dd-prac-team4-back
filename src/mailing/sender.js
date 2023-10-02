@@ -52,6 +52,29 @@ async function sendOrderCompletedEmail(to, username, orderItems, total) {
   });
 }
 
+// Function to send the welcome email
+async function sendWelcomeEmail(recipient, user) {
+  const template = 'welcome';
+  const subject = 'Welcome to Our Website';
+  const locals = { user };
+  await baseEmail
+    .send({
+      template,
+      message: {
+        to: recipient,
+        subject,
+      },
+      locals,
+    })
+    .then(() => {
+      console.log('Welcome email sent successfully.');
+    })
+    .catch((error) => {
+      console.error('Error sending welcome email:', error);
+      throw error;
+    });
+}
+
 async function sendForgotPasswordEmail(toEmail, resetToken) {
   try {
     await baseEmail.send({
@@ -71,4 +94,5 @@ module.exports = {
   sendTestEmail,
   sendForgotPasswordEmail,
   sendOrderCompletedEmail,
+  sendWelcomeEmail,
 };
