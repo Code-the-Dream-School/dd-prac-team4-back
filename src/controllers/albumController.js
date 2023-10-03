@@ -161,6 +161,15 @@ const getAlbumWithAllUsersWhoPurchasedIt = async (req, res) => {
 
 const getFilteredAlbums = async (req, res) => {
   const { limit, order, offset, albumName, artistName } = req.query;
+
+  console.log('reqoriginalUrl is', req.originalUrl);
+
+  const url = new URL('http://localhost:8000' + req.originalUrl); // create a "URL" object
+  //Akos: req.originalUrl solo gives an error
+  console.log('url:', url);
+
+  console.log(url.toString()); // final updated url string
+
   // Create an empty query object to store filtering parameters
   const query = { price: { $gt: 0 } }; // Add the price condition to the query};
   // Using $regex, we MongoDB search where the provided value is treated as a regular expression.
@@ -190,9 +199,23 @@ const getFilteredAlbums = async (req, res) => {
 
   const totalPages = Math.ceil(totalCount / (parseInt(limit) || 10));
   const currentPage = Math.ceil(
-    (parseInt(offset) + 1) / (parseInt(limit) || 10)
+    ((parseInt(offset) || 0) + 1) / (parseInt(limit) || 10)
   );
   const more = currentPage < totalPages;
+
+  const nextPageUrl = new URL(url.toString());
+  nextPageUrl.searchParams.set(
+    'offset',
+    parseInt(offset) + (parseInt(limit) || 10)
+  );
+
+  const prevPageUrl = new URL(url.toString());
+  if (currentPage > 1) {
+    prevPageUrl.searchParams.set(
+      'offset',
+      parseInt(offset) - (parseInt(limit) || 10)
+    );
+  }
 
   res.status(StatusCodes.OK).json({
     albums,
@@ -201,18 +224,11 @@ const getFilteredAlbums = async (req, res) => {
     more,
     currentPage,
     totalPages,
-    nextPage: more
-      ? `${req.originalUrl.split('&offset=')[0]}&offset=${
-          parseInt(offset) + (parseInt(limit) || 10)
-        }`
-      : null,
-    prevPage:
-      currentPage > 1
-        ? `${req.originalUrl.split('&offset=')[0]}&offset=${
-            parseInt(offset) - (parseInt(limit) || 10)
-          }`
-        : null,
-  }); 
+    nextPage: more ? nextPageUrl.toString() : null,
+    prevPage: currentPage > 1 ? prevPageUrl.toString() : null,
+  });
+  console.log(res);
+
   /*
      #swagger.summary = 'Fetch paginated list of albums with price > 0, with query parameters for sorting and filtering'
      #swagger.autoQuery = false

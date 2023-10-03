@@ -124,6 +124,4 @@ describe('ReviewController API Tests', () => {
       expect(response.body.allProductReviews).toEqual([]);
     }
   });
-
-  
 });
