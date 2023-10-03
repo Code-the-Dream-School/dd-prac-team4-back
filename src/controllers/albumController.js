@@ -166,9 +166,9 @@ const getFilteredAlbums = async (req, res) => {
 
   const url = new URL('http://localhost:8000' + req.originalUrl); // create a "URL" object
   //Akos: req.originalUrl solo gives an error
-  console.log('url:', url);
 
-  console.log(url.toString()); // final updated url string
+  const parsedOffset = parseInt(offset, 10);
+  const parsedLimit = parseInt(limit, 10);
 
   // Create an empty query object to store filtering parameters
   const query = { price: { $gt: 0 } }; // Add the price condition to the query};
@@ -194,30 +194,30 @@ const getFilteredAlbums = async (req, res) => {
   // Use the Album model to find albums based on the specified filtering and sorting parameters
   const albums = await Album.find(query)
     .sort(sortOptions)
-    .skip(parseInt(offset) || 0) // Skip a specified number of albums (pagination implementation)
-    .limit(parseInt(limit) || 10); // Limit the number of returned albums (pagination implementation)
+    .skip(parsedOffset || 0) // Skip a specified number of albums (pagination implementation)
+    .limit(parsedLimit || 10); // Limit the number of returned albums (pagination implementation)
 
-  const totalPages = Math.ceil(totalCount / (parseInt(limit) || 10));
+  const totalPages = Math.ceil(totalCount / (parsedLimit || 10));
   const currentPage = Math.ceil(
-    ((parseInt(offset) || 0) + 1) / (parseInt(limit) || 10)
+    ((parsedOffset || 0) + 1) / (parsedLimit || 10)
   );
   const more = currentPage < totalPages;
 
   const nextPageUrl = new URL(url.toString());
   nextPageUrl.searchParams.set(
     'offset',
-    parseInt(offset) + (parseInt(limit) || 10)
+    (parsedOffset || 0) + (parsedLimit || 10)
   );
 
   const prevPageUrl = new URL(url.toString());
   if (currentPage > 1) {
     prevPageUrl.searchParams.set(
       'offset',
-      parseInt(offset) - (parseInt(limit) || 10)
+      (parsedOffset || 0) - (parsedLimit || 10)
     );
   }
 
-  res.status(StatusCodes.OK).json({
+    res.status(StatusCodes.OK).json({
     albums,
     count: albums.length,
     total: totalCount,
@@ -227,7 +227,8 @@ const getFilteredAlbums = async (req, res) => {
     nextPage: more ? nextPageUrl.toString() : null,
     prevPage: currentPage > 1 ? prevPageUrl.toString() : null,
   });
-  console.log(res);
+  console.log('nextPageUrl:', nextPageUrl.toString()); 
+  console.log('prevPageUrl:', prevPageUrl.toString());
 
   /*
      #swagger.summary = 'Fetch paginated list of albums with price > 0, with query parameters for sorting and filtering'
