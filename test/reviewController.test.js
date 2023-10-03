@@ -265,6 +265,6 @@ describe('ReviewController API Tests', () => {
       .patch(`/api/v1/reviews/${existingReview._id}`)
       .set('Cookie', signedCookie)
       .send(updatedReviewData);
-    expect(StatusCodes.UNAUTHORIZED).toBe(StatusCodes.UNAUTHORIZED);
+      expect(response.status).toBe(StatusCodes.UNAUTHORIZED);
   });
 });
