@@ -28,7 +28,8 @@ describe('ReviewController API Tests', () => {
   let user;
   let album;
   let review;
-
+  let userCredentials;
+  let response;
   beforeAll(async () => {
     //create a user
     user = await User.create({
@@ -58,11 +59,15 @@ describe('ReviewController API Tests', () => {
     };
 
     review = await Review.create(mockReviewData);
+    userCredentials = {
+      email: 'Emily@google.com',
+      password: 'secret',
+    };
   });
   //get all reviews
 
   it('should test the getAllReviews endpoint - Success Case', async () => {
-    const response = await request(app).get('/api/v1/reviews');
+    response = await request(app).get('/api/v1/reviews');
     expect(response.status).toBe(StatusCodes.OK);
     expect(response.body).toHaveProperty('reviews');
     expect(response.body.reviews).toHaveLength(1);
@@ -72,7 +77,7 @@ describe('ReviewController API Tests', () => {
   it('should return an empty list if there are no reviews in the database', async () => {
     await Review.deleteMany({});
     // Make a GET request to the /api/v1/reviews endpoint
-    const response = await request(app).get('/api/v1/reviews');
+    response = await request(app).get('/api/v1/reviews');
 
     // Assert that the response status is OK (200)
     expect(response.status).toBe(StatusCodes.OK);
@@ -92,7 +97,7 @@ describe('ReviewController API Tests', () => {
   it('should test the getSingleReview endpoint - Success Case', async () => {
     const { _id: reviewId } = await Review.findOne({});
 
-    const response = await request(app).get(`/api/v1/reviews/${reviewId}`);
+    response = await request(app).get(`/api/v1/reviews/${reviewId}`);
     expect(response.status).toBe(StatusCodes.OK);
     expect(response.body).toHaveProperty('review');
     //expect(response.body.review._id.toString()).toBe(reviewId.toString());//check if the response.body.review._id value matches what we expect // or
@@ -102,17 +107,15 @@ describe('ReviewController API Tests', () => {
   });
 
   it('should test the getSingleReview endpoint - Error Case (Not Found)', async () => {
-    const response = await request(app).get('/api/v1/reviews/errorReviewId');
+    response = await request(app).get('/api/v1/reviews/errorReviewId');
     expect(response.status).toBe(StatusCodes.NOT_FOUND);
   });
 
   //get all reviews for this particular album
   it('should get reviews for a specific album', async () => {
     // Try to find an album; if not found, create a default one
-    const album = await Album.findOne({ albumName: 'Unique Album' });
-    const response = await request(app).get(
-      `/api/v1/reviews/album/${album._id}`
-    );
+    album = await Album.findOne({ albumName: 'Unique Album' });
+    response = await request(app).get(`/api/v1/reviews/album/${album._id}`);
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty('allProductReviews');
@@ -127,14 +130,8 @@ describe('ReviewController API Tests', () => {
   //create a review
   it('should create a review successfully', async () => {
     await Review.deleteMany({});
-    const userCredentials = {
-      email: 'Emily@google.com',
-      password: 'secret',
-    };
 
     const signedCookie = await loginAndReturnCookie(userCredentials);
-
-    const album = await Album.findOne({ albumName: 'Unique Album' });
 
     const newReviewData = {
       rating: 4,
@@ -143,17 +140,14 @@ describe('ReviewController API Tests', () => {
       user: user._id,
       album: album._id,
     };
-    const response = await request(app)
+    response = await request(app)
       .post(`/api/v1/reviews/album/${album._id}`)
       .set('Cookie', signedCookie)
       .send(newReviewData);
 
     expect(response.status).toBe(StatusCodes.CREATED);
     expect(response.body).toHaveProperty('review');
-    // If no album was found
-    if (!album) {
-      expect(response.status).toBe(StatusCodes.NOT_FOUND);
-    }
+
     //create second review for the same album
     const secondReviewData = {
       rating: 4,
@@ -162,37 +156,46 @@ describe('ReviewController API Tests', () => {
       user: user._id,
       album: album._id,
     };
-    const res = await request(app)
+    response = await request(app)
       .post(`/api/v1/reviews/album/${album._id}`)
       .set('Cookie', signedCookie)
       .send(secondReviewData);
     // this user already submitted a review for this album
-    expect(res.status).toBe(StatusCodes.CONFLICT);
+    expect(response.status).toBe(StatusCodes.CONFLICT);
+  });
+
+  //when album was not found
+  it('should create a review successfully-Error case -album not found ', async () => {
+    const signedCookie = await loginAndReturnCookie(userCredentials);
+
+    album = await Album.findOneAndDelete({ albumName: 'Unique Album' });
+
+    const newReviewData = {
+      rating: 4,
+      title: 'Loved this review',
+      comment: 'Recommend it"',
+      user: user._id,
+      album: album._id,
+    };
+    response = await request(app)
+      .post(`/api/v1/reviews/album/${album._id}`)
+      .set('Cookie', signedCookie)
+      .send(newReviewData);
+
+    expect(response.status).toBe(StatusCodes.NOT_FOUND);
   });
 
   //  update a review
   it('should update a review successfully', async () => {
-    const userCredentials = {
-      email: 'Emily@google.com',
-      password: 'secret',
-    };
-
     const signedCookie = await loginAndReturnCookie(userCredentials);
 
     const existingReview = await Review.findOne({});
-    // If no existingReview was found
-    if (!existingReview) {
-      expect(response.status).toBe(StatusCodes.NOT_FOUND);
-    }
 
     const updatedReviewData = {
       rating: 1,
       title: 'Don not buy this album',
       comment: 'Awful"',
     };
-    if (!updatedReviewData) {
-      expect(response.status).toBe(StatusCodes.BAD_REQUEST);
-    }
 
     // Check if the user is the author of the review
     const authenticatedUserId = 'mockUserId'; // Replace with actual authenticated user's ID
@@ -202,7 +205,7 @@ describe('ReviewController API Tests', () => {
       expect(StatusCodes.UNAUTHORIZED).toBe(StatusCodes.UNAUTHORIZED); // //AKOS: this one works but I feel it's wrong, couldn't write here 'respone', the terminal was complaining
     }
 
-    const response = await request(app)
+    response = await request(app)
       .patch(`/api/v1/reviews/${existingReview._id}`)
       .set('Cookie', signedCookie)
       .send(updatedReviewData);
@@ -214,5 +217,54 @@ describe('ReviewController API Tests', () => {
     expect(updatedReview.rating).toBe(updatedReviewData.rating);
     expect(updatedReview.title).toBe(updatedReviewData.title);
     expect(updatedReview.comment).toBe(updatedReviewData.comment);
+  });
+
+  it('should update a review successfully-Error case - no existing  review was found', async () => {
+    const signedCookie = await loginAndReturnCookie(userCredentials);
+
+    const nonExistingReview = await Review.findOneAndDelete({});
+
+    const updatedReviewData = {
+      rating: 2,
+      title: 'Bad album',
+      comment: 'Not recommended"',
+    };
+
+    response = await request(app)
+      .patch(`/api/v1/reviews/${nonExistingReview._id}`)
+      .set('Cookie', signedCookie)
+      .send(updatedReviewData);
+    expect(response.status).toBe(StatusCodes.NOT_FOUND);
+  });
+
+  it('should update a review successfully-Error case - some updated review data provided is missing/ incorect', async () => {
+    //create second user
+    await User.create({
+      email: 'Alex@google.com',
+      password: 'secret',
+      name: 'Alex',
+      username: 'alex123',
+      role: 'user',
+    });
+
+    userCredentials = {
+      email: 'Alex@google.com',
+      password: 'secret',
+    };
+    const signedCookie = await loginAndReturnCookie(userCredentials);
+
+    const existingReview = await Review.findOne({});
+
+    const updatedReviewData = {
+      rating: 5,
+      title: 'Buy this album',
+      comment: 'Excellent"',
+    };
+
+    response = await request(app)
+      .patch(`/api/v1/reviews/${existingReview._id}`)
+      .set('Cookie', signedCookie)
+      .send(updatedReviewData);
+    expect(StatusCodes.UNAUTHORIZED).toBe(StatusCodes.UNAUTHORIZED);
   });
 });
