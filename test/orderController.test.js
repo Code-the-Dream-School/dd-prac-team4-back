@@ -2,11 +2,10 @@ const { app, connectDB } = require('../src/expressServer'); // Import your Expre
 const { StatusCodes } = require('http-status-codes');
 const request = require('supertest');
 const { MongoMemoryReplSet } = require('mongodb-memory-server');
-const Order = require('../src/models/Order');
 const User = require('../src/models/User');
 const Album = require('../src/models/Album');
 const { loginAndReturnCookie } = require('./test_helper');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
 let server;
 let mongooseConnection;
 let mongodb;
