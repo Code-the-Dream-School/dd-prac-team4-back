@@ -102,12 +102,12 @@ describe('OrderController API Tests', () => {
         },
       ],
       subtotal: 100,
-      tax: 10,
+      tax: 0.1,
       total: 110,
       user: user._id,
     };
 
-    const response = await request(app).post(`/api/v1/orders`).send(orderData);
+   const response = await request(app).post(`/api/v1/orders`).send(orderData);
     expect(response.status).toBe(StatusCodes.UNAUTHORIZED);
   });
   //create an order -Error case - some data is missing
