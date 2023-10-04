@@ -30,6 +30,10 @@ describe('ReviewController API Tests', () => {
   let review;
 
   beforeAll(async () => {
+<<<<<<< Updated upstream
+=======
+    
+>>>>>>> Stashed changes
     //create a user
     user = await User.create({
       email: 'Emily@google.com',

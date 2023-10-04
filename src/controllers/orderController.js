@@ -23,6 +23,10 @@ const createOrder = async (req, res) => {
     const user = req.user; //contains user object
     console.log(user);
 
+    if (!user) {
+      throw new CustomError.UnauthenticatedError('User is not logged in');
+    }
+
     const order = new Order({
       user: req.user.userId,
       orderItems, // Use the array with full album data
@@ -71,8 +75,7 @@ const createOrder = async (req, res) => {
     await session.abortTransaction();
 
     console.error('Error while processing the order:', error);
-
-    res.status(500).json({ error: 'Internal server error' });
+    throw error; // Re-throw the error to be handled by the error-handler middleware
   } finally {
     session.endSession();
   }
