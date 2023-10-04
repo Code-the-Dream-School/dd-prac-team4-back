@@ -111,7 +111,7 @@ describe('OrderController API Tests', () => {
     expect(response.status).toBe(StatusCodes.UNAUTHORIZED);
   });
   //create an order -Error case - some data is missing
-  //get 201 instead of 400.. not sure why
+  //get 401 instead of 400.. not sure why
   it('should return a 400 status if order items are missing', async () => {
     const orderData = {
       orderItems: [],
