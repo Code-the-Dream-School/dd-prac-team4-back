@@ -92,7 +92,7 @@ describe('OrderController API Tests', () => {
   });
 
   //create an order -Error case- user tries to create an order without logging in
-  it('should create an order successfully- Error case- user was not logged in', async () => {
+  it('should NOT create an order successfully if the user was not logged in', async () => {
     //data for order
     const orderData = {
       orderItems: [
