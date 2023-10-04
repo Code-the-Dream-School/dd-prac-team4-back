@@ -167,8 +167,8 @@ const getFilteredAlbums = async (req, res) => {
   const url = new URL('http://localhost:8000' + req.originalUrl); // create a "URL" object
   //Akos: req.originalUrl solo gives an error
 
-  const parsedOffset = parseInt(offset, 10);
-  const parsedLimit = parseInt(limit, 10);
+  const parsedOffset = parseInt(offset, 10) || 0;
+  const parsedLimit = parseInt(limit, 10) || 10;
 
   // Create an empty query object to store filtering parameters
   const query = { price: { $gt: 0 } }; // Add the price condition to the query};
