@@ -29,7 +29,7 @@ describe('OrderController API Tests', () => {
   let user;
   let album;
   let userCredentials;
-  let response;
+
 
   beforeAll(async () => {
     //create a user
@@ -78,7 +78,7 @@ describe('OrderController API Tests', () => {
     };
 
     //AKOS: this one gives 500 status code
-    response = await request(app)
+    const response = await request(app)
       .post(`/api/v1/orders`)
       .set('Cookie', signedCookie)
       .send(orderData);
@@ -107,7 +107,7 @@ describe('OrderController API Tests', () => {
       user: user._id,
     };
 
-    response = await request(app).post(`/api/v1/orders`).send(orderData);
+    const response = await request(app).post(`/api/v1/orders`).send(orderData);
     expect(response.status).toBe(StatusCodes.UNAUTHORIZED);
   });
   //create an order -Error case - some data is missing
