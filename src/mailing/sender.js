@@ -55,14 +55,13 @@ async function sendOrderCompletedEmail(to, username, orderItems, total) {
 // Function to send the welcome email
 async function sendWelcomeEmail(recipient, user) {
   const template = 'welcome';
-  const subject = 'Welcome to Our Website';
+
   const locals = { user };
   await baseEmail
     .send({
       template,
       message: {
         to: recipient,
-        subject,
       },
       locals,
     })
