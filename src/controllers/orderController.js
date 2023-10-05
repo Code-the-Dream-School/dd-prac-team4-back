@@ -162,4 +162,51 @@ const deleteOrder = async (req, res) => {
   */
 };
 
-module.exports = { createOrder, getAllOrders, getSingleOrder, deleteOrder };
+const handleStripePayment = async (req) => {
+  try {
+    // Receive Stripe Signature
+    const stripeSignature = req.headers['stripe-signature'];
+
+    //  Construct the Webhook Event
+    const event = stripe.webhooks.constructEvent(
+      req.rawBody, // Raw text body payload received from Stripe
+      stripeSignature, // Value of the `stripe-signature` header from Stripe
+      process.env.STRIPE_CLI_WEBHOOK_SECRET // Webhook Signing Secret
+    );
+
+    //  Retrieve Payment Intent and Order Information
+    const paymentIntent = event.data.object; // Payment intent information
+    const orderId = paymentIntent.metadata.orderId; // Order ID passed in metadata
+    const amountPaid = paymentIntent.amount; // Amount paid
+    // Additional order-related info if needed
+
+    //  Update Order Status
+    const order = await Order.findById(orderId);
+
+    if (event.type === 'payment_intent.succeeded') {
+      // Update order status to successful
+      order.status = 'payment_successful';
+    } else if (event.type === 'payment_intent.payment_failed') {
+      // Update order status to failed
+      order.status = 'payment_failed';
+    }
+
+    // Save the updated order
+    await order.save();
+
+    // Handle other actions based on the event type if needed
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error handling Stripe payment:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+module.exports = {
+  createOrder,
+  getAllOrders,
+  getSingleOrder,
+  deleteOrder,
+  handleStripePayment,
+};
