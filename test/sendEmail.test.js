@@ -1,5 +1,6 @@
 require('dotenv').config();
 const { createTestAccount } = require('nodemailer');
+const { sendWelcomeEmail } = require('../src/mailing/sender.js');
 
 describe('sendTestEmail function', () => {
   it('sends a test email with expected content', async () => {
