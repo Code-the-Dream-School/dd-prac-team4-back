@@ -28,10 +28,15 @@ const register = async (req, res) => {
     password,
     role,
   }); // Create a new user in the database
+
+  // Send the welcome email
+  await emailSender.sendWelcomeEmail(user.email, user);
+
   const tokenUser = createTokenUser(user); // Create a token based on user data
   attachCookiesToResponse({ res, user: tokenUser }); // Attach the token to cookies and send in the response
 
   res.status(StatusCodes.CREATED).json({ user: tokenUser }); // Send a successful response with user data
+
   /* 
     #swagger.summary = 'Register a new user'
     #swagger.parameters['user'] = {
@@ -55,7 +60,6 @@ const register = async (req, res) => {
       description: 'Bad request, missing email, name, password, or username'
     }
   */
-  emailSender.sendWelcomeEmail(user.email, user);
 };
 
 const login = async (req, res) => {
