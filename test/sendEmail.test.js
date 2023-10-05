@@ -1,5 +1,10 @@
 require('dotenv').config();
 const { createTestAccount } = require('nodemailer');
+const sender = require('../src/mailing/sender');
+
+afterEach(() => {
+  jest.restoreAllMocks();
+});
 
 describe('sendTestEmail function', () => {
   it('sends a test email with expected content', async () => {
