@@ -161,7 +161,11 @@ app.use(errorHandlerMiddleware); // Error handler middleware
 const { Server } = require('socket.io');
 const http = require('http');
 const server = http.createServer(app);
-const socketServer = new Server(server);
+const socketServer = new Server(server, {
+  cors: {
+    origin: [/localhost:3000$/, /beatbazaar\.onrender\.com$/],
+  },
+});
 const setupSocket = require('./live');
 const io = socketServer.of('/'); // Create an instance of Socket.io
 

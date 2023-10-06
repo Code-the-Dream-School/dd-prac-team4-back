@@ -54,20 +54,12 @@ describe('AlbumController API Tests', () => {
 
   it('should return an empty list if there are no albums in the database', async () => {
     await Album.deleteMany({});
-    // Make a GET request to the /api/v1/albums endpoint
     const response = await request(app).get('/api/v1/albums');
 
-    // Assert that the response status is OK (200)
     expect(response.status).toBe(StatusCodes.OK);
-
-    // Assert that the response body is an object with "albums" and "count" keys
     expect(response.body).toHaveProperty('albums');
     expect(response.body).toHaveProperty('count');
-
-    // Assert that "albums" is an empty array since there are no albums in the database
     expect(response.body.albums).toEqual([]);
-
-    // Assert that the "count" field reflects the actual count of albums (which is 0 in this case)
     expect(response.body.count).toBe(0);
   });
 
@@ -85,7 +77,6 @@ describe('AlbumController API Tests', () => {
   });
 
   it('should test the getAlbumWithAllUsersWhoPurchasedIt endpoint - Success Case', async () => {
-    // Try to find an album; if not found, create a default one
     const album = await Album.findOne({});
 
     const adminCredentials = {
@@ -96,19 +87,16 @@ describe('AlbumController API Tests', () => {
     // Use the loginAndReturnCookie function to log in as admin and get the signed cookie
     const signedCookie = await loginAndReturnCookie(adminCredentials);
 
-    // Make a request to the endpoint and set the obtained cookie
     const response = await request(app)
       .get(`/api/v1/albums/${album._id}/listOfUsersWhoPurchasedThisAlbum`)
-      .set('Cookie', signedCookie); // Set the obtained cookie
+      .set('Cookie', signedCookie);
 
-    // Check if the response status is OK and contains the expected properties
     expect(response.status).toBe(StatusCodes.OK);
     expect(response.body).toHaveProperty('album');
     expect(response.body).toHaveProperty('purchasingUsersCount');
   });
 
   it('should test the getFilteredAlbums endpoint - Success Case', async () => {
-    // Create 1 album in the database
     const albumToCreate = {
       albumName: 'Album 1',
       artistName: 'Artist 1',
@@ -122,15 +110,9 @@ describe('AlbumController API Tests', () => {
     );
 
     expect(response.status).toBe(StatusCodes.OK);
-    // Assert that the response body is an object with "albums" and "count" keys
     expect(response.body).toHaveProperty('albums');
     expect(response.body).toHaveProperty('count');
-    // Assert that "albums" is an array with the expected number of albums (based on the limit)
-    // In this case, since we have only 1 album in the database, the "albums" array should have 1 item
     expect(response.body.albums).toHaveLength(1);
-
-    // Assert that the "count" field reflects the actual count of albums in the database
-    // In this case, it should be 1 because we created 1 album
     expect(response.body.count).toBe(1);
   });
 
@@ -173,24 +155,156 @@ describe('AlbumController API Tests', () => {
 
     await Album.insertMany(albumsToCreate);
 
-    // Make a GET request to the /api/v1/albums/filter endpoint with a limit parameter set to 4
     const limit = 3;
     const response = await request(app).get(
       `/api/v1/albums/filter?limit=${limit}`
     );
 
-    // Assert that the response status is OK (200)
     expect(response.status).toBe(StatusCodes.OK);
-
-    // Assert that the response body is an object with "albums" and "count" keys
     expect(response.body).toHaveProperty('albums');
     expect(response.body).toHaveProperty('count');
-
-    // Assert that "albums" is an array with a length equal to the specified limit
     expect(response.body.albums).toHaveLength(limit);
-
-    // Assert that the "count" field reflects the actual count of albums in the database
-
     expect(response.body.count).toBe(albumsToCreate.length);
+  });
+
+  it('should create a new album - Success Case', async () => {
+    const adminCredentials = {
+      email: 'admin@admin.com',
+      password: 'adminpassword',
+    };
+
+    const signedCookie = await loginAndReturnCookie(adminCredentials);
+
+    const newAlbumData = {
+      albumName: 'New Album',
+      artistName: 'New Artist',
+      price: 9.99,
+      spotifyUrl: 'https://api.spotify.com/v1/albums/new123',
+    };
+
+    const response = await request(app)
+      .post('/api/v1/albums')
+      .set('Cookie', signedCookie)
+      .send(newAlbumData);
+
+    expect(response.status).toBe(StatusCodes.CREATED);
+    expect(response.body).toHaveProperty('album');
+    expect(response.body.album).toMatchObject(newAlbumData);
+  });
+
+  it('should create a new album - Error Case (Invalid Data)', async () => {
+    const adminCredentials = {
+      email: 'admin@admin.com',
+      password: 'adminpassword',
+    };
+
+    const signedCookie = await loginAndReturnCookie(adminCredentials);
+
+    const invalidAlbumData = {
+      artistName: 'New Artist',
+      price: 12.99,
+      spotifyUrl: 'https://api.spotify.com/v1/albums/new123',
+    };
+
+    const response = await request(app)
+      .post('/api/v1/albums')
+      .set('Cookie', signedCookie)
+      .send(invalidAlbumData);
+
+    expect(response.status).toBe(StatusCodes.BAD_REQUEST);
+  });
+
+  it('should update an existing album - Success Case', async () => {
+    const adminCredentials = {
+      email: 'admin@admin.com',
+      password: 'adminpassword',
+    };
+
+    const signedCookie = await loginAndReturnCookie(adminCredentials);
+
+    const existingAlbum = await Album.findOne({});
+    const updatedData = {
+      albumName: 'Updated Album Name',
+    };
+
+    const response = await request(app)
+      .patch(`/api/v1/albums/${existingAlbum._id}`)
+      .set('Cookie', signedCookie)
+      .send(updatedData);
+
+    expect(response.status).toBe(StatusCodes.OK);
+    expect(response.body).toHaveProperty('album');
+    const updatedAlbum = await Album.findById(existingAlbum._id);
+
+    expect(updatedAlbum).not.toBeNull();
+    expect(updatedAlbum.albumName).toBe(updatedData.albumName);
+  });
+
+  it('should update an existing album - Error Case (Not Found)', async () => {
+    const adminCredentials = {
+      email: 'admin@admin.com',
+      password: 'adminpassword',
+    };
+
+    const signedCookie = await loginAndReturnCookie(adminCredentials);
+
+    const invalidAlbumId = 'invalidAlbumId';
+    const updatedData = {
+      albumName: 'Updated Album Name',
+    };
+
+    const response = await request(app)
+      .patch(`/api/v1/albums/${invalidAlbumId}`)
+      .set('Cookie', signedCookie)
+      .send(updatedData);
+
+    expect(response.status).toBe(StatusCodes.NOT_FOUND);
+  });
+
+  it('should update album prices - Success Case', async () => {
+    const adminCredentials = {
+      email: 'admin@admin.com',
+      password: 'adminpassword',
+    };
+
+    const signedCookie = await loginAndReturnCookie(adminCredentials);
+
+    const existingAlbum = await Album.findOne({});
+    const updatedData = {
+      id: existingAlbum._id,
+      price: 14.99,
+    };
+
+    const response = await request(app)
+      .patch(`/api/v1/albums/${existingAlbum._id}`)
+      .set('Cookie', signedCookie)
+      .send(updatedData);
+
+    expect(response.status).toBe(StatusCodes.OK);
+    expect(response.body).toHaveProperty('album');
+    const updatedAlbumInDB = await Album.findById(existingAlbum._id);
+
+    expect(updatedAlbumInDB).not.toBeNull();
+    expect(updatedAlbumInDB.price).toBe(updatedData.price);
+  });
+
+  it('should update album prices - Error Case (Invalid Price)', async () => {
+    const adminCredentials = {
+      email: 'admin@admin.com',
+      password: 'adminpassword',
+    };
+
+    const signedCookie = await loginAndReturnCookie(adminCredentials);
+    const existingAlbum = await Album.findOne({});
+    const invalidPriceData = {
+      price: -5.99, // Invalid price
+    };
+
+    const response = await request(app)
+      .patch(`/api/v1/albums/${existingAlbum._id}`)
+      .set('Cookie', signedCookie)
+      .send(invalidPriceData);
+
+    expect(response.status).toBe(StatusCodes.BAD_REQUEST);
   });
 });

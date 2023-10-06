@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+
+const { sendOrderCompletedEmail } = require('../mailing/sender');
 const { sendOrderCancelledEvent } = require('../live/emitters');
 
 // mongoose schema for the individual order items
@@ -29,13 +31,7 @@ const OrderSchema = new mongoose.Schema(
     // The orderStatus field indicates the current status of the order
     orderStatus: {
       type: String,
-      enum: [
-        'pending',
-        'payment_successful',
-        'payment_failed',
-        'cancelled',
-        'complete',
-      ],
+      enum: ['pending', 'payment_successful', 'payment_failed', 'cancelled'],
       default: 'pending',
       required: [true, 'Please provide an order status'], // Order status is required
     },
@@ -137,6 +133,29 @@ OrderSchema.pre('findOne', async function (next) {
   console.log('Pre-findOne finished');
   next();
 });
+
+// send order completion email when the order status changes to "payment_successful"
+OrderSchema.post('findOneAndUpdate', async function (doc) {
+  try {
+    if (this.getUpdate().$set.orderStatus === 'payment_successful') {
+      //   populate by calling await + populate(...) and we can chain populate calls by using an array. This allows us to populate both the full user object and the full orderItems.album objects
+      const orderItemsWithFullAlbum = await doc.populate([
+        'user',
+        { path: 'orderItems.album' },
+      ]);
+      // Send the order completion email
+      await sendOrderCompletedEmail(
+        orderItemsWithFullAlbum.user.email,
+        orderItemsWithFullAlbum.user.username, // Use the appropriate field for the username
+        orderItemsWithFullAlbum.orderItems,
+        orderItemsWithFullAlbum.total
+      );
+    }
+  } catch (error) {
+    console.error('Error sending order completion email:', error);
+  }
+});
+
 // TTL (Time To Live) index to automatically delete orders with "cancelled" status after 2 hours
 OrderSchema.index(
   { expiresAt: 1 },

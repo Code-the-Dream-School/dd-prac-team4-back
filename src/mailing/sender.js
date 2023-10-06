@@ -34,14 +34,21 @@ const baseEmail = new Email({
   },
 });
 
-const subject = 'First Subject of the first email to be sent';
-
 // Function to send a test email
 async function sendTestEmail(to, username) {
   return baseEmail.send({
     template: 'test',
     message: { to },
-    locals: { username, subject },
+    locals: { username },
+  });
+}
+
+// Function to send the order completion email
+async function sendOrderCompletedEmail(to, username, orderItems, total) {
+  return baseEmail.send({
+    template: 'orderCompleted',
+    message: { to },
+    locals: { username, orderItems, total },
   });
 }
 
@@ -60,4 +67,8 @@ async function sendForgotPasswordEmail(toEmail, resetToken) {
   }
 }
 
-module.exports = { sendTestEmail, sendForgotPasswordEmail };
+module.exports = {
+  sendTestEmail,
+  sendForgotPasswordEmail,
+  sendOrderCompletedEmail,
+};
