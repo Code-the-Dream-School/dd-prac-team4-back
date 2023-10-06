@@ -4,6 +4,7 @@ const request = require('supertest');
 const { intervalId: orderUpdateInterval } = require('../src/models/Order');
 const User = require('../src/models/User');
 const { loginAndReturnCookie } = require('./test_helper');
+const sender = require('../src/mailing/sender');
 
 // Declare variables for the server, database connection, and in-memory MongoDB instance
 let server;
@@ -44,9 +45,13 @@ afterAll(async () => {
   // turn off the order update interval so that jest can cleanly shutdown
   clearInterval(orderUpdateInterval);
 });
+afterEach(() => {
+  jest.restoreAllMocks();
+});
 
 describe('Authentication API Endpoints', () => {
   it('should register a new user and log in', async () => {
+    const emailSpy = jest.spyOn(sender, 'sendWelcomeEmail');
     // Arrange: Register a new user
     const registrationResponse = await request(app)
       .post('/api/v1/auth/register')
@@ -65,6 +70,11 @@ describe('Authentication API Endpoints', () => {
       role: createdUser.role,
       userId: createdUser.id,
     });
+    expect(emailSpy).toHaveBeenCalledTimes(1); // Expecting the sendWelcomeEmail function to be called once
+    expect(emailSpy).toHaveBeenCalledWith(
+      testUser.email,
+      expect.objectContaining({ name: createdUser.name })
+    ); // Expecting the sendWelcomeEmail function to be called with the correct email address and a user object that has the expected name
 
     // Act: Log in with the newly registered user's credentials
     const loginResponse = await request(app)
