@@ -2,16 +2,15 @@ const mongoose = require('mongoose');
 
 const chatMessageSchema = new mongoose.Schema(
   {
-    album: {
-      type: mongoose.Schema.ObjectId,
-      ref: 'Album',
-      required: true,
-    },
-    text: {
+    albumId: {
       type: String,
       required: true,
     },
-    sender: {
+    message: {
+      type: String,
+      required: true,
+    },
+    userId: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
       required: true,
@@ -26,6 +25,20 @@ const chatMessageSchema = new mongoose.Schema(
   }
 );
 
+//console.log('Schema Created');
+
+// Creating a virtual field "album" that references the Album model
+chatMessageSchema.virtual('album', {
+  ref: 'Album', // Reference to the Album model
+  localField: 'albumId', // Local field for the relationship
+  foreignField: 'spotify_id', // Foreign field for the relationship
+  justOne: true, // Refers to a single album
+});
+
+//console.log('Virtual Field "album" Created');
+
 const ChatMessage = mongoose.model('ChatMessage', chatMessageSchema);
+
+console.log('ChatMessage Model Created');
 
 module.exports = ChatMessage;
