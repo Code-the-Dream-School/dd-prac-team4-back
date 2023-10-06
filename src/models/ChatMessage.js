@@ -22,7 +22,7 @@ const chatMessageSchema = new mongoose.Schema(
     },
   },
   {
-    capped: { size: 102400, max: 50 }, // max 50 messages
+    capped: { size: 102400, max: 1000 }, // max 1000 messages
   }
 );
 

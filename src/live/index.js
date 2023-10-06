@@ -20,7 +20,7 @@ const onConnect = (io, socket) => {
     );
     socket.join(chatRoomName);
   });
-
+/*
   socket.on('chat:album', async (data) => {
     try {
       // Create and save a new message to the database
@@ -43,6 +43,7 @@ const onConnect = (io, socket) => {
     } catch (error) {
       console.error('Error saving chat message:', error);
     }
+    */
   socket.on('chat:album', (data) => {
     console.log(
       `received message from socket: ${socket.id}. Message=${data.message} | Album=${data.albumId} | User=${data.userId}`
