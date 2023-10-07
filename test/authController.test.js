@@ -112,10 +112,9 @@ describe('Authentication API Endpoints', () => {
       .post('/api/v1/auth/forgot_password')
       .send({ email: 'ava@ava.com' }); // Use the email of the test user
 
-    // Assert: Check the response status and body
-    expect(forgotPasswordResponse.status).toBe(200); // Expecting a successful request
+    expect(forgotPasswordResponse.status).toBe(200);
     expect(forgotPasswordResponse.body).toEqual({
       message: 'Password reset email sent',
-    }); // Expecting the specified message in the response
+    });
   });
 });
