@@ -217,7 +217,7 @@ const getFilteredAlbums = async (req, res) => {
     );
   }
 
-    res.status(StatusCodes.OK).json({
+  res.status(StatusCodes.OK).json({
     albums,
     count: albums.length,
     total: totalCount,
@@ -227,7 +227,7 @@ const getFilteredAlbums = async (req, res) => {
     nextPage: more ? nextPageUrl.toString() : null,
     prevPage: currentPage > 1 ? prevPageUrl.toString() : null,
   });
-  console.log('nextPageUrl:', nextPageUrl.toString()); 
+  console.log('nextPageUrl:', nextPageUrl.toString());
   console.log('prevPageUrl:', prevPageUrl.toString());
 
   /*
