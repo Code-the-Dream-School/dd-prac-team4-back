@@ -10,7 +10,7 @@ const chatMessageSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    userId: {
+    user: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
       required: true,
@@ -24,18 +24,6 @@ const chatMessageSchema = new mongoose.Schema(
     capped: { size: 102400, max: 1000 }, // max 1000 messages
   }
 );
-
-//console.log('Schema Created');
-
-// Creating a virtual field "album" that references the Album model
-chatMessageSchema.virtual('album', {
-  ref: 'Album', // Reference to the Album model
-  localField: 'albumId', // Local field for the relationship
-  foreignField: 'spotify_id', // Foreign field for the relationship
-  justOne: true, // Refers to a single album
-});
-
-//console.log('Virtual Field "album" Created');
 
 const ChatMessage = mongoose.model('ChatMessage', chatMessageSchema);
 
