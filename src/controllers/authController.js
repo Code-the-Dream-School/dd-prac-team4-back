@@ -15,9 +15,9 @@ const register = async (req, res) => {
   }
 
   const session = await mongoose.startSession();
-  session.startTransaction();
 
   try {
+    session.startTransaction();
     const emailAlreadyExists = await User.findOne({ email }); // Check if a user with the email already exists
 
     if (emailAlreadyExists) {

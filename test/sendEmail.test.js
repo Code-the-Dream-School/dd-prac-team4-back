@@ -24,10 +24,6 @@ afterAll(() => {
   process.env.EMAIL_PASSWORD = originalEmailPassword;
 });
 
-afterEach(() => {
-  jest.restoreAllMocks();
-});
-
 describe('sendTestEmail function', () => {
   it('sends a test email with expected content', async () => {
     // create a test sender account using nodemailers 'etheral SMTP' service
