@@ -27,7 +27,7 @@ const register = async (req, res) => {
     const isFirstAccount = (await User.countDocuments({})) === 0; // Check if it's the first account
     const role = isFirstAccount ? 'admin' : 'user'; // Assign a role based on first account or not
 
-    const user = await User.create(
+    const [user] = await User.create(
       [
         {
           name,
@@ -41,9 +41,9 @@ const register = async (req, res) => {
     ); // Create a new user in the database
 
     // Send the welcome email
-    await emailSender.sendWelcomeEmail(user[0].email, user[0]);
+    await emailSender.sendWelcomeEmail(user.email, user);
 
-    const tokenUser = createTokenUser(user[0]); // Create a token based on user data
+    const tokenUser = createTokenUser(user); // Create a token based on user data
     attachCookiesToResponse({ res, user: tokenUser }); // Attach the token to cookies and send in the response
     await session.commitTransaction();
     res.status(StatusCodes.CREATED).json({ user: tokenUser }); // Send a successful response with user data
@@ -184,7 +184,7 @@ const resetPassword = async (req, res) => {
   const { passwordToken, newPassword } = req.body;
 
   // Find the user with the provided password token
-  const user = await User.findOne({
+  const [user] = await User.findOne({
     passwordResetToken: passwordToken,
     // passwordResetExpiresOn: { $gt: new Date() }, // Check if reset token is still valid -option 1
   });
