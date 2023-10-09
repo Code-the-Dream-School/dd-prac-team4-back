@@ -47,8 +47,8 @@ describe('sendTestEmail function', () => {
     const result = await sendTestEmail(recipientEmail);
 
     // Verify the content of the sent email
-    expect(result.envelope.from).toEqual(process.env.EMAIL_USERNAME); // Verify the 'from' address
-    expect(result.envelope.to).toEqual([recipientEmail]); // Verify the 'to' address
+    expect(result.envelope.from).toEqual(process.env.EMAIL_USERNAME);
+    expect(result.envelope.to).toEqual([recipientEmail]);
   });
 
   it('sends a welcome email with expected content', async () => {
@@ -56,15 +56,14 @@ describe('sendTestEmail function', () => {
 
     const recipientEmail =
       'codethedream.practicum.team4+testrecipient@outlook.com';
+    const mockUser = {
+      name: 'Test User',
+    };
 
-    // Spy on the sendWelcomeEmail function to track if it's called
-    const sendWelcomeEmailSpy = jest.spyOn(sender, 'sendWelcomeEmail');
+    const result = await sendWelcomeEmail(recipientEmail, mockUser);
 
-    await sendWelcomeEmail(recipientEmail);
-
-    expect(sendWelcomeEmailSpy).toHaveBeenCalledWith(recipientEmail, mockUser);
-
-    // Ensure there are no errors thrown during the email sending process
-    expect(sendWelcomeEmailSpy).not.toThrow();
+    expect(result.envelope.from).toEqual(process.env.EMAIL_USERNAME);
+    expect(result.envelope.to).toEqual([recipientEmail]);
+    expect(result.message.text).toContain(mockUser.name);
   });
 });

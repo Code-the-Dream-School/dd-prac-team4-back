@@ -57,7 +57,7 @@ async function sendWelcomeEmail(recipient, user) {
   const template = 'welcome';
   const locals = { user };
   try {
-    await baseEmail.send({
+    const result await baseEmail.send({
       template,
       message: {
         to: recipient,
@@ -65,6 +65,7 @@ async function sendWelcomeEmail(recipient, user) {
       locals,
     });
     console.log('Welcome email sent successfully.');
+    return result
   } catch (error) {
     console.error('Error sending welcome email:', error);
     throw error;
