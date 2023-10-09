@@ -36,7 +36,7 @@ describe('sendTestEmail function', () => {
     process.env.EMAIL_SERVICE = 'Ethereal';
     process.env.EMAIL_USERNAME = testAccount.user;
     process.env.EMAIL_PASSWORD = testAccount.pass;
-    // Import the sendTestEmail function from the sender.js file; this will now use the above env varas
+
     const { sendTestEmail } = require('../src/mailing/sender.js');
 
     // Define the recipient's email address
