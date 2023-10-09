@@ -2,6 +2,28 @@ require('dotenv').config();
 const { createTestAccount } = require('nodemailer');
 const sender = require('../src/mailing/sender');
 
+let originalEmailService;
+let originalEmailUsername;
+let originalEmailPassword;
+let testAccount;
+
+beforeAll(async () => {
+  originalEmailService = process.env.EMAIL_SERVICE;
+  originalEmailUsername = process.env.EMAIL_USERNAME;
+  originalEmailPassword = process.env.EMAIL_PASSWORD;
+
+  testAccount = await createTestAccount();
+  process.env.EMAIL_SERVICE = 'Ethereal';
+  process.env.EMAIL_USERNAME = testAccount.user;
+  process.env.EMAIL_PASSWORD = testAccount.pass;
+});
+
+afterAll(() => {
+  process.env.EMAIL_SERVICE = originalEmailService;
+  process.env.EMAIL_USERNAME = originalEmailUsername;
+  process.env.EMAIL_PASSWORD = originalEmailPassword;
+});
+
 afterEach(() => {
   jest.restoreAllMocks();
 });
@@ -30,22 +52,15 @@ describe('sendTestEmail function', () => {
   });
 
   it('sends a welcome email with expected content', async () => {
-    let testAccount = await createTestAccount();
-
-    process.env.EMAIL_SERVICE = 'Ethereal';
-    process.env.EMAIL_USERNAME = testAccount.user;
-    process.env.EMAIL_PASSWORD = testAccount.pass;
-
     const { sendWelcomeEmail } = require('../src/mailing/sender.js');
 
     const recipientEmail =
       'codethedream.practicum.team4+testrecipient@outlook.com';
 
-    const mockUser = { name: 'John Doe' };
     // Spy on the sendWelcomeEmail function to track if it's called
     const sendWelcomeEmailSpy = jest.spyOn(sender, 'sendWelcomeEmail');
 
-    await sendWelcomeEmail(recipientEmail, mockUser);
+    await sendWelcomeEmail(recipientEmail);
 
     expect(sendWelcomeEmailSpy).toHaveBeenCalledWith(recipientEmail, mockUser);
 
