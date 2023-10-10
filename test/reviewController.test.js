@@ -125,10 +125,31 @@ describe('ReviewController API Tests', () => {
       expect(response.body.allProductReviews).toHaveLength(1);
       expect(response.body).toHaveProperty('count');
       expect(response.body.count).toBe(1);
-      // If no reviews are found, allProductReviews should be an empty array and count should be 0
-      if (response.body.count === 0) {
-        expect(response.body.allProductReviews).toEqual([]);
-      }
+    });
+  });
+  describe('test the get All Reviews for the particular album endpoint - no reviews found', () => {
+    it('should NOT get reviews for a specific album- no reviews were created for this album', async () => {
+      // Create a second album with no reviews
+      const secondAlbum = await Album.create({
+        albumName: 'Another  Album',
+        artistName: 'Another  Artist',
+        spotifyUrl: 'https://api.spotify.com/v1/albums/anotheralbum',
+      });
+
+      const response = await request(app).get(
+        `/api/v1/reviews/album/${secondAlbum._id}`
+      );
+      expect(response.status).toBe(StatusCodes.OK);
+
+      //  response body is an object with "allProductReviews" and "count" keys
+      expect(response.body).toHaveProperty('allProductReviews');
+      expect(response.body).toHaveProperty('count');
+
+      //  "allProductReviews" is an empty array since there are no reviews for this album
+      expect(response.body.allProductReviews).toEqual([]);
+
+      // "count" field reflects the actual count of reviews (which is 0 in this case)
+      expect(response.body.count).toBe(0);
     });
   });
   describe('test the create review endpoint', () => {
@@ -202,14 +223,6 @@ describe('ReviewController API Tests', () => {
         title: 'Don not buy this album',
         comment: 'Awful"',
       };
-
-      // Check if the user is the author of the review
-      const authenticatedUserId = 'mockUserId'; // Replace with actual authenticated user's ID
-
-      if (existingReview.user.toString() !== authenticatedUserId) {
-        // User is not the author of the review, respond with unauthorized error
-        expect(StatusCodes.UNAUTHORIZED).toBe(StatusCodes.UNAUTHORIZED); // //AKOS: this one works but I feel it's wrong, couldn't write here 'respone', the terminal was complaining
-      }
 
       const response = await request(app)
         .patch(`/api/v1/reviews/${existingReview._id}`)
