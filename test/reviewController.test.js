@@ -225,7 +225,7 @@ describe('ReviewController API Tests', () => {
       expect(updatedReview.comment).toBe(updatedReviewData.comment);
     });
 
-    it('should update a review successfully-Error case - no existing  review was found', async () => {
+    it('should NOT sucessfully update a review - Error case - no existing  review was found', async () => {
       const signedCookie = await loginAndReturnCookie(userCredentials);
 
       const nonExistingReview = await Review.findOneAndDelete({});
