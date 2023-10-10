@@ -153,7 +153,7 @@ describe('ReviewController API Tests', () => {
       expect(response.status).toBe(StatusCodes.CREATED);
       expect(response.body).toHaveProperty('review');
 
-      //create second review for the same album
+      //create second review by the same user for the same album
       const secondReviewData = {
         rating: 4,
         title: 'Loved this review',
