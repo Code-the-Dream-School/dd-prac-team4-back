@@ -25,6 +25,7 @@ jest.mock('stripe', () => {
 });
 
 beforeAll(async () => {
+  //A version of the mongo server that supports replica sets must be used for the order controller test cases because Mongo transactions are used
   mongodb = await MongoMemoryReplSet.create({
     replSet: { storageEngine: 'wiredTiger' },
   });
@@ -32,7 +33,6 @@ beforeAll(async () => {
   process.env.MONGO_URL = url;
   mongooseConnection = await connectDB(url);
   server = await app.listen(8001);
-  // process.env.STRIPE_SECRET_KEY = stripeSecretKey; -Akos: I didn't understand what else to do using this approach
 });
 
 afterAll(async () => {
@@ -61,9 +61,6 @@ describe('OrderController API Tests', () => {
       artistName: 'Unique Artist',
       spotifyUrl: 'https://api.spotify.com/v1/albums/unique',
     });
-  });
-
-  beforeEach(async () => {
     userCredentials = {
       email: 'Emily@google.com',
       password: 'secret',
@@ -95,6 +92,7 @@ describe('OrderController API Tests', () => {
 
     expect(response.status).toBe(StatusCodes.CREATED);
     expect(response.body).toHaveProperty('order');
+    expect(response.body).toHaveProperty('clientSecret');
   });
 
   //create an order -Error case- user tries to create an order without logging in
@@ -117,7 +115,7 @@ describe('OrderController API Tests', () => {
     expect(response.status).toBe(StatusCodes.UNAUTHORIZED);
   });
   //create an order -Error case - some data is missing
-  //get 401 instead of 400.. not sure why
+
   it('should return a 400 status if order items are missing', async () => {
     const signedCookie = await loginAndReturnCookie(userCredentials);
     const orderData = {

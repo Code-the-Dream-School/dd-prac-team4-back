@@ -23,10 +23,6 @@ const createOrder = async (req, res) => {
     const user = req.user; //contains user object
     console.log(user);
 
-    if (!user) {
-      throw new CustomError.UnauthenticatedError('User is not logged in');
-    }
-
     const order = new Order({
       user: req.user.userId,
       orderItems, // Use the array with full album data
