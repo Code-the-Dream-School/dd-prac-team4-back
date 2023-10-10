@@ -3,9 +3,10 @@ const { StatusCodes } = require('http-status-codes');
 const request = require('supertest');
 const { MongoMemoryReplSet } = require('mongodb-memory-server');
 const User = require('../src/models/User');
+const Order = require('../src/models/Order');
 const Album = require('../src/models/Album');
 const { loginAndReturnCookie } = require('./test_helper');
-
+const mongoose = require('mongoose');
 let server;
 let mongooseConnection;
 let mongodb;
@@ -45,7 +46,8 @@ describe('OrderController API Tests', () => {
   let user;
   let album;
   let userCredentials;
-
+  let admin;
+  
   beforeAll(async () => {
     //create a user
     user = await User.create({
@@ -131,5 +133,83 @@ describe('OrderController API Tests', () => {
       .send(orderData);
 
     expect(response.status).toBe(StatusCodes.BAD_REQUEST);
+  });
+
+  // Delete order - Success case
+//   it('should delete an order successfully', async () => {
+//      // Create an order
+
+//     //create an admin
+//     admin = await User.create({
+//       email: 'Holly@google.com',
+//       password: 'secret',
+//       name: 'Holly',
+//       username: 'Holly123',
+//       role: 'admin',
+//     });
+//     const adminCredentials = {
+//       email: 'Holly@google.com',
+//       password: 'secret',
+//     };
+//     const signedCookie = await loginAndReturnCookie(adminCredentials);
+//      //Akos: get   TypeError: Order.create is not a function //maybe the error is in export in Order.js? but I've checked that it's exported correctly
+//         // Mock ID
+// const mockOrderId = new mongoose.Types.ObjectId();
+
+//      const orderData = {
+//       _id: mockOrderId,  // Assigning the mock ID
+//       user: admin._id,
+//       orderItems: [{ album: album._id, quantity: 2 }],
+//       subtotal: 200,
+//       tax: 0.1,
+//       total: 210,
+//     };
+//     const order = await Order.create(orderData);
+
+//     const response = await request(app)
+//       .delete(`/api/v1/orders/${order._id}`) // Assuming testUser is the user you want to delete
+//       .set('Cookie', signedCookie);
+
+//     expect(response.status).toBe(StatusCodes.OK);
+//     expect(response.body).toEqual({ msg: 'Success! Order was deleted' });
+//   });
+
+  // Delete order - Error case - Order not found
+  it('should return a 404 status if the order to delete is not found', async () => {
+    await Order.deleteMany({}); //  TypeError: Order.deleteMany is not a function
+    const nonExistingOrderId = 'nonexistingorderid';
+    const signedCookie = await loginAndReturnCookie(userCredentials);
+
+    const response = await request(app)
+      .delete(`/api/v1/orders/${nonExistingOrderId}`)
+      .set('Cookie', signedCookie);
+
+    expect(response.status).toBe(StatusCodes.NOT_FOUND);
+  });
+
+  // Delete order - Error case - Unauthorized user
+  it('should return a 403 status if user is not authorized to delete the order', async () => {
+    // Create another user
+    const anotherUser = await User.create({
+      email: 'AnotherUser@google.com',
+      password: 'secret',
+      name: 'Another User',
+      username: 'anotheruser123',
+      role: 'user',
+    });
+
+    const anotherUserCredentials = {
+      email: 'AnotherUser@google.com',
+      password: 'secret',
+    };
+
+    const signedCookie = await loginAndReturnCookie(anotherUserCredentials);
+
+    const mockOrderId = new mongoose.Types.ObjectId();
+    const response = await request(app)
+      .delete(`/api/v1/orders/${mockOrderId}`)
+      .set('Cookie', signedCookie);
+
+    expect(response.status).toBe(StatusCodes.FORBIDDEN);
   });
 });
