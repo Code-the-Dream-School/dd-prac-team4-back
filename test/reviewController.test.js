@@ -153,7 +153,7 @@ describe('ReviewController API Tests', () => {
       expect(response.status).toBe(StatusCodes.CREATED);
       expect(response.body).toHaveProperty('review');
 
-      //create second review for the same album
+      //create second review by the same user for the same album
       const secondReviewData = {
         rating: 4,
         title: 'Loved this review',
@@ -225,7 +225,7 @@ describe('ReviewController API Tests', () => {
       expect(updatedReview.comment).toBe(updatedReviewData.comment);
     });
 
-    it('should update a review successfully-Error case - no existing  review was found', async () => {
+    it('should NOT sucessfully update a review - Error case - no existing  review was found', async () => {
       const signedCookie = await loginAndReturnCookie(userCredentials);
 
       const nonExistingReview = await Review.findOneAndDelete({});
