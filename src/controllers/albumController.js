@@ -161,6 +161,15 @@ const getAlbumWithAllUsersWhoPurchasedIt = async (req, res) => {
 
 const getFilteredAlbums = async (req, res) => {
   const { limit, order, offset, albumName, artistName } = req.query;
+
+  console.log('reqoriginalUrl is', req.originalUrl);
+
+  const url = new URL('http://localhost:8000' + req.originalUrl); // create a "URL" object
+  //Akos: req.originalUrl solo gives an error
+
+  const parsedOffset = parseInt(offset, 10) || 0;
+  const parsedLimit = parseInt(limit, 10) || 10;
+
   // Create an empty query object to store filtering parameters
   const query = { price: { $gt: 0 } }; // Add the price condition to the query};
   // Using $regex, we MongoDB search where the provided value is treated as a regular expression.
@@ -170,6 +179,9 @@ const getFilteredAlbums = async (req, res) => {
   if (artistName) {
     query.artistName = { $regex: artistName, $options: 'i' }; // If the artistName. $options: 'i' - case-insensitive
   }
+  // Count the total number of matching albums (excluding limit and offset for accurate count)
+  const totalCount = await Album.countDocuments(query);
+
   // Create an empty sortOptions object to store sorting parameters. Methods provided by the Mongoose library
   const sortOptions = {};
   if (order === 'asc') {
@@ -182,10 +194,42 @@ const getFilteredAlbums = async (req, res) => {
   // Use the Album model to find albums based on the specified filtering and sorting parameters
   const albums = await Album.find(query)
     .sort(sortOptions)
-    .skip(parseInt(offset) || 0) // Skip a specified number of albums (pagination implementation)
-    .limit(parseInt(limit) || 10); // Limit the number of returned albums (pagination implementation)
+    .skip(parsedOffset || 0) // Skip a specified number of albums (pagination implementation)
+    .limit(parsedLimit || 10); // Limit the number of returned albums (pagination implementation)
 
-  res.status(StatusCodes.OK).json({ albums, count: albums.length }); // Return the found albums and the count of albums
+  const totalPages = Math.ceil(totalCount / (parsedLimit || 10));
+  const currentPage = Math.ceil(
+    ((parsedOffset || 0) + 1) / (parsedLimit || 10)
+  );
+  const more = currentPage < totalPages;
+
+  const nextPageUrl = new URL(url.toString());
+  nextPageUrl.searchParams.set(
+    'offset',
+    (parsedOffset || 0) + (parsedLimit || 10)
+  );
+
+  const prevPageUrl = new URL(url.toString());
+  if (currentPage > 1) {
+    prevPageUrl.searchParams.set(
+      'offset',
+      (parsedOffset || 0) - (parsedLimit || 10)
+    );
+  }
+
+    res.status(StatusCodes.OK).json({
+    albums,
+    count: albums.length,
+    total: totalCount,
+    more,
+    currentPage,
+    totalPages,
+    nextPage: more ? nextPageUrl.toString() : null,
+    prevPage: currentPage > 1 ? prevPageUrl.toString() : null,
+  });
+  console.log('nextPageUrl:', nextPageUrl.toString()); 
+  console.log('prevPageUrl:', prevPageUrl.toString());
+
   /*
      #swagger.summary = 'Fetch paginated list of albums with price > 0, with query parameters for sorting and filtering'
      #swagger.autoQuery = false
