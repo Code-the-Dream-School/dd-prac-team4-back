@@ -184,7 +184,7 @@ const resetPassword = async (req, res) => {
   const { passwordToken, newPassword } = req.body;
 
   // Find the user with the provided password token
-  const [user] = await User.findOne({
+  const user = await User.findOne({
     passwordResetToken: passwordToken,
     // passwordResetExpiresOn: { $gt: new Date() }, // Check if reset token is still valid -option 1
   });
