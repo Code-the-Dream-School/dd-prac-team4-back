@@ -70,6 +70,6 @@ describe('sendTestEmail function', () => {
 
     expect(result.envelope.from).toEqual(process.env.EMAIL_USERNAME);
     expect(result.envelope.to).toEqual([recipientEmail]);
-    expect(result.message.text).toContain(mockUser.name);
+    expect(result.originalMessage.text).toContain(mockUser.name.toUpperCase());
   });
 });
