@@ -41,6 +41,8 @@ const createOrder = async (req, res) => {
 
       await purchasedAlbum.save({ session });
     }
+    // console.log('this our  order id', order._id.toString()); //see line 53
+
     //Server  tells Stripe that an order is being made (creating a "paymentIntent" object in Stripe)
     const paymentIntent = await stripe.paymentIntents.create({
       amount: total * 100,
@@ -48,7 +50,7 @@ const createOrder = async (req, res) => {
       description: `Order #${order._id}`,
       metadata: {
         userId: req.user.userId,
-        orderId: order._id,
+        orderId: order._id.toString(),
         totalQuantity: orderItems.reduce(
           (total, item) => total + item.quantity,
           0
@@ -169,7 +171,7 @@ const handleStripePayment = async (req) => {
 
     //  Construct the Webhook Event
     const event = stripe.webhooks.constructEvent(
-      req.rawBody, // Raw text body payload received from Stripe
+      req.body, // Raw text body payload received from Stripe
       stripeSignature, // Value of the `stripe-signature` header from Stripe
       process.env.STRIPE_CLI_WEBHOOK_SECRET // Webhook Signing Secret
     );
@@ -177,7 +179,6 @@ const handleStripePayment = async (req) => {
     //  Retrieve Payment Intent and Order Information
     const paymentIntent = event.data.object; // Payment intent information
     const orderId = paymentIntent.metadata.orderId; // Order ID passed in metadata
-    const amountPaid = paymentIntent.amount; // Amount paid
     // Additional order-related info if needed
 
     //  Update Order Status
@@ -185,10 +186,10 @@ const handleStripePayment = async (req) => {
 
     if (event.type === 'payment_intent.succeeded') {
       // Update order status to successful
-      order.status = 'payment_successful';
+      order.orderStatus = 'payment_successful';
     } else if (event.type === 'payment_intent.payment_failed') {
       // Update order status to failed
-      order.status = 'payment_failed';
+      order.orderStatus = 'payment_failed';
     }
 
     // Save the updated order

@@ -17,14 +17,11 @@ const pathToSwaggerUi = require('swagger-ui-dist').absolutePath();
 const { readFileSync } = require('fs');
 const { join } = require('path');
 const expressStaticGzip = require('express-static-gzip');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
 const app = express();
 // Express Async Errors must be used before any route is used,
 // it will catch any errors that are thrown in the async functions without needing a try/catch
 require('express-async-errors');
-
-// This is your Stripe CLI webhook secret for testing your endpoint locally.
-const endpointSecret = process.env.STRIPE_CLI_WEBHOOK_SECRET;
 
 // Create a health endpoint for Render.com
 // This endpoint is used by Render.com to check if the backend is running
@@ -190,44 +187,5 @@ io.on('connection', (socket) => {
 global.io = io;
 // export the database connection function
 const connectDB = require('./db/connect');
-
-// ======STRIPE WEBHOOK SETUP ======
-
-app.post(
-  '/webhook',
-  express.raw({ type: 'application/json' }),
-  (request, response) => {
-    const sig = request.headers['stripe-signature'];
-
-    let event;
-
-    try {
-      event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
-    } catch (err) {
-      response.status(400).send(`Webhook Error: ${err.message}`);
-      return;
-    }
-
-    // Handle the event
-    switch (event.type) {
-      case 'payment_intent.payment_failed':
-        const paymentIntentPaymentFailed = event.data.object;
-        // Then define and call a function to handle the event payment_intent.payment_failed
-        break;
-      case 'payment_intent.succeeded':
-        const paymentIntentSucceeded = event.data.object;
-        // Then define and call a function to handle the event payment_intent.succeeded
-        break;
-      // ... handle other event types
-      default:
-        console.log(`Unhandled event type ${event.type}`);
-    }
-
-    // Return a 200 response to acknowledge receipt of the event
-    response.send();
-  }
-);
-
-app.listen(4242, () => console.log('Running on port 4242'));
 
 module.exports = { app: server, connectDB, io };
