@@ -142,7 +142,6 @@ const deleteOrder = async (req, res) => {
   if (!order) {
     throw new CustomError.NotFoundError(`No order with id ${orderId}`);
   }
-  checkPermissions(req.user, order.user);
 
   await Order.findByIdAndDelete(orderId); // or more simply can just call delete on the documnent we've already fetched:  await order.remove()
 
