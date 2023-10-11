@@ -64,7 +64,8 @@ async function sendWelcomeEmail(recipient, user) {
       },
       locals,
     });
-    console.log('Welcome email sent successfully.');
+    console.log(result);
+
     return result;
   } catch (error) {
     console.error('Error sending welcome email:', error);
