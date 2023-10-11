@@ -1,10 +1,11 @@
 const { app, connectDB } = require('../src/expressServer.js');
-const { MongoMemoryServer } = require('mongodb-memory-server');
+
 const request = require('supertest');
 const { intervalId: orderUpdateInterval } = require('../src/models/Order');
 const User = require('../src/models/User');
 const { loginAndReturnCookie } = require('./test_helper');
 const sender = require('../src/mailing/sender');
+const { MongoMemoryReplSet } = require('mongodb-memory-server');
 
 // Declare variables for the server, database connection, and in-memory MongoDB instance
 let server;
@@ -28,8 +29,9 @@ const testUser = {
 
 // set up the mongodb and the express server before starting the tests
 beforeAll(async () => {
-  // This will create a new instance of "MongoMemoryServer" and automatically start it
-  mongodb = await MongoMemoryServer.create();
+  mongodb = await MongoMemoryReplSet.create({
+    replSet: { storageEngine: 'wiredTiger' },
+  });
   const url = mongodb.getUri();
   // set the url so that our server's mongoose connects to the in-memory mongodb and not our real one
   process.env.MONGO_URL = url;
