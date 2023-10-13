@@ -41,22 +41,6 @@ describe('sendTestEmail function', () => {
     expect(result.envelope.to).toEqual([recipientEmail]);
   });
 
-  // it('connects to Ethereal SMTP service', async () => {
-  //   const transporter = nodemailer.createTransport({
-  //     host: 'smtp.ethereal.email',
-  //     port: 587,
-  //     auth: {
-  //       user: 'irma.cronin26@ethereal.email',
-  //       pass: 'mDHwkxB1yhxaEn3yCk',
-  //     },
-  //   });
-
-  //   const info = await transporter.verify();
-
-  //   expect(info).toBeDefined();
-  //   expect(info.accepted.length).toBeGreaterThan(0);
-  // });
-
   it('sends a welcome email with expected content', async () => {
     const { sendWelcomeEmail } = require('../src/mailing/sender.js');
 
