@@ -71,8 +71,7 @@ const createOrder = async (req, res) => {
     await session.abortTransaction();
 
     console.error('Error while processing the order:', error);
-
-    res.status(500).json({ error: 'Internal server error' });
+    throw error; // Re-throw the error to be handled by the error-handler middleware
   } finally {
     await session.endSession();
   }
@@ -143,7 +142,6 @@ const deleteOrder = async (req, res) => {
   if (!order) {
     throw new CustomError.NotFoundError(`No order with id ${orderId}`);
   }
-  checkPermissions(req.user, order.user);
 
   await Order.findByIdAndDelete(orderId); // or more simply can just call delete on the documnent we've already fetched:  await order.remove()
 
