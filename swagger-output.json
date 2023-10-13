@@ -443,7 +443,7 @@
         }
       }
     },
-    "/api/v1/users/updateUserPasssword": {
+    "/api/v1/users/updateUserPassword": {
       "patch": {
         "tags": ["Users"],
         "summary": "Fetch the current requesting user by id, update their password and save it to the database.",
@@ -1099,6 +1099,9 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         },
         "requestBody": {
