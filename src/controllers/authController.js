@@ -53,8 +53,8 @@ const register = async (req, res) => {
   } finally {
     session.endSession();
   }
-};
-/* 
+
+  /* 
     #swagger.summary = 'Register a new user'
     #swagger.parameters['user'] = {
       in: 'body',
@@ -77,7 +77,7 @@ const register = async (req, res) => {
       description: 'Bad request, missing email, name, password, or username'
     }
   */
-
+};
 const login = async (req, res) => {
   const { email, password } = req.body;
 
