@@ -103,6 +103,7 @@ const updateOrderStatus = async () => {
     console.error('Error updating orders:', error);
   }
 };
+console.log('meaning', process.env.START_ORDER_INTERVAL);
 
 // Call the updateOrderStatus function every .... x time
 let intervalId;
