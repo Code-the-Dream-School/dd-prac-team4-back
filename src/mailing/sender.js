@@ -64,7 +64,6 @@ async function sendWelcomeEmail(recipient, user) {
       },
       locals,
     });
-    console.log(result);
 
     return result;
   } catch (error) {
