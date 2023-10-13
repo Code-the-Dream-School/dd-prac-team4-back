@@ -23,11 +23,7 @@ const onConnect = (io, socket) => {
   });
 
   socket.on('chat:album', async (data) => {
-    try {
-      handleAlbumChat(io, socket, data);
-    } catch (error) {
-      console.error('Error saving chat message:', error);
-    }
+    handleAlbumChat(io, socket, data);
   });
   /* End event handlers */
 
