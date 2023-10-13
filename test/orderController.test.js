@@ -95,6 +95,7 @@ describe('OrderController API Tests', () => {
     expect(response.status).toBe(StatusCodes.CREATED);
     expect(response.body).toHaveProperty('order');
     expect(response.body).toHaveProperty('clientSecret');
+    expect(response.body.clientSecret).toEqual('mock_secret');
   });
 
   //create an order -Error case- user tries to create an order without logging in
