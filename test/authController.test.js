@@ -51,6 +51,7 @@ afterEach(async () => {
 
 describe('Authentication API Endpoints', () => {
   it('should register a new user and log in', async () => {
+    await User.deleteMany({});
     const emailSpy = jest.spyOn(sender, 'sendWelcomeEmail');
     const registrationResponse = await request(app)
       .post('/api/v1/auth/register')
