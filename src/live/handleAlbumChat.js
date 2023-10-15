@@ -2,22 +2,16 @@ const ChatMessage = require('../models/ChatMessage');
 
 async function handleAlbumChat(io, socket, data) {
   try {
+    // console.log("data sent by frontend: ", data);
     const { albumId } = data;
 
     // Create a chat room name for the album chat
     const chatRoomName = `chat:album:${albumId}`;
 
-    const msg = await ChatMessage.create({ ...data, name: data.user });
+    const msg = await ChatMessage.create(data);
     await msg.populate('user', 'name');
     console.log('Chat message saved:', msg);
 
-    const savedMessage = {
-      ...data,
-      _id: msg._id, // Include _id in the message
-      name: data.name,
-    };
-
-    // Check and delete old messages if needed
     const messagesCount = await ChatMessage.countDocuments({ albumId });
     if (messagesCount > 50) {
       await ChatMessage.findOneAndDelete(
@@ -27,7 +21,7 @@ async function handleAlbumChat(io, socket, data) {
     }
 
     // Broadcast the message to all connected users in the album chat room
-    io.to(chatRoomName).emit('chat:album', savedMessage);
+    io.to(chatRoomName).emit('chat:album', msg);
   } catch (error) {
     console.error('Error handling chat message:', error);
   }
