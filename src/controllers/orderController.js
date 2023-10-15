@@ -164,7 +164,7 @@ const deleteOrder = async (req, res) => {
   */
 };
 
-const handleStripePayment = async (req) => {
+const handleStripePayment = async (req, res) => {
   // Receive Stripe Signature
   const stripeSignature = req.headers['stripe-signature'];
 
