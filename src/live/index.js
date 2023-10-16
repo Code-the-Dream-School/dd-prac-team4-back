@@ -6,10 +6,11 @@ const onConnect = (io, socket) => {
   console.log('a user connected');
 
   /* Add event handlers below */
-  socket.on('test:ping', testPing); // <-- this is creating a socket that listens for messages sent for the "test:ping" event and then calls the testPing function
+  socket.on('test:ping', testPing);
 
-  socket.on('join:user_notifications', (userId) => {
-    handleUserNotificationsJoin(io, socket, userId);
+  socket.on('join:user_notifications', (user) => {
+    handleUserNotificationsJoin(io, socket, user);
+    console.log(`User joined notifications room for user: ${user}`);
   });
 
   socket.on('join:album_chat', (albumId) => {
@@ -18,12 +19,10 @@ const onConnect = (io, socket) => {
       `received message from socket: ${socket.id}. Will join room: ${chatRoomName}`
     );
     socket.join(chatRoomName);
+    //console.log(`User joined album chat room for album: ${albumId}`);
   });
 
-  socket.on('chat:album', (data) => {
-    console.log(
-      `received message from socket: ${socket.id}. Message=${data.message} | Album=${data.albumId} | User=${data.userId}`
-    );
+  socket.on('chat:album', async (data) => {
     handleAlbumChat(io, socket, data);
   });
   /* End event handlers */
