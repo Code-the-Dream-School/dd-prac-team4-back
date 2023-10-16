@@ -196,7 +196,7 @@ const handleStripePayment = async (req, res) => {
 
   // Handle other actions based on the event type if needed
 
-  return res.status(200).send()
+  return res.status(200).end()
 };
 
 module.exports = {
