@@ -27,7 +27,9 @@ const baseEmail = new Email({
   },
   send:
     process.env.ACTUALLY_SEND_EMAIL || process.env.NODE_ENV === 'production',
-  preview: process.env.NODE_ENV === 'development', // only open a preview window in development
+  // only open a preview window in development and DO NOT open an ios simulator when preview is enabled as this causes issues on Mac
+  preview:
+    process.env.NODE_ENV === 'development' ? { openSimulator: false } : false,
   juice: true,
   juiceResources: {
     webResources: { relativeTo: path.resolve('src/mailing/templates') },
