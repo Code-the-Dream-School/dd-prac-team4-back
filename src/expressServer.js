@@ -86,7 +86,10 @@ app.get('*swagger-initializer.js', (req, res) =>
 
 // Serve Swagger UI API documentation from the static files path
 app.use('/api-docs', express.static(pathToSwaggerUi));
-
+app.use(
+  '/api/v1/orders/payment_status',
+  express.raw({ type: 'application/json' })
+);
 // ====== EXPRESS REQUEST MIDDLEWARE SETUP ======
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

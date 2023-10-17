@@ -9,6 +9,7 @@ const {
   getAllOrders,
   getSingleOrder,
   deleteOrder,
+  handleStripePayment,
 } = require('../controllers/orderController');
 
 router
@@ -20,5 +21,7 @@ router
   .route('/:id')
   .get(authenticateUser, getSingleOrder)
   .delete(authenticateUser, authorizePermissions('admin'), deleteOrder);
+
+router.route('/payment_status').post(handleStripePayment);
 
 module.exports = router;
