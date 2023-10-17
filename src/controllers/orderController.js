@@ -167,7 +167,7 @@ const handleStripePayment = async (req, res) => {
   const stripeSignature = req.headers['stripe-signature'];
 
   //  Construct the Webhook Event
-  const event =  stripe.webhooks.constructEvent(
+  const event = stripe.webhooks.constructEvent(
     req.body, // Raw text body payload received from Stripe
     stripeSignature, // Value of the `stripe-signature` header from Stripe
     process.env.STRIPE_CLI_WEBHOOK_SECRET // Webhook Signing Secret
@@ -194,7 +194,7 @@ const handleStripePayment = async (req, res) => {
 
   // Handle other actions based on the event type if needed
 
-  return res.status(200).end()
+  return res.status(200).end();
 };
 
 module.exports = {
