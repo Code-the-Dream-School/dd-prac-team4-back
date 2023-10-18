@@ -5,6 +5,7 @@ const CustomError = require('../errors');
 const { attachCookiesToResponse, createTokenUser } = require('../utils');
 const crypto = require('crypto');
 const emailSender = require('../mailing/sender');
+const mongoose = require('mongoose');
 
 const register = async (req, res) => {
   const { name, email, password, username } = req.body;
@@ -13,25 +14,46 @@ const register = async (req, res) => {
     throw new CustomError.BadRequestError('Please provide all required fields');
   }
 
-  const emailAlreadyExists = await User.findOne({ email }); // Check if a user with the email already exists
-  if (emailAlreadyExists) {
-    throw new CustomError.BadRequestError('Email already exists'); // If user exists, throw an error
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+    const emailAlreadyExists = await User.findOne({ email }); // Check if a user with the email already exists
+
+    if (emailAlreadyExists) {
+      throw new CustomError.BadRequestError('Email already exists'); // If user exists, throw an error
+    }
+
+    const isFirstAccount = (await User.countDocuments({})) === 0; // Check if it's the first account
+    const role = isFirstAccount ? 'admin' : 'user'; // Assign a role based on first account or not
+
+    const [user] = await User.create(
+      [
+        {
+          name,
+          username,
+          email,
+          password,
+          role,
+        },
+      ],
+      { session }
+    ); // Create a new user in the database
+
+    // Send the welcome email
+    await emailSender.sendWelcomeEmail(user.email, user);
+
+    const tokenUser = createTokenUser(user); // Create a token based on user data
+    attachCookiesToResponse({ res, user: tokenUser }); // Attach the token to cookies and send in the response
+    await session.commitTransaction();
+    res.status(StatusCodes.CREATED).json({ user: tokenUser }); // Send a successful response with user data
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
   }
 
-  const isFirstAccount = (await User.countDocuments({})) === 0; // Check if it's the first account
-  const role = isFirstAccount ? 'admin' : 'user'; // Assign a role based on first account or not
-
-  const user = await User.create({
-    name,
-    username,
-    email,
-    password,
-    role,
-  }); // Create a new user in the database
-  const tokenUser = createTokenUser(user); // Create a token based on user data
-  attachCookiesToResponse({ res, user: tokenUser }); // Attach the token to cookies and send in the response
-
-  res.status(StatusCodes.CREATED).json({ user: tokenUser }); // Send a successful response with user data
   /* 
     #swagger.summary = 'Register a new user'
     #swagger.parameters['user'] = {
@@ -56,7 +78,6 @@ const register = async (req, res) => {
     }
   */
 };
-
 const login = async (req, res) => {
   const { email, password } = req.body;
 
