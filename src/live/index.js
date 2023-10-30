@@ -1,7 +1,7 @@
 const { testPing } = require('./testHandlers');
 const { handleUserNotificationsJoin } = require('./notificationHandlers');
 const { handleAlbumChat } = require('./handleAlbumChat');
-const albumController = require('./albumController');
+const albumController = require('../controllers/albumController');
 
 const onConnect = (io, socket) => {
   console.log('a user connected');
