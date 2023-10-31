@@ -27,10 +27,10 @@ const onConnect = (io, socket) => {
     handleAlbumChat(io, socket, data);
   });
 
-  socket.on('listening-to-album-play', (albumId) => {
-    albumController.startAlbumPlayback(albumId);
-    console.log('Album is now playing');
-  });
+  // socket.on('listening-to-album-play', (albumId) => {
+  //   albumController.startAlbumPlayback(albumId);
+  //   console.log('Album is now playing');
+  // });
 
   socket.on('listening-to-album-pause', () => {
     io.emit('album-paused', 'Album is now paused');
