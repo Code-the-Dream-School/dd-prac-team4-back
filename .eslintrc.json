@@ -18,9 +18,5 @@
     "es2023": true,
     "browser": true,
     "jest/globals": true
-  },
-  "parserOptions": {
-    "ecmaVersion": 2023,
-    "sourceType": "module"
   }
 }
