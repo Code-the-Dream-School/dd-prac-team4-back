@@ -17,6 +17,7 @@ const pathToSwaggerUi = require('swagger-ui-dist').absolutePath();
 const { readFileSync } = require('fs');
 const { join } = require('path');
 const expressStaticGzip = require('express-static-gzip');
+const AlbumRecommendation = require('./models/AlbumRecommendation');
 
 const app = express();
 // Express Async Errors must be used before any route is used,
@@ -36,6 +37,21 @@ app.get('/health', (req, res) => {
 app.get('/', (req, res) => {
   /* #swagger.ignore = true */
   res.send('<h1>Music Store API</h1><a href="/api-docs">API Docs</a>');
+});
+// Define a route for album/song recommendations based on user play history
+app.get('/recommendations/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const recommendations = await AlbumRecommendation.find({ userId });
+
+    res.json(recommendations);
+  } catch (error) {
+    console.error('Error while generating recommendations:', error);
+    res
+      .status(500)
+      .json({ error: 'An error occurred while generating recommendations.' });
+  }
 });
 
 // ====== MIDDLEWARE SETUP ======
