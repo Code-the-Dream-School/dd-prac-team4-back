@@ -1,7 +1,5 @@
 /* global io */
 
-import io from 'socket.io-client';
-
 document.addEventListener('DOMContentLoaded', function () {
   const socket = io();
 
