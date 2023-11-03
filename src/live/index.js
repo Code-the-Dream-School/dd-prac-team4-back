@@ -27,6 +27,30 @@ const onConnect = (io, socket) => {
     handleAlbumChat(io, socket, data);
   });
 
+  // Handle "listening-to-album-play" event
+  socket.on('listening-to-album-play', (data) => {
+    const { albumId, userId } = data;
+    const albumRoom = `album_listening:${albumId}`;
+    socket.join(albumRoom);
+    socket.to(albumRoom).emit('play', {
+      user: userId,
+      album: albumId,
+      message: 'User started playing the album',
+    });
+  });
+
+  // Handle "listening-to-album-pause" event
+  socket.on('listening-to-album-pause', (data) => {
+    const { albumId, userId } = data;
+    const albumRoom = `album_listening:${albumId}`;
+    socket.join(albumRoom);
+    socket.to(albumRoom).emit('pause', {
+      user: userId,
+      album: albumId,
+      message: 'User paused the album',
+    });
+  });
+
   socket.on('listening-to-album-play', () => {
     // albumId should be added as a parameter   socket.on('listening-to-album-play', (albumId) => {
     //   albumController.startAlbumPlayback(albumId);

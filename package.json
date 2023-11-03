@@ -13,7 +13,7 @@
     "test": "jest --watchAll=false --detectOpenHandles --silent --testPathIgnorePatterns=src",
     "test:watch": "jest --watchAll=true --detectOpenHandles --testPathIgnorePatterns=src",
     "generate-api-docs": "node ./swagger.js",
-    "prepare": "husky install"
+    "prepare": "node -e \"try { require('husky').install() } catch (e) {if (e.code !== 'MODULE_NOT_FOUND') throw e}\""
   },
   "author": "",
   "license": "ISC",
