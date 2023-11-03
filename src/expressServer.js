@@ -38,12 +38,17 @@ app.get('/', (req, res) => {
   /* #swagger.ignore = true */
   res.send('<h1>Music Store API</h1><a href="/api-docs">API Docs</a>');
 });
+async function generateAlbumRecommendations(userId) {
+  const recommendations = await AlbumRecommendation.find({ userId });
+
+  return recommendations;
+}
 // Define a route for album/song recommendations based on user play history
 app.get('/recommendations/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
 
-    const recommendations = await AlbumRecommendation.find({ userId });
+    const recommendations = await generateAlbumRecommendations(userId);
 
     res.json(recommendations);
   } catch (error) {
