@@ -1,6 +1,7 @@
 const { testPing } = require('./testHandlers');
 const { handleUserNotificationsJoin } = require('./notificationHandlers');
 const { handleAlbumChat } = require('./handleAlbumChat');
+//const albumController = require('../controllers/albumController');
 
 const onConnect = (io, socket) => {
   console.log('a user connected');
@@ -48,6 +49,11 @@ const onConnect = (io, socket) => {
       album: albumId,
       message: 'User paused the album',
     });
+  });
+
+  socket.on('user-leaving-page', () => {
+    io.emit('user-left', 'User has left the page');
+    console.log('User has left the page');
   });
   /* End event handlers */
 

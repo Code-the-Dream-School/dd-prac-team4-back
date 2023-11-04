@@ -142,6 +142,10 @@ app.use(express.static(__dirname + '/public'));
 app.get('/order-notifications', (req, res) => {
   res.render('orderNotifications'); // Render the EJS template
 });
+// Define a route for the listening page
+app.get('/listening', (req, res) => {
+  res.render('listeningAlbum');
+});
 
 // Serve the static files for the Toastify library for use in EJS templates
 app.use(
