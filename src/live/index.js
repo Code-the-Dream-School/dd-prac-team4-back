@@ -51,17 +51,6 @@ const onConnect = (io, socket) => {
     });
   });
 
-  socket.on('listening-to-album-play', () => {
-    // albumId should be added as a parameter   socket.on('listening-to-album-play', (albumId) => {
-    //   albumController.startAlbumPlayback(albumId);
-    console.log('Album is now playing');
-  });
-
-  socket.on('listening-to-album-pause', () => {
-    io.emit('album-paused', 'Album is now paused');
-    console.log('Album is now paused');
-  });
-
   socket.on('user-leaving-page', () => {
     io.emit('user-left', 'User has left the page');
     console.log('User has left the page');
