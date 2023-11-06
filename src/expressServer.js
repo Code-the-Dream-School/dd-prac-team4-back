@@ -17,7 +17,8 @@ const pathToSwaggerUi = require('swagger-ui-dist').absolutePath();
 const { readFileSync } = require('fs');
 const { join } = require('path');
 const expressStaticGzip = require('express-static-gzip');
-const AlbumRecommendation = require('./models/AlbumRecommendation');
+const recommendationRoutes = require('./routes/recommendationRoutes');
+const recommendationController = require('../controllers/recommendationController');
 
 const app = express();
 // Express Async Errors must be used before any route is used,
@@ -38,17 +39,13 @@ app.get('/', (req, res) => {
   /* #swagger.ignore = true */
   res.send('<h1>Music Store API</h1><a href="/api-docs">API Docs</a>');
 });
-async function generateAlbumRecommendations(userId) {
-  const recommendations = await AlbumRecommendation.find({ userId });
 
-  return recommendations;
-}
 // Define a route for album/song recommendations based on user play history
 app.get('/recommendations/:userId', async (req, res) => {
+  const userId = req.params.userId;
   try {
-    const userId = req.params.userId;
-
-    const recommendations = await generateAlbumRecommendations(userId);
+    const recommendations =
+      await recommendationController.generateAlbumRecommendations(userId);
 
     res.json(recommendations);
   } catch (error) {
@@ -82,6 +79,7 @@ app.use(
     stream: { write: (message) => logger.info(message.trim()) },
   })
 );
+app.use('/recommendations', recommendationRoutes);
 
 // ====== API DOCUMENTATION SETUP ======
 // By default, the swagger-ui-dist package will serve Swagger UI with an example pets API.
