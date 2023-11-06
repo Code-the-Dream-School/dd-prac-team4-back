@@ -40,22 +40,6 @@ app.get('/', (req, res) => {
   res.send('<h1>Music Store API</h1><a href="/api-docs">API Docs</a>');
 });
 
-// Define a route for album/song recommendations based on user play history
-app.get('/recommendations/:userId', async (req, res) => {
-  const userId = req.params.userId;
-  try {
-    const recommendations =
-      await recommendationController.generateAlbumRecommendations(userId);
-
-    res.json(recommendations);
-  } catch (error) {
-    console.error('Error while generating recommendations:', error);
-    res
-      .status(500)
-      .json({ error: 'An error occurred while generating recommendations.' });
-  }
-});
-
 // ====== MIDDLEWARE SETUP ======
 
 //Security middleware
