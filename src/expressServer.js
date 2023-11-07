@@ -18,7 +18,6 @@ const { readFileSync } = require('fs');
 const { join } = require('path');
 const expressStaticGzip = require('express-static-gzip');
 const recommendationRoutes = require('./routes/recommendationRoutes');
-const recommendationController = require('../controllers/recommendationController');
 
 const app = express();
 // Express Async Errors must be used before any route is used,
