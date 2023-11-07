@@ -134,7 +134,7 @@ app.use('/api/v1/orders', orderRouter /* #swagger.tags = ['Orders'] */);
 app.use('/api/v1/reviews', reviewRouter /* #swagger.tags = ['Reviews'] */);
 app.use('/api/v1/wishlist', wishlistRoutes /* #swagger.tags = ['Wishlist'] */);
 app.use('/api/v1/chat', chatRoutes);
-app.use('api/v1/recommendations', recommendationRoutes);
+app.use('/api/v1/recommendations', recommendationRoutes);
 
 // Serve static files from the 'public' folder
 app.use('/admin', require('./routes/adminRoutes'));
