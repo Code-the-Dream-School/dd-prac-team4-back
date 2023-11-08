@@ -17,6 +17,7 @@ const pathToSwaggerUi = require('swagger-ui-dist').absolutePath();
 const { readFileSync } = require('fs');
 const { join } = require('path');
 const expressStaticGzip = require('express-static-gzip');
+const recommendationRoutes = require('./routes/recommendationRoutes');
 
 const app = express();
 // Express Async Errors must be used before any route is used,
@@ -133,6 +134,7 @@ app.use('/api/v1/orders', orderRouter /* #swagger.tags = ['Orders'] */);
 app.use('/api/v1/reviews', reviewRouter /* #swagger.tags = ['Reviews'] */);
 app.use('/api/v1/wishlist', wishlistRoutes /* #swagger.tags = ['Wishlist'] */);
 app.use('/api/v1/chat', chatRoutes);
+app.use('/api/v1/recommendations', recommendationRoutes);
 
 // Serve static files from the 'public' folder
 app.use('/admin', require('./routes/adminRoutes'));
