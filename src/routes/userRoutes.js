@@ -13,6 +13,7 @@ const {
   updateUserPassword,
   deleteSingleUser,
   getCurrentUserWithPurchasedAlbums,
+  uploadUserImage,
 } = require('../controllers/userController');
 
 // Define routes for handling user-related operations
@@ -42,5 +43,7 @@ router.route('/:id').get(authenticateUser, getSingleUser);
 router
   .route('/:id')
   .delete(authenticateUser, authorizePermissions('admin'), deleteSingleUser);
+
+router.route('/:id/uploadUserImage').post(authenticateUser, uploadUserImage);
 
 module.exports = router;

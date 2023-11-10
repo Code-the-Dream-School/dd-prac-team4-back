@@ -6,6 +6,7 @@ const {
   attachCookiesToResponse,
   checkPermissions,
 } = require('../utils');
+const fileUploadMiddleware = require('express-fileupload');
 
 const getAllUsers = async (req, res) => {
   // Function to get all users
@@ -121,6 +122,57 @@ const updateUserPassword = async (req, res) => {
      #swagger.responses[401] = { description: 'Error. Invalid credentials.' }
   */
 };
+
+const uploadUserImage = async (req, res) => {
+  const userId = req.params.id;
+  fileUploadMiddleware({ limits: { fileSize: 10000000 }, abortOnLimit: true }),
+    async (req, res) => {
+      // The `express-fileupload` middleware will add any files that were sent using a multipart/form-data request,
+      // to the req.files property
+      // This property will be an **object** where the keys of that object, are the names/properties of the files in the form-data request
+
+      // Doing some error checking to ensure that we have all the info we expected from the request
+      if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).send('No files were uploaded.');
+      }
+      if (!userId) {
+        return res.status(400).send('No user id was provided.');
+      }
+
+      // fetching the user. Keep in mind, this means that the user must have already been created, before we can upload an image.
+      // Maybe for the /register endpoint, this won't make sense to do this way necessarily
+      const user = await User.findById(userId);
+
+      if (!user) {
+        return res.status(400).send('no user found');
+      }
+
+      // Assuming that the request named the file sent to us, `profile`
+      // The contents of this variable are outlined here: https://www.npmjs.com/package/express-fileupload#:~:text=The%20req.files,the%20uploaded%20file
+      //?? CHECK IN POSTMAN WHICH PROPERTIES HAS REQ.FILES????
+      console.log(req.files);
+
+      const profile = req.files.foo;
+
+      // We want to make sure in this case that we _only_ accept **images**
+      // So we check the mimetype using a Regex test, to see if it starts with the word "image"
+      // Common mime types can be found here: https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+      if (!/^image/.test(profile.mimetype)) {
+        return res.status(400).send('File is not an image.');
+      }
+
+      // user.profileImage = profile.data; The `data` field of of the file is a Buffer, which is a essentially an array of numbers, that represent the bytes required to recreate this image
+      // This is what we will store on the user object in the database
+      //convert a Buffer to a base-64 encoded string
+      user.profileImage = `data:${
+        profile.mimetype
+      };base64,${profile.data.toString('base64')}`;
+      await user.save();
+      // in the real app you may want to send a more useful message or json object
+      res.status(200).send('Updated profile picture');
+    };
+};
+
 const deleteSingleUser = async (req, res) => {
   const userId = req.params.id;
   if (!userId) {
@@ -176,4 +228,5 @@ module.exports = {
   updateUserPassword,
   deleteSingleUser,
   getCurrentUserWithPurchasedAlbums,
+  uploadUserImage,
 };

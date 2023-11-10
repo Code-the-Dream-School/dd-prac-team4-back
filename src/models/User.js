@@ -5,17 +5,6 @@ const argon2 = require('argon2');
 // Must be required to ensure that the model is created before we try to use it
 require('./PurchasedAlbum');
 
-// Mongoose schema for profileImage
-const profileImageSchema = new mongoose.Schema({
-  url: {
-    type: String,
-    required: false,
-  },
-  altText: {
-    type: String,
-  },
-});
-
 // Mongoose schema for hashed credit card info
 const creditCardSchema = new mongoose.Schema({
   hashedNumber: {
@@ -67,7 +56,7 @@ const UserSchema = new mongoose.Schema(
       enum: ['admin', 'user'],
       default: 'user',
     },
-    profileImage: profileImageSchema,
+    profileImage: Buffer,
     creditCardInfo: creditCardSchema,
 
     // New properties for password reset
