@@ -6,7 +6,8 @@ router.get('/:albumId', async (req, res) => {
   const { albumId } = req.params;
   const messages = await ChatMessage.find({ albumId })
     .sort({ timestamp: -1 }) // Sort messages in reverse chronological order
-    .limit(50); // Limit 50 messages
+    .limit(50) // Limit 50 messages
+    .populate('user', 'name');
 
   res.json({ messages });
 });
