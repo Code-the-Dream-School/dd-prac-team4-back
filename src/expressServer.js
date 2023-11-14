@@ -1,5 +1,5 @@
 require('dotenv').config();
-
+require('express-async-errors');
 const path = require('path');
 const express = require('express');
 const session = require('express-session');
@@ -18,11 +18,16 @@ const { readFileSync } = require('fs');
 const { join } = require('path');
 const expressStaticGzip = require('express-static-gzip');
 const recommendationRoutes = require('./routes/recommendationRoutes');
-
+const fileUploadMiddleware = require('express-fileupload');
+const { ImgurClient } = require('imgur');
+const User = require('./models/User');
 const app = express();
-// Express Async Errors must be used before any route is used,
-// it will catch any errors that are thrown in the async functions without needing a try/catch
-require('express-async-errors');
+
+const imgurClient = new ImgurClient({
+  clientId: process.env.IMGUR_CLIENT_ID,
+  clientSecret: process.env.IMGUR_CLIENT_SECRET,
+  refreshToken: process.env.IMGUR_REFRESH_TOKEN,
+});
 
 // Create a health endpoint for Render.com
 // This endpoint is used by Render.com to check if the backend is running
@@ -40,7 +45,6 @@ app.get('/', (req, res) => {
 });
 
 // ====== MIDDLEWARE SETUP ======
-
 //Security middleware
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -91,6 +95,7 @@ app.use(
   '/api/v1/orders/payment_status',
   express.raw({ type: 'application/json' })
 );
+
 // ====== EXPRESS REQUEST MIDDLEWARE SETUP ======
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -100,7 +105,7 @@ app.set('view engine', 'ejs');
 app.use(favicon(__dirname + '/public/favicon.ico'));
 // Cookie parser middleware with JWT secret
 app.use(cookieParser(process.env.JWT_SECRET));
-
+app.use(express.static('public'));
 // Configure express-session middleware
 app.use(
   session({
@@ -160,7 +165,45 @@ app.get('/tests', (req, res) => {
   const documentationFilePath = path.join(__dirname, 'public', 'tests.html');
   res.sendFile(documentationFilePath);
 });
+app.post(
+  '/api/v1/profile/:userId/uploadDB',
+  fileUploadMiddleware({ limits: { fileSize: 10000000 }, abortOnLimit: true }),
+  async (req, res) => {
+    console.log('Received request for /api/v1/profile/:userId/uploadDB');
+    const userId = req.params.userId;
+    console.log('User ID:', userId);
 
+    if (!req.files || Object.keys(req.files).length === 0) {
+      return res.status(400).send('No files were uploaded.');
+    }
+    if (!req.params.userId) {
+      return res.status(400).send('No user id was provided.');
+    }
+
+    const user = await User.findById(req.params.userId);
+
+    if (!user) {
+      return res.status(400).send('no user found');
+    }
+    const profile = req.files.profile;
+    if (!/^image/.test(profile.mimetype)) {
+      return res.status(400).send('File is not an image.');
+    }
+    const imgurRes = await imgurClient.upload({
+      image: profile.data.toString('base64'),
+      type: 'base64',
+      title: `${user._id}_profile_pic`,
+    });
+    if (imgurRes.success) {
+      user.profileImage = {
+        url: imgurRes.data.link,
+        altText: 'user profile picture',
+      };
+    }
+    res.status(200).send('Updated profile picture');
+    res.render('imgur/imgur', { userId: req.params.userId });
+  }
+);
 // Error handling middleware (**MUST** be defined _after_ all other routes and middleware)
 app.use(notFoundMiddleware); // Not found middleware to handle invalid routes
 app.use(errorHandlerMiddleware); // Error handler middleware
