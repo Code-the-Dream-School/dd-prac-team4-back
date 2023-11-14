@@ -172,23 +172,42 @@ app.post(
     console.log('Received request for /api/v1/profile/:userId/uploadDB');
     const userId = req.params.userId;
     console.log('User ID:', userId);
+    console.log('Entire req object:', req);
+    if (!userId) {
+      return res.status(400).send('No user id was provided.');
+    }
 
     if (!req.files || Object.keys(req.files).length === 0) {
+      console.log('No files were uploaded.');
       return res.status(400).send('No files were uploaded.');
     }
     if (!req.params.userId) {
       return res.status(400).send('No user id was provided.');
     }
 
-    const user = await User.findById(req.params.userId);
-
+    const user = await User.findById(userId);
+    console.log('User:', user);
     if (!user) {
       return res.status(400).send('no user found');
     }
     const profile = req.files.profile;
-    if (!/^image/.test(profile.mimetype)) {
+    console.log('File Details:', profile);
+
+    if (!profile) {
+      console.log('No profile file in the request.');
+      return res.status(400).send('No profile file in the request.');
+    }
+    console.log('File MIME Type:', profile.mimetype);
+    console.log('File Size:', profile.size);
+
+    if (!profile || !/^image/.test(profile.mimetype)) {
       return res.status(400).send('File is not an image.');
     }
+    if (!req.files || !req.files.profile) {
+      console.log('No profile file in the request.');
+      return res.status(400).send('No profile file in the request.');
+    }
+
     const imgurRes = await imgurClient.upload({
       image: profile.data.toString('base64'),
       type: 'base64',
