@@ -76,11 +76,18 @@ async function sendWelcomeEmail(recipient, user) {
 
 async function sendForgotPasswordEmail(toEmail, resetToken) {
   try {
+    const frontendBaseUrl =
+      process.env.NODE_ENV === 'production'
+        ? 'https://beatbazaar.onrender.com'
+        : 'http://localhost:3000';
+
+    const resetLink = `${frontendBaseUrl}/resetPassword?token=${resetToken}`;
+
     await baseEmail.send({
       template: 'forgot_password',
       message: { to: toEmail },
       locals: {
-        resetLink: `${process.env.BACKEND_BASE_URL}/resetPassword?token=${resetToken}`,
+        resetLink,
       },
     });
     console.log('Password reset email sent successfully');
