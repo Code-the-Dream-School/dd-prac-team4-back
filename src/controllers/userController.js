@@ -1,11 +1,20 @@
 const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
+const { firebaseApp } = require('../firebase');
+
 const {
   createTokenUser,
   attachCookiesToResponse,
   checkPermissions,
 } = require('../utils');
+
+const {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+} = require('firebase/storage');
 
 const getAllUsers = async (req, res) => {
   // Function to get all users
@@ -168,6 +177,20 @@ const getCurrentUserWithPurchasedAlbums = async (req, res) => {
   */
 };
 
+const updateProfileImage = async (req, res) => {
+  console.log('Updating profile image.');
+  const firebaseStorage = getStorage(firebaseApp);
+  const user = req.user;
+  const imageRef = ref(firebaseStorage, `images/${user._id}_profile_pic`);
+  const { profile } = req.files;
+  await uploadBytes(imageRef, profile.data, {
+    contentType: profile.mimetype,
+  });
+  const imageUrl = await getDownloadURL(imageRef);
+  console.log('Profile image updated successfully!');
+  res.status(StatusCodes.OK).json({ imageUrl });
+};
+
 module.exports = {
   getAllUsers,
   getSingleUser,
@@ -176,4 +199,5 @@ module.exports = {
   updateUserPassword,
   deleteSingleUser,
   getCurrentUserWithPurchasedAlbums,
+  updateProfileImage,
 };
