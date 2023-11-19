@@ -22,6 +22,10 @@ const imgur = require('./views/imgur/imgur');
 
 const app = express();
 
+// Express Async Errors must be used before any route is used,
+// it will catch any errors that are thrown in the async functions without needing a try/catch
+require('express-async-errors');
+
 // Create a health endpoint for Render.com
 // This endpoint is used by Render.com to check if the backend is running
 // If the backend is not running, Render.com will restart the backend
