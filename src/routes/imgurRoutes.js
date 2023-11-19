@@ -1,3 +1,4 @@
+const userRoutes = require('./userRoutes');
 const express = require('express');
 const fileUploadMiddleware = require('express-fileupload');
 const { ImgurClient } = require('imgur');
@@ -10,8 +11,8 @@ const imgurClient = new ImgurClient({
   refreshToken: process.env.IMGUR_REFRESH_TOKEN,
 });
 
-router.post(
-  '/:userId/uploadDB',
+userRoutes.post(
+  '/:userId/uploadProfile',
   fileUploadMiddleware({ limits: { fileSize: 10000000 }, abortOnLimit: true }),
   async (req, res) => {
     console.log('Received request for /api/v1/profile/:userId/uploadDB');
