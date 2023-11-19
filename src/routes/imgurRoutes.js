@@ -1,7 +1,7 @@
 const express = require('express');
 const fileUploadMiddleware = require('express-fileupload');
 const { ImgurClient } = require('imgur');
-const User = require('../../models/User');
+const User = require('../models/User');
 
 const router = express.Router();
 const imgurClient = new ImgurClient({

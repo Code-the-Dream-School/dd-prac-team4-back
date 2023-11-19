@@ -18,7 +18,7 @@ const { readFileSync } = require('fs');
 const { join } = require('path');
 const expressStaticGzip = require('express-static-gzip');
 const recommendationRoutes = require('./routes/recommendationRoutes');
-const imgur = require('./views/imgur/imgur');
+const imgur = require('./routes/imgurRoutes');
 
 const app = express();
 
