@@ -137,6 +137,7 @@ app.use('/api/v1/reviews', reviewRouter /* #swagger.tags = ['Reviews'] */);
 app.use('/api/v1/wishlist', wishlistRoutes /* #swagger.tags = ['Wishlist'] */);
 app.use('/api/v1/chat', chatRoutes);
 app.use('/api/v1/recommendations', recommendationRoutes);
+app.use('/api/v1/profile', imgur);
 
 // Serve static files from the 'public' folder
 app.use('/admin', require('./routes/adminRoutes'));
@@ -166,7 +167,7 @@ app.get('/tests', (req, res) => {
 // Error handling middleware (**MUST** be defined _after_ all other routes and middleware)
 app.use(notFoundMiddleware); // Not found middleware to handle invalid routes
 app.use(errorHandlerMiddleware); // Error handler middleware
-app.use('/api/v1/profile', imgur);
+
 // ====== WEBSOCKET SETUP ======
 // put the express server definitions inside a more generic Node server so that we can reuse it for Socket.io
 const { Server } = require('socket.io');
