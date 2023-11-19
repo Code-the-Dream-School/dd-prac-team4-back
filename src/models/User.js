@@ -56,7 +56,7 @@ const UserSchema = new mongoose.Schema(
       enum: ['admin', 'user'],
       default: 'user',
     },
-    profileImage: Buffer,
+    profileImage: String,
     creditCardInfo: creditCardSchema,
 
     // New properties for password reset
