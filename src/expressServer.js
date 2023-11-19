@@ -102,7 +102,7 @@ app.set('view engine', 'ejs');
 app.use(favicon(__dirname + '/public/favicon.ico'));
 // Cookie parser middleware with JWT secret
 app.use(cookieParser(process.env.JWT_SECRET));
-app.use(express.static('public'));
+
 // Configure express-session middleware
 app.use(
   session({
