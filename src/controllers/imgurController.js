@@ -56,7 +56,7 @@ async function uploadProfile(req, res) {
   }
 
   res.status(200).send('Updated profile picture');
-  res.render('../views/imgur', { userId: req.params.userId });
+  res.render('imgur', { userId: req.params.userId });
 }
 
 module.exports = {
