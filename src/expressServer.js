@@ -17,8 +17,7 @@ const { readFileSync } = require('fs');
 const { join } = require('path');
 const expressStaticGzip = require('express-static-gzip');
 const recommendationRoutes = require('./routes/recommendationRoutes');
-const imgur = require('./routes/imgurRoutes');
-
+const userRouter = require('./routes/userRoutes');
 const app = express();
 
 // Express Async Errors must be used before any route is used,
@@ -117,7 +116,6 @@ app.use(passport.session());
 
 // ====== IMPORT ROUTERS ======
 const authRouter = require('./routes/authRoutes');
-const userRouter = require('./routes/userRoutes');
 const albumRouter = require('./routes/albumRoutes');
 const orderRouter = require('./routes/orderRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
@@ -136,7 +134,7 @@ app.use('/api/v1/reviews', reviewRouter /* #swagger.tags = ['Reviews'] */);
 app.use('/api/v1/wishlist', wishlistRoutes /* #swagger.tags = ['Wishlist'] */);
 app.use('/api/v1/chat', chatRoutes);
 app.use('/api/v1/recommendations', recommendationRoutes);
-app.use('/api/v1/profile', imgur);
+app.use('/api/v1/profile', userRouter);
 
 // Serve static files from the 'public' folder
 app.use('/admin', require('./routes/adminRoutes'));
