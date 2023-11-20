@@ -55,7 +55,6 @@ async function uploadProfile(req, res) {
     await user.save();
   }
 
-  res.status(200).send('Updated profile picture');
   res.render('imgur', { userId: req.params.userId });
 }
 
