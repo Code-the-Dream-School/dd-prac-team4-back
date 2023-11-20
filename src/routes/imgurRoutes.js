@@ -1,11 +1,13 @@
-const userRoutes = require('./userRoutes');
 const express = require('express');
 const fileUploadMiddleware = require('express-fileupload');
 const imgurController = require('../controllers/imgurController');
 const router = express.Router();
 
-userRoutes.post(
-  '/:userId/uploadProfile',
+// Route for rendering the upload page
+router.get('/upload', imgurController.renderUploadPage);
+
+router.post(
+  '/upload/:userId',
   fileUploadMiddleware({ limits: { fileSize: 10000000 }, abortOnLimit: true }),
   imgurController.uploadProfile
 );
