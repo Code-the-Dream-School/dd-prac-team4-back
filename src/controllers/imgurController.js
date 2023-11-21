@@ -7,6 +7,10 @@ const imgurClient = new ImgurClient({
   refreshToken: process.env.IMGUR_REFRESH_TOKEN,
 });
 
+const renderUploadPage = (req, res) => {
+  res.render('imgur');
+};
+
 async function uploadProfile(req, res) {
   console.log('Received request for /api/v1/profile/:userId/uploadProfile');
   const userId = req.params.userId;
@@ -60,4 +64,5 @@ async function uploadProfile(req, res) {
 
 module.exports = {
   uploadProfile,
+  renderUploadPage,
 };
