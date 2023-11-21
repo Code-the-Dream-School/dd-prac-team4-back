@@ -18,7 +18,6 @@ const { readFileSync } = require('fs');
 const { join } = require('path');
 const expressStaticGzip = require('express-static-gzip');
 const recommendationRoutes = require('./routes/recommendationRoutes');
-const { firebaseApp } = require('./firebase');
 
 const app = express();
 // Express Async Errors must be used before any route is used,
@@ -197,4 +196,4 @@ global.io = io;
 // export the database connection function
 const connectDB = require('./db/connect');
 
-module.exports = { app: server, connectDB, io, firebaseApp };
+module.exports = { app: server, connectDB, io };

@@ -180,13 +180,24 @@ const getCurrentUserWithPurchasedAlbums = async (req, res) => {
 const updateProfileImage = async (req, res) => {
   console.log('Updating profile image.');
   const firebaseStorage = getStorage(firebaseApp);
-  const user = req.user;
-  const imageRef = ref(firebaseStorage, `images/${user._id}_profile_pic`);
-  const { profile } = req.files;
+  const userId = req.user.userId;
+  if (!req.files || Object.keys(req.files).length === 0) {
+    throw new CustomError.BadRequestError('No files were uploaded.');
+  }
+  const profile = req.files.profile;
+  if (!profile || !profile.data || !profile.mimetype) {
+    throw new CustomError.BadRequestError('File is not an image.');
+  }
+  const imageRef = ref(firebaseStorage, `images/${userId}_profile_pic`);
   await uploadBytes(imageRef, profile.data, {
     contentType: profile.mimetype,
   });
   const imageUrl = await getDownloadURL(imageRef);
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { profileImage: { url: imageUrl, altText: 'user profile picture' } },
+    { new: true }
+  );
   console.log('Profile image updated successfully!');
   res.status(StatusCodes.OK).json({ imageUrl });
 };

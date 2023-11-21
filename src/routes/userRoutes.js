@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const fileUploadMiddleware = require('express-fileupload');
 const {
   authenticateUser,
   authorizePermissions,
@@ -44,7 +45,13 @@ router
   .route('/:id')
   .delete(authenticateUser, authorizePermissions('admin'), deleteSingleUser);
 
-router.route('/updateProfileImage').patch(authenticateUser, updateProfileImage);
-console.log('User routes initialized successfully!');
+router.route('/:id/updateProfileImage').post(
+  authenticateUser,
+  fileUploadMiddleware({
+    limits: { fileSize: 10000000 },
+    abortOnLimit: true,
+  }),
+  updateProfileImage
+);
 
 module.exports = router;
