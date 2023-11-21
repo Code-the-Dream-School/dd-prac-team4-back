@@ -6,7 +6,6 @@ const {
   attachCookiesToResponse,
   checkPermissions,
 } = require('../utils');
-const fileUploadMiddleware = require('express-fileupload');
 
 const getAllUsers = async (req, res) => {
   // Function to get all users
@@ -148,10 +147,17 @@ const uploadUserImage = async (req, res) => {
 
   // Assuming that the request named the file sent to us, `profile`
   // The contents of this variable are outlined here: https://www.npmjs.com/package/express-fileupload#:~:text=The%20req.files,the%20uploaded%20file
-  //?? CHECK IN POSTMAN WHICH PROPERTIES HAS REQ.FILES????
+
   console.log(req.files);
 
-  const profile = req.files.foo;
+  const profile = req.files.userImage; //used on frontend when making post request an adding the img
+
+  // Check if profile is null or undefined
+  if (!profile) {
+    return res.status(400).json({
+      error: 'The "userImage" property is missing or null in the request.',
+    });
+  }
 
   // We want to make sure in this case that we _only_ accept **images**
   // So we check the mimetype using a Regex test, to see if it starts with the word "image"

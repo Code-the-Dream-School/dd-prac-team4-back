@@ -45,8 +45,8 @@ router
   .route('/:id')
   .delete(authenticateUser, authorizePermissions('admin'), deleteSingleUser);
 
-router.route('/:id/uploadUserImage').post(
-  authenticateUser,
+router.route('/uploadUserImage').post(
+  authenticateUser, //requiring that the user is logged-in
   fileUploadMiddleware({
     limits: { fileSize: 10000000 },
     abortOnLimit: true,
