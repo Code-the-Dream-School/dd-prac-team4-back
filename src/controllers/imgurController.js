@@ -12,7 +12,7 @@ const renderUploadPage = (req, res) => {
 };
 
 async function uploadProfile(req, res) {
-  console.log('Received request for /api/v1/profile/:userId/uploadProfile');
+  console.log('Received request for /api/v1/user/:userId/uploadProfile');
   const userId = req.params.userId;
   console.log('User ID:', userId);
 
