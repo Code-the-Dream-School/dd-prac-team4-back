@@ -120,6 +120,7 @@ const reviewRouter = require('./routes/reviewRoutes');
 const wishlistRoutes = require('./routes/wishlistRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const userRouter = require('./routes/userRoutes');
+const recommendationRoutes = require('./routes/recommendationRoutes');
 
 // ====== IMPORT ERROR HANDLER MIDDLEWARE ======
 const notFoundMiddleware = require('./middleware/not-found');
