@@ -123,7 +123,7 @@ const updateUserPassword = async (req, res) => {
 };
 
 const uploadUserImage = async (req, res) => {
-  const userId = req.params.id;
+  const userId = req.user.userId;
 
   // The `express-fileupload` middleware will add any files that were sent using a multipart/form-data request,
   // to the req.files property
