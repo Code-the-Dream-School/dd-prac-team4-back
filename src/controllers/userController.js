@@ -150,7 +150,7 @@ const uploadUserImage = async (req, res) => {
 
   console.log(req.files);
 
-  const profile = req.files.userImage; //used on frontend when making post request an adding the img
+  const profile = req.files.userImage; //used on frontend when making post request and adding the img
 
   // Check if profile is null or undefined
   if (!profile) {
