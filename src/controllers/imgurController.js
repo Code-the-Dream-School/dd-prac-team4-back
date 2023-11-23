@@ -7,9 +7,9 @@ const imgurClient = new ImgurClient({
   refreshToken: process.env.IMGUR_REFRESH_TOKEN,
 });
 
-const renderUploadPage = (req, res) => {
+const renderUploadPage = (req, res, message, imageUrl) => {
   const userId = req.params.userId;
-  res.render('imgur', { userId });
+  res.render('imgur', { userId, message, imageUrl });
 };
 
 async function uploadProfile(req, res) {
@@ -23,13 +23,13 @@ async function uploadProfile(req, res) {
 
   if (!req.files || Object.keys(req.files).length === 0) {
     console.log('No files were uploaded.');
-    return res.status(400).send('No files were uploaded.');
+    return renderUploadPage(req, res, 'No files were uploaded.');
   }
 
   const user = await User.findById(userId);
   console.log('User:', user);
   if (!user) {
-    return res.status(400).send('No user found');
+    return renderUploadPage(req, res, 'No user found.');
   }
 
   const profile = req.files.profile;
@@ -37,30 +37,44 @@ async function uploadProfile(req, res) {
 
   if (!profile) {
     console.log('No profile file in the request.');
-    return res.status(400).send('No profile file in the request.');
+    return renderUploadPage(req, res, 'No profile file in the request.');
   }
   console.log('File MIME Type:', profile.mimetype);
   console.log('File Size:', profile.size);
 
   if (!/^image/.test(profile.mimetype)) {
-    return res.status(400).send('File is not an image.');
+    return renderUploadPage(req, res, 'File is not an image.');
   }
 
-  const imgurRes = await imgurClient.upload({
-    image: profile.data.toString('base64'),
-    type: 'base64',
-    title: `${user._id}_profile_pic`,
-  });
+  try {
+    const imgurRes = await imgurClient.upload({
+      image: profile.data.toString('base64'),
+      type: 'base64',
+      title: `${user._id}_profile_pic`,
+    });
 
-  if (imgurRes.success) {
-    user.profileImage = {
-      url: imgurRes.data.link,
-      altText: 'user profile picture',
-    };
-    await user.save();
+    if (imgurRes.success) {
+      user.profileImage = {
+        url: imgurRes.data.link,
+        altText: 'user profile picture',
+      };
+      await user.save();
+
+      // Render with success message and image link
+      renderUploadPage(
+        req,
+        res,
+        'Image uploaded successfully!',
+        imgurRes.data.link
+      );
+    } else {
+      // Render with error message
+      renderUploadPage(req, res, 'Error uploading image. Please try again.');
+    }
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    res.status(500).send('Internal Server Error');
   }
-
-  res.render('imgur', { userId: req.params.userId });
 }
 
 module.exports = {
