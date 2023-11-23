@@ -16,6 +16,7 @@ const pathToSwaggerUi = require('swagger-ui-dist').absolutePath();
 const { readFileSync } = require('fs');
 const { join } = require('path');
 const expressStaticGzip = require('express-static-gzip');
+const imgurController = require('./controllers/imgurController');
 const app = express();
 
 // Express Async Errors must be used before any route is used,
@@ -148,7 +149,8 @@ app.get('/order-notifications', (req, res) => {
 app.get('/listening', (req, res) => {
   res.render('listeningAlbum');
 });
-
+// Route for rendering the upload page
+app.get('/:userId/uploadProfile', imgurController.renderUploadPage);
 // Serve the static files for the Toastify library for use in EJS templates
 app.use(
   '/toastify',

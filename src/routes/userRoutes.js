@@ -44,9 +44,6 @@ router
   .route('/:id')
   .delete(authenticateUser, authorizePermissions('admin'), deleteSingleUser);
 
-// Route for rendering the upload page
-router.get('/:userId/uploadProfile', imgurController.renderUploadPage);
-
 router.post(
   '/:userId/uploadProfile',
   fileUploadMiddleware({ limits: { fileSize: 10000000 }, abortOnLimit: true }),
