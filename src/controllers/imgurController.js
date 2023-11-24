@@ -60,16 +60,15 @@ async function uploadProfile(req, res) {
       };
       await user.save();
 
-      // Render with success message and image link
-      renderUploadPage(
-        req,
-        res,
-        'Image uploaded successfully!',
-        imgurRes.data.link
-      );
+      res.status(200).json({
+        success: true,
+        message: 'Image uploaded successfully!',
+        imageUrl: imgurRes.data.link,
+      });
     } else {
-      // Render with error message
-      renderUploadPage(req, res, 'Error uploading image. Please try again.');
+      res
+        .status(500)
+        .json({ error: 'Error uploading image. Please try again.' });
     }
   } catch (error) {
     console.error('Error uploading image:', error);
