@@ -20,6 +20,12 @@ document.addEventListener('DOMContentLoaded', function () {
       if (response.ok) {
         const data = await response.json();
 
+        if (data.imageUrl) {
+          const imageElement = document.createElement('img');
+          imageElement.src = data.imageUrl;
+          document.body.appendChild(imageElement);
+        }
+
         Toastify({
           text: data.message,
           duration: 3000,

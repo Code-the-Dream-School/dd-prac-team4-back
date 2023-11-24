@@ -53,6 +53,15 @@ app.use(
     credentials: true,
   })
 );
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        'img-src': ["'self'", 'https://i.imgur.com'],
+      },
+    },
+  })
+);
 
 //Logging middleware (using morgan to log each HTTP request)
 app.use(
