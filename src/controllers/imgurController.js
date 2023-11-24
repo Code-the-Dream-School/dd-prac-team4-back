@@ -9,7 +9,7 @@ const imgurClient = new ImgurClient({
 
 const renderUploadPage = (req, res, message, imageUrl) => {
   const userId = req.params.userId;
-  res.render('imgur', { userId, message, imageUrl });
+  res.render('imgur', { userId, message: null, imageUrl: null });
 };
 
 async function uploadProfile(req, res) {
