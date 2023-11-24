@@ -1,10 +1,11 @@
 /* global Toastify */
 document.addEventListener('DOMContentLoaded', function () {
   const form = document.querySelector('form');
-  const userId = document.querySelector('#userId').value;
 
   form.addEventListener('submit', async function (event) {
     event.preventDefault();
+
+    const userId = getUserIdFromURL();
 
     const formData = new FormData(form);
     try {
@@ -30,4 +31,9 @@ document.addEventListener('DOMContentLoaded', function () {
       console.error('Error:', error);
     }
   });
+  // Function to extract user ID from the URL
+  function getUserIdFromURL() {
+    const pathArray = window.location.pathname.split('/');
+    return pathArray[1];
+  }
 });
