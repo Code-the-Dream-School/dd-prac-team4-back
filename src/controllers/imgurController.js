@@ -7,7 +7,7 @@ const imgurClient = new ImgurClient({
   refreshToken: process.env.IMGUR_REFRESH_TOKEN,
 });
 
-const renderUploadPage = (req, res, message, imageUrl) => {
+const renderUploadPage = (req, res) => {
   const userId = req.params.userId;
   res.render('imgur', { userId, message: null, imageUrl: null });
 };
