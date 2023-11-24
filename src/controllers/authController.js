@@ -197,7 +197,7 @@ const resetPassword = async (req, res) => {
   const now = new Date();
   if (user.passwordResetExpiresOn < now) {
     return res
-      .status(StatusCodes.Unauthorized)
+      .status(StatusCodes.UNAUTHORIZED)
       .json({ message: 'Password reset token has expired' });
   }
 
