@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
-const { firebaseApp } = require('../firebase');
+const { firebaseApp, firebaseStorage } = require('../firebase');
 
 const {
   createTokenUser,
@@ -193,7 +193,7 @@ const updateProfileImage = async (req, res) => {
     contentType: profile.mimetype,
   });
   const imageUrl = await getDownloadURL(imageRef);
-  const updatedUser = await User.findByIdAndUpdate(
+  await User.findByIdAndUpdate(
     userId,
     { profileImage: { url: imageUrl, altText: 'user profile picture' } },
     { new: true }

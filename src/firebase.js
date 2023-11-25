@@ -1,5 +1,5 @@
 const { initializeApp } = require('firebase/app');
-const { ref, uploadBytes, getStorage } = require('firebase/storage');
+const { getStorage } = require('firebase/storage');
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -10,8 +10,8 @@ const firebaseConfig = {
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
-const firebaseStorage = getStorage();
+const firebaseStorage = getStorage(firebaseApp);
 
 console.log('Firebase connected successfully!');
 
-module.exports = { firebaseApp };
+module.exports = { firebaseApp, firebaseStorage };

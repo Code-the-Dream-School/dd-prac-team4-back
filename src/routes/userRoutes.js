@@ -45,7 +45,7 @@ router
   .route('/:id')
   .delete(authenticateUser, authorizePermissions('admin'), deleteSingleUser);
 
-router.route('/:id/updateProfileImage').post(
+router.route('/updateProfileImage').post(
   authenticateUser,
   fileUploadMiddleware({
     limits: { fileSize: 10000000 },
