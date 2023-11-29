@@ -76,7 +76,7 @@ async function sendWelcomeEmail(recipient, user) {
 
 async function sendForgotPasswordEmail(toEmail, resetToken) {
   try {
-    const frontendBaseUrl = process.env.FRONTEND_BASE_URL
+    const frontendBaseUrl = process.env.FRONTEND_BASE_URL;
 
     const resetLink = `${frontendBaseUrl}/resetPassword?token=${resetToken}`;
 
