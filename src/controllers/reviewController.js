@@ -137,7 +137,7 @@ const deleteReview = async (req, res) => {
 
   // Check if the requesting user is the author of the review
   if (review.user.toString() !== req.user.userId) {
-    throw new CustomError.ForbiddenError(
+    throw new CustomError.UnauthorizedError(
       'You are not authorized to delete this review'
     );
   }
