@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Upload</title>
+    <script src="/toastify/toastify.js"></script>
+    <link rel="stylesheet" type="text/css" href="/toastify/toastify.css" />
+  </head>
+  <body>
+    <h1>Image Upload</h1>
+    <form
+      action="/api/v1/users/<%= userId %>/uploadProfile"
+      method="post"
+      enctype="multipart/form-data"
+    >
+      <input type="file" name="profile" accept="image/*" required />
+      <button type="submit">Upload Image</button>
+    </form>
+    <script src="/uploadHandler.js"></script>
+  </body>
+</html>

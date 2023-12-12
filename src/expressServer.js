@@ -1,5 +1,4 @@
 require('dotenv').config();
-
 const path = require('path');
 const express = require('express');
 const session = require('express-session');
@@ -17,9 +16,9 @@ const pathToSwaggerUi = require('swagger-ui-dist').absolutePath();
 const { readFileSync } = require('fs');
 const { join } = require('path');
 const expressStaticGzip = require('express-static-gzip');
-const recommendationRoutes = require('./routes/recommendationRoutes');
-
+const imgurController = require('./controllers/imgurController');
 const app = express();
+
 // Express Async Errors must be used before any route is used,
 // it will catch any errors that are thrown in the async functions without needing a try/catch
 require('express-async-errors');
@@ -40,7 +39,6 @@ app.get('/', (req, res) => {
 });
 
 // ====== MIDDLEWARE SETUP ======
-
 //Security middleware
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -53,6 +51,15 @@ app.use(
   cors({
     origin: [/localhost:3000$/, /beatbazaar\.onrender\.com$/],
     credentials: true,
+  })
+);
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        'img-src': ["'self'", 'https://i.imgur.com'],
+      },
+    },
   })
 );
 
@@ -91,6 +98,7 @@ app.use(
   '/api/v1/orders/payment_status',
   express.raw({ type: 'application/json' })
 );
+
 // ====== EXPRESS REQUEST MIDDLEWARE SETUP ======
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -116,12 +124,14 @@ app.use(passport.session());
 
 // ====== IMPORT ROUTERS ======
 const authRouter = require('./routes/authRoutes');
-const userRouter = require('./routes/userRoutes');
 const albumRouter = require('./routes/albumRoutes');
 const orderRouter = require('./routes/orderRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const wishlistRoutes = require('./routes/wishlistRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const userRouter = require('./routes/userRoutes');
+const recommendationRoutes = require('./routes/recommendationRoutes');
+
 // ====== IMPORT ERROR HANDLER MIDDLEWARE ======
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
@@ -148,7 +158,8 @@ app.get('/order-notifications', (req, res) => {
 app.get('/listening', (req, res) => {
   res.render('listeningAlbum');
 });
-
+// Route for rendering the upload page
+app.get('/:userId/uploadProfile', imgurController.renderUploadPage);
 // Serve the static files for the Toastify library for use in EJS templates
 app.use(
   '/toastify',
