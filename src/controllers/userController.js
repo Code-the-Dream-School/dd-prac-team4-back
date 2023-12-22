@@ -1,20 +1,13 @@
 const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
-const { firebaseApp, firebaseStorage } = require('../firebase');
+const { firebaseBucket } = require('../firebase');
 
 const {
   createTokenUser,
   attachCookiesToResponse,
   checkPermissions,
 } = require('../utils');
-
-const {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL,
-} = require('firebase/storage');
 
 const getAllUsers = async (req, res) => {
   // Function to get all users
@@ -179,7 +172,6 @@ const getCurrentUserWithPurchasedAlbums = async (req, res) => {
 
 const updateProfileImage = async (req, res) => {
   console.log('Updating profile image.');
-  const firebaseStorage = getStorage(firebaseApp);
   const userId = req.user.userId;
   if (!req.files || Object.keys(req.files).length === 0) {
     throw new CustomError.BadRequestError('No files were uploaded.');
@@ -188,11 +180,11 @@ const updateProfileImage = async (req, res) => {
   if (!profile || !profile.data || !profile.mimetype) {
     throw new CustomError.BadRequestError('File is not an image.');
   }
-  const imageRef = ref(firebaseStorage, `images/${userId}_profile_pic`);
-  await uploadBytes(imageRef, profile.data, {
-    contentType: profile.mimetype,
-  });
-  const imageUrl = await getDownloadURL(imageRef);
+
+  const file = firebaseBucket.file(`images/${userId}_profile_pic`);
+  await file.save(profile.data, { contentType: profile.mimetype });
+
+  const imageUrl = file.publicUrl();
   await User.findByIdAndUpdate(
     userId,
     { profileImage: { url: imageUrl, altText: 'user profile picture' } },
