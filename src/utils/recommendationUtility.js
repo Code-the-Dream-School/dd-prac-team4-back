@@ -1,31 +1,30 @@
-// recommendationUtility.js
-const axios = require('axios'); // for making HTTP requests
+const SpotifyWebApi = require('spotify-web-api-node'); // Import Spotify Web API library
 const AlbumRecommendation = require('../models/AlbumRecommendation');
-const ListeningHistory = require('../models/ListeningHistory');
 
-async function generateRecommendations(userId) {
+// Set up Spotify Web API client with credentials
+const spotifyApi = new SpotifyWebApi({
+  clientId: process.env.SPOTIFY_CLIENT_ID,
+  clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+});
+
+async function generateRecommendations(userId, listeningHistory) {
   try {
-    // Fetch the top 5 listened to artists from the user's listening history
-    const listeningHistory = await ListeningHistory.find({ userId })
-      .sort({ playCount: -1 })
-      .limit(5);
+    // Check if listeningHistory is empty
+    if (listeningHistory.length === 0) {
+      console.warn('No listening history found for user:', userId);
+      return;
+    }
 
     // Extract artistIds from listeningHistory
     const artistIds = listeningHistory.map((entry) => entry.artistId);
 
     // Make a call to Spotify's "Get Recommendations" endpoint
-    const spotifyApiEndpoint = 'https://api.spotify.com/v1/recommendations';
-    const response = await axios.get(spotifyApiEndpoint, {
-      params: {
-        seed_artists: artistIds.join(','),
-      },
-      headers: {
-        Authorization: 'SPOTIFY_ACCESS_TOKEN',
-      },
+    const response = await spotifyApi.getRecommendations({
+      seed_artists: artistIds.join(','),
     });
 
     // Store the returned recommended tracks/songs in the AlbumRecommendation schema
-    const recommendations = response.data.tracks.map((track) => ({
+    const recommendations = response.body.tracks.map((track) => ({
       userId,
       songId: track.id,
     }));
@@ -35,6 +34,7 @@ async function generateRecommendations(userId) {
     console.error('Error generating recommendations:', error);
   }
 }
+
 module.exports = {
   generateRecommendations,
 };

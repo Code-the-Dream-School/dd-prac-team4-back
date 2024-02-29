@@ -1,4 +1,3 @@
-// listeningHistory.js
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const { generateRecommendations } = require('../utils/recommendationUtility');
@@ -9,8 +8,17 @@ const listeningHistorySchema = new Schema({
 
 listeningHistorySchema.post('save', async function (doc, next) {
   try {
-    // Call a function to generate recommendations here
-    await generateRecommendations(doc.userId);
+    // Access the model to fetch ListeningHistory documents
+    const ListeningHistory = this.constructor;
+
+    // Fetch the top 5 listened to artists from the user's listening history
+    const listeningHistory = await ListeningHistory.find({
+      userId: doc.userId,
+    }).limit(5);
+
+    // Call a function to generate recommendations with the fetched documents
+    await generateRecommendations(doc.userId, listeningHistory);
+
     next();
   } catch (err) {
     next(err);
