@@ -15,9 +15,11 @@ listeningHistorySchema.post('save', async function (doc, next) {
     const listeningHistory = await ListeningHistory.find({
       userId: doc.userId,
     }).limit(5);
-
-    // Call a function to generate recommendations with the fetched documents
-    await generateRecommendations(doc.userId, listeningHistory);
+    // Check if listeningHistory is not empty before generating recommendations
+    if (listeningHistory.length > 0) {
+      // Call a function to generate recommendations with the fetched documents
+      await generateRecommendations(doc.userId, listeningHistory);
+    }
 
     next();
   } catch (err) {
