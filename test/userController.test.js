@@ -36,6 +36,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  // turn off the server and mongo connections once all the tests are done
   await closeAllConnections({ server, mongooseConnection, mongodb });
 });
 
