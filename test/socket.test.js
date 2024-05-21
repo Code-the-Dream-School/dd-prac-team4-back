@@ -1,5 +1,6 @@
-const { app } = require('../src/expressServer');
+const { app, io: serverIO } = require('../src/expressServer');
 const io = require('socket.io-client');
+const closeAllConnections = require('./testHelpers');
 
 let server;
 const PORT = 8001;
@@ -9,7 +10,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  server.close();
+  await closeAllConnections({ server, serverIO });
 });
 
 test('test:ping socket event', (done) => {

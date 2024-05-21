@@ -6,6 +6,7 @@ const Review = require('../src/models/Review');
 const User = require('../src/models/User');
 const Album = require('../src/models/Album');
 const { loginAndReturnCookie } = require('./test_helper');
+const closeAllConnections = require('./testHelpers');
 let server;
 let mongooseConnection;
 let mongodb;
@@ -19,9 +20,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await server.close();
-  await mongooseConnection.disconnect();
-  await mongodb.stop();
+  await closeAllConnections({ server, mongooseConnection, mongodb });
 });
 
 describe('ReviewController API Tests', () => {

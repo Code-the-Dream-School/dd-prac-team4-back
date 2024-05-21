@@ -5,6 +5,7 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 const Album = require('../src/models/Album');
 const User = require('../src/models/User');
 const { loginAndReturnCookie } = require('./test_helper');
+const closeAllConnections = require('./testHelpers');
 
 let server;
 let mongooseConnection;
@@ -19,9 +20,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await server.close();
-  await mongooseConnection.disconnect();
-  await mongodb.stop();
+  await closeAllConnections({ server, mongooseConnection, mongodb });
 });
 
 describe('AlbumController API Tests', () => {
