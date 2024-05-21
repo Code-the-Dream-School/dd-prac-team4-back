@@ -5,6 +5,7 @@ const { intervalId: orderUpdateInterval } = require('../src/models/Order');
 const User = require('../src/models/User');
 const { loginAndReturnCookie } = require('./test_helper');
 const sender = require('../src/mailing/sender');
+const closeAllConnections = require('./testHelpers');
 
 let server;
 let mongooseConnection;
@@ -39,9 +40,7 @@ beforeEach(async () => {
   testUser = await User.create(testUserData);
 });
 afterAll(async () => {
-  await server.close();
-  await mongooseConnection.disconnect();
-  await mongodb.stop();
+  await closeAllConnections({ server, mongooseConnection, mongodb });
   clearInterval(orderUpdateInterval);
 });
 afterEach(async () => {

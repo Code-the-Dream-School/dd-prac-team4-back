@@ -7,6 +7,7 @@ const { Order } = require('../src/models/Order');
 const Album = require('../src/models/Album');
 const { loginAndReturnCookie } = require('./test_helper');
 const mongoose = require('mongoose');
+const closeAllConnections = require('./testHelpers');
 let server;
 let mongooseConnection;
 let mongodb;
@@ -37,9 +38,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await server.close();
-  await mongooseConnection.disconnect();
-  await mongodb.stop();
+  await closeAllConnections({ server, mongooseConnection, mongodb });
 });
 
 describe('OrderController API Tests', () => {

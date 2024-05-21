@@ -3,6 +3,7 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 const request = require('supertest');
 const User = require('../src/models/User');
 const { loginAndReturnCookie } = require('./test_helper');
+const closeAllConnections = require('./testHelpers');
 
 // Declare variables for the server, database connection, and in-memory MongoDB instance
 let server;
@@ -36,9 +37,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   // turn off the server and mongo connections once all the tests are done
-  await server.close();
-  await mongooseConnection.disconnect();
-  await mongodb.stop();
+  await closeAllConnections({ server, mongooseConnection, mongodb });
 });
 
 beforeEach(async () => {
