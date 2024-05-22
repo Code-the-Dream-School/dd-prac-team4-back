@@ -27,6 +27,7 @@ const testAdminCredentials = {
 
 // set up the mongodb and the express server before starting the tests
 beforeAll(async () => {
+  console.log(`HIIIII: ${process.env.FIREBASE_SERVICE_ACCOUNT_KEY}`);
   // This will create a new instance of "MongoMemoryServer" and automatically start it
   mongodb = await MongoMemoryServer.create();
   const url = mongodb.getUri();
