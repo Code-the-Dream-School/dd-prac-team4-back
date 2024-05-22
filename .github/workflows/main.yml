@@ -38,4 +38,5 @@ jobs:
           JWT_SECRET: ${{ vars.CI_JWT_SECRET }}
           JWT_LIFETIME: ${{ vars.CI_JWT_LIFETIME }}
           SESSION_SECRET: ${{ vars.CI_SESSION_SECRET }}
+          FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
         run: 'npm run test'
