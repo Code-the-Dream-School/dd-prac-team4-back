@@ -4,6 +4,7 @@ const request = require('supertest');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const Album = require('../src/models/Album');
 const User = require('../src/models/User');
+const { intervalId: orderUpdateInterval } = require('../src/models/Order');
 const { loginAndReturnCookie } = require('./test_helper');
 const closeAllConnections = require('./testHelpers');
 
@@ -21,6 +22,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await closeAllConnections({ server, mongooseConnection, mongodb });
+  clearInterval(orderUpdateInterval);
 });
 
 describe('AlbumController API Tests', () => {
