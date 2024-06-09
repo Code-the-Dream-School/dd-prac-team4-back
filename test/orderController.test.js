@@ -5,7 +5,9 @@ const { MongoMemoryReplSet } = require('mongodb-memory-server');
 const User = require('../src/models/User');
 const { Order } = require('../src/models/Order');
 const Album = require('../src/models/Album');
+const { intervalId: orderUpdateInterval } = require('../src/models/Order');
 const { loginAndReturnCookie } = require('./test_helper');
+const closeAllConnections = require('./testHelpers');
 const mongoose = require('mongoose');
 let server;
 let mongooseConnection;
@@ -37,9 +39,8 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await server.close();
-  await mongooseConnection.disconnect();
-  await mongodb.stop();
+  await closeAllConnections({ server, mongooseConnection, mongodb });
+  clearInterval(orderUpdateInterval);
 });
 
 describe('OrderController API Tests', () => {

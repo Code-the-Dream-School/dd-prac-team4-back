@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const fileUploadMiddleware = require('express-fileupload');
 const {
   authenticateUser,
   authorizePermissions,
@@ -13,6 +14,7 @@ const {
   updateUserPassword,
   deleteSingleUser,
   getCurrentUserWithPurchasedAlbums,
+  updateProfileImage,
 } = require('../controllers/userController');
 
 // Define routes for handling user-related operations
@@ -42,5 +44,14 @@ router.route('/:id').get(authenticateUser, getSingleUser);
 router
   .route('/:id')
   .delete(authenticateUser, authorizePermissions('admin'), deleteSingleUser);
+
+router.route('/updateProfileImage').post(
+  authenticateUser,
+  fileUploadMiddleware({
+    limits: { fileSize: 10000000 },
+    abortOnLimit: true,
+  }),
+  updateProfileImage
+);
 
 module.exports = router;
